@@ -256,7 +256,7 @@ textarea::placeholder{color:var(--text3);}
 .chart-stat{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:10px;text-align:center;}
 .chart-stat b{display:block;font-family:var(--serif);font-size:20px;color:var(--green);line-height:1.1;}
 .chart-stat span{display:block;font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:4px;}
-.data-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.data-tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .data-tools .btn{margin-bottom:0;}
 @media(max-width:560px){.settings-gear,.hamburger{top:14px;width:38px;height:38px;font-size:16px;}.settings-gear{left:14px;}.hamburger{right:14px;}.history-grid{gap:6px;}.history-day{min-height:48px;padding:7px 5px;}.history-score{font-size:18px;}.history-score-actions{grid-template-columns:repeat(4,1fr);}.chart-wrap{height:160px;}.chart-stats{grid-template-columns:1fr;}.data-tools{grid-template-columns:1fr;}}
 
@@ -535,10 +535,11 @@ textarea::placeholder{color:var(--text3);}
     <div class="section-label">Data tools</div>
     <div class="data-tools">
       <button class="btn" onclick="exportData()">Export data</button>
+      <button class="btn" onclick="checkForAppUpdate()">Update app</button>
       <button class="btn" onclick="resetLocalData()">Reset local</button>
       <button class="btn btn-ghost" onclick="deleteCloudData()">Delete cloud</button>
     </div>
-    <div class="mini-label">App version presence-v11</div>
+    <div class="mini-label">App version presence-v12</div>
   </div>
 </div>
 
@@ -561,7 +562,7 @@ textarea::placeholder{color:var(--text3);}
 
 <div class="toast" id="toast"></div>
 
-<script src="firebase-config.js?v=presence-v11"></script>
+<script src="firebase-config.js?v=presence-v12"></script>
 <script>
 // ---------- State ----------
 const KEY='presence_state_v1';
@@ -582,7 +583,7 @@ const store={
 };
 
 const FIREBASE_SDK_VERSION='12.13.0';
-let FB={configured:false,ready:false,user:null,app:null,auth:null,db:null,mods:null,saveTimer:null,syncing:false,syncError:false,lastSyncAt:parseInt(localStorage.getItem('presence_last_sync_at')||'0')||null};
+let FB={configured:false,ready:false,user:null,app:null,auth:null,db:null,mods:null,saveTimer:null,syncing:false,syncError:false,cloudLoaded:false,lastSyncAt:parseInt(localStorage.getItem('presence_last_sync_at')||'0')||null};
 let selectedHistoryDate=null;
 
 function firebaseConfig(){
@@ -638,6 +639,7 @@ async function initFirebase(){
     FB.ready=true;
     authMod.onAuthStateChanged(FB.auth,async user=>{
       FB.user=user;
+      FB.cloudLoaded=false;
       renderAuth();
       if(user){await loadCloudState();}
     });
@@ -654,6 +656,20 @@ function userStateDoc(){
 
 function copyState(state){
   return JSON.parse(JSON.stringify(state||{}));
+}
+
+function stateHasUserData(state){
+  if(!state)return false;
+  return !!(
+    (Array.isArray(state.scoreHistory)&&state.scoreHistory.length) ||
+    (Array.isArray(state.notes)&&state.notes.length) ||
+    (Array.isArray(state.log)&&state.log.length) ||
+    (state.steps&&Object.keys(state.steps).length) ||
+    state.score!==null&&state.score!==undefined ||
+    (state.level&&state.level>1) ||
+    (state.affCount&&state.affCount>0) ||
+    state.morningDone
+  );
 }
 
 function mergeByDate(localItems,cloudItems){
@@ -685,27 +701,38 @@ async function loadCloudState(){
   if(!FB.ready||!FB.user)return;
   FB.syncing=true;renderAuth();
   try{
+    const localBefore=copyState(S);
     const snap=await FB.mods.getDoc(userStateDoc());
     if(snap.exists()){
       S=mergeStates(S,snap.data().state||{});
       normalizeScoreHistory();rolloverDay();calculateLevel();
       await store.set(KEY,JSON.stringify(S));
       render();initSteps();renderSteps();
+      FB.cloudLoaded=true;
+      await writeCloudState();
+      toast('Firebase sync complete.');
+    }else{
+      FB.cloudLoaded=true;
+      if(stateHasUserData(localBefore)){
+        await writeCloudState();
+        toast('Firebase backup created.');
+      }else{
+        toast('No Firebase backup found yet.');
+      }
     }
-    await writeCloudState();
-    toast('Firebase sync complete.');
   }catch(e){toast('Firebase sync failed.');}
   FB.syncing=false;renderAuth();
 }
 
 function queueCloudSave(){
-  if(!FB.ready||!FB.user)return;
+  if(!FB.ready||!FB.user||!FB.cloudLoaded)return;
   clearTimeout(FB.saveTimer);
   FB.saveTimer=setTimeout(()=>writeCloudState(),400);
 }
 
-async function writeCloudState(){
+async function writeCloudState({force=false}={}){
   if(!FB.ready||!FB.user)return true;
+  if(!force&&!stateHasUserData(S))return true;
   try{
     await FB.mods.setDoc(userStateDoc(),{state:copyState(S),updatedAt:FB.mods.serverTimestamp()},{merge:true});
     FB.lastSyncAt=Date.now();FB.syncError=false;localStorage.setItem('presence_last_sync_at',String(FB.lastSyncAt));renderAuth();
@@ -747,6 +774,8 @@ async function signInWithGoogle(){
 
 async function signOutUser(){
   if(!FB.ready||!FB.user)return;
+  if(!FB.cloudLoaded){await loadCloudState();}
+  if(!FB.cloudLoaded){toast('Sync failed. Still signed in so your cloud data is safe.');return;}
   FB.syncing=true;renderAuth();
   const saved=await writeCloudState();
   FB.syncing=false;renderAuth();
@@ -1053,6 +1082,15 @@ async function deleteCloudData(){
   catch(e){toast('Could not delete cloud data.');}
 }
 
+async function checkForAppUpdate(){
+  if(!('serviceWorker' in navigator)){toast('App updates on refresh.');return;}
+  const reg=await navigator.serviceWorker.getRegistration();
+  if(!reg){toast('Update service not ready. Reopen the app.');return;}
+  await reg.update();
+  if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});toast('Update found. Reloading...');}
+  else{toast('App is up to date.');}
+}
+
 // toast
 let toastT=null;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800);}
@@ -1062,7 +1100,28 @@ loadState().then(()=>{initSteps();renderSteps();initFirebase();});
 
 // Register service worker for offline / installable PWA support
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+  let refreshing=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(refreshing)return;
+    refreshing=true;
+    window.location.reload();
+  });
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v12').then(reg=>{
+      reg.update();
+      if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
+      reg.addEventListener('updatefound',()=>{
+        const worker=reg.installing;
+        if(!worker)return;
+        worker.addEventListener('statechange',()=>{
+          if(worker.state==='installed'&&navigator.serviceWorker.controller){
+            if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
+            toast('App updated. Reloading...');
+          }
+        });
+      });
+    }).catch(()=>{});
+  });
 }
 </script>
 </body>

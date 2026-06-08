@@ -1,5 +1,5 @@
-// Simple offline cache for the Presence PWA.
-const CACHE = 'presence-v11';
+// Network-first cache for the Presence PWA.
+const CACHE = 'presence-v12';
 const ASSETS = [
   './',
   './index.html',
@@ -25,14 +25,21 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  const request = e.request;
   e.respondWith(
-    caches.match(e.request).then((cached) =>
-      cached ||
-      fetch(e.request).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
-        return res;
-      }).catch(() => cached)
+    fetch(request).then((res) => {
+      const copy = res.clone();
+      caches.open(CACHE).then((c) => c.put(request, copy)).catch(() => {});
+      return res;
+    }).catch(() =>
+      caches.match(request).then((cached) =>
+        cached ||
+        caches.match('./index.html').then((fallback) => fallback || Response.error())
+      )
     )
   );
+});
+
+self.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
