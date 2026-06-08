@@ -258,7 +258,12 @@ textarea::placeholder{color:var(--text3);}
 .chart-stat span{display:block;font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:4px;}
 .data-tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .data-tools .btn{margin-bottom:0;}
-@media(max-width:560px){.settings-gear,.hamburger{top:14px;width:38px;height:38px;font-size:16px;}.settings-gear{left:14px;}.hamburger{right:14px;}.history-grid{gap:6px;}.history-day{min-height:48px;padding:7px 5px;}.history-score{font-size:18px;}.history-score-actions{grid-template-columns:repeat(4,1fr);}.chart-wrap{height:160px;}.chart-stats{grid-template-columns:1fr;}.data-tools{grid-template-columns:1fr;}}
+.notification-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.notification-field{display:grid;gap:6px;}
+.notification-field label{font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;}
+.notification-field input{width:100%;padding:11px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-family:var(--sans);}
+.notification-status{text-align:left;margin-top:8px;}
+@media(max-width:560px){.settings-gear,.hamburger{top:14px;width:38px;height:38px;font-size:16px;}.settings-gear{left:14px;}.hamburger{right:14px;}.history-grid{gap:6px;}.history-day{min-height:48px;padding:7px 5px;}.history-score{font-size:18px;}.history-score-actions{grid-template-columns:repeat(4,1fr);}.chart-wrap{height:160px;}.chart-stats{grid-template-columns:1fr;}.data-tools,.notification-grid{grid-template-columns:1fr;}}
 
 /* Log */
 .log{max-height:200px;overflow-y:auto;}
@@ -539,7 +544,26 @@ textarea::placeholder{color:var(--text3);}
       <button class="btn" onclick="resetLocalData()">Reset local</button>
       <button class="btn btn-ghost" onclick="deleteCloudData()">Delete cloud</button>
     </div>
-    <div class="mini-label">App version presence-v12</div>
+    <div class="mini-label">App version presence-v13</div>
+  </div>
+  <div class="card">
+    <div class="section-label">Notifications</div>
+    <div class="notification-grid">
+      <div class="notification-field">
+        <label for="notifyMorningTime">Morning</label>
+        <input id="notifyMorningTime" type="time" value="07:00">
+      </div>
+      <div class="notification-field">
+        <label for="notifyScoreTime">Daily score</label>
+        <input id="notifyScoreTime" type="time" value="21:00">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="enableNotifications()">Enable notifications</button>
+    <div class="btn-row">
+      <button class="btn" onclick="saveNotificationSettings()">Save times</button>
+      <button class="btn btn-ghost" onclick="sendTestNotification()">Test</button>
+    </div>
+    <div class="mini-label notification-status" id="notificationStatus">Notifications are off.</div>
   </div>
 </div>
 
@@ -562,11 +586,11 @@ textarea::placeholder{color:var(--text3);}
 
 <div class="toast" id="toast"></div>
 
-<script src="firebase-config.js?v=presence-v12"></script>
+<script src="firebase-config.js?v=presence-v13"></script>
 <script>
 // ---------- State ----------
 const KEY='presence_state_v1';
-let S={streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null};
+let S={streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null,notifications:{enabled:false,morningTime:'07:00',scoreTime:'21:00'}};
 
 // Storage: use the host window.storage API if present (Claude env),
 // otherwise fall back to the browser's localStorage so the app works
@@ -583,8 +607,9 @@ const store={
 };
 
 const FIREBASE_SDK_VERSION='12.13.0';
-let FB={configured:false,ready:false,user:null,app:null,auth:null,db:null,mods:null,saveTimer:null,syncing:false,syncError:false,cloudLoaded:false,lastSyncAt:parseInt(localStorage.getItem('presence_last_sync_at')||'0')||null};
+let FB={configured:false,ready:false,user:null,app:null,auth:null,db:null,mods:null,saveTimer:null,syncing:false,syncError:false,syncErrorText:'',cloudLoaded:false,lastSyncAt:parseInt(localStorage.getItem('presence_last_sync_at')||'0')||null};
 let selectedHistoryDate=null;
+let notificationTimers=[];
 
 function firebaseConfig(){
   return window.PRESENCE_FIREBASE_CONFIG||null;
@@ -607,7 +632,7 @@ function renderAuth(){
   if(FB.syncing){status.textContent='Syncing...';if(detail)detail.textContent='Saving the latest local state to Firebase.';return;}
   if(FB.user){
     email.textContent=FB.user.email||'Signed in';
-    if(FB.syncError){status.textContent='Sync needs attention';if(detail)detail.textContent='Last save failed. Check connection, then use Sync now.';}
+    if(FB.syncError){status.textContent='Sync needs attention';if(detail)detail.textContent=FB.syncErrorText||'Last save failed. Check connection, then use Sync now.';}
     else if(!navigator.onLine){status.textContent='Offline';if(detail)detail.textContent='Changes stay local and will sync when you are online.';}
     else{status.textContent=FB.lastSyncAt?'Last synced '+relativeTime(FB.lastSyncAt):'Ready to sync';if(detail)detail.textContent='Signed in as '+(FB.user.email||'this account')+'.';}
   }
@@ -620,6 +645,27 @@ function relativeTime(ts){
   const minutes=Math.round(seconds/60);if(minutes<60)return minutes+' min ago';
   const hours=Math.round(minutes/60);if(hours<24)return hours+' hr ago';
   return Math.round(hours/24)+' days ago';
+}
+
+function firebaseErrorText(e){
+  const code=e&&e.code?e.code:'sync-error';
+  if(code==='permission-denied')return 'Permission denied. Publish the Firestore rules for users/{uid}/presence/state.';
+  if(code==='unavailable')return 'Firebase unavailable. Check connection and try Sync now.';
+  if(code==='not-found')return 'Firestore database not found. Create Firestore in Firebase.';
+  if(code==='failed-precondition')return 'Firestore is not ready yet. Check database setup in Firebase.';
+  return code+(e&&e.message?': '+e.message:'');
+}
+
+function setFirebaseError(e){
+  FB.syncError=true;
+  FB.syncErrorText=firebaseErrorText(e);
+  console.error('Presence Firebase sync error',e);
+  renderAuth();
+}
+
+function clearFirebaseError(){
+  FB.syncError=false;
+  FB.syncErrorText='';
 }
 
 async function initFirebase(){
@@ -646,6 +692,7 @@ async function initFirebase(){
   }catch(e){
     FB.configured=false;
     renderAuth();
+    console.error('Presence Firebase load error',e);
     toast('Firebase failed to load.');
   }
 }
@@ -672,6 +719,10 @@ function stateHasUserData(state){
   );
 }
 
+function ensureNotificationState(){
+  S.notifications=Object.assign({enabled:false,morningTime:'07:00',scoreTime:'21:00'},S.notifications||{});
+}
+
 function mergeByDate(localItems,cloudItems){
   const byDate={};
   (cloudItems||[]).forEach(item=>{if(item&&item.date)byDate[item.date]=item;});
@@ -694,7 +745,7 @@ function mergeStates(localState,cloudState){
   merged.level=Math.max(local.level||1,cloud.level||1);
   merged.notes=mergeByKey(local.notes,cloud.notes,item=>(item&&item.d?item.d:'')+'|'+(item&&item.txt?item.txt:''),50);
   merged.log=mergeByKey(local.log,cloud.log,item=>(item&&item.t?item.t:'')+'|'+(item&&item.m?item.m:''),40);
-  return Object.assign({streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null},merged);
+  return Object.assign({streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null,notifications:{enabled:false,morningTime:'07:00',scoreTime:'21:00'}},merged);
 }
 
 async function loadCloudState(){
@@ -705,6 +756,7 @@ async function loadCloudState(){
     const snap=await FB.mods.getDoc(userStateDoc());
     if(snap.exists()){
       S=mergeStates(S,snap.data().state||{});
+      ensureNotificationState();
       normalizeScoreHistory();rolloverDay();calculateLevel();
       await store.set(KEY,JSON.stringify(S));
       render();initSteps();renderSteps();
@@ -720,7 +772,7 @@ async function loadCloudState(){
         toast('No Firebase backup found yet.');
       }
     }
-  }catch(e){toast('Firebase sync failed.');}
+  }catch(e){setFirebaseError(e);toast('Firebase sync failed: '+firebaseErrorText(e));}
   FB.syncing=false;renderAuth();
 }
 
@@ -735,9 +787,9 @@ async function writeCloudState({force=false}={}){
   if(!force&&!stateHasUserData(S))return true;
   try{
     await FB.mods.setDoc(userStateDoc(),{state:copyState(S),updatedAt:FB.mods.serverTimestamp()},{merge:true});
-    FB.lastSyncAt=Date.now();FB.syncError=false;localStorage.setItem('presence_last_sync_at',String(FB.lastSyncAt));renderAuth();
+    FB.lastSyncAt=Date.now();clearFirebaseError();localStorage.setItem('presence_last_sync_at',String(FB.lastSyncAt));renderAuth();
     return true;
-  }catch(e){FB.syncError=true;renderAuth();toast('Could not save to Firebase.');return false;}
+  }catch(e){setFirebaseError(e);toast('Could not save to Firebase: '+firebaseErrorText(e));return false;}
 }
 
 async function signIn(){
@@ -791,11 +843,12 @@ async function syncNow(){
 
 async function loadState(){
   try{const r=await store.get(KEY);if(r&&r.value){S=Object.assign(S,JSON.parse(r.value));}}catch(e){}
+  ensureNotificationState();
   let dirty=normalizeScoreHistory();
   rolloverDay();
   dirty=calculateLevel()||dirty;
   if(dirty){await save();}
-  render();
+  render();scheduleNotifications();
 }
 async function save(){try{await store.set(KEY,JSON.stringify(S));queueCloudSave();}catch(e){}}
 
@@ -923,7 +976,7 @@ function render(){
   // steps
   document.querySelectorAll('.step').forEach(st=>{});
   for(const k in S.steps){const el=document.querySelector('.step[data-skey="'+k+'"]');}
-  renderLog();renderNotes();renderLevels();renderScoreChart();renderSteps();
+  renderLog();renderNotes();renderLevels();renderScoreChart();renderSteps();renderNotifications();
   renderScoreHistory();
 }
 
@@ -1071,7 +1124,7 @@ function exportData(){
 function resetLocalData(){
   if(!confirm('Reset local Presence data on this device? Cloud data is not deleted.'))return;
   localStorage.removeItem(KEY);
-  S={streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null};
+  S={streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null,notifications:{enabled:false,morningTime:'07:00',scoreTime:'21:00'}};
   rolloverDay();save();render();initSteps();renderSteps();toast('Local data reset.');
 }
 
@@ -1091,6 +1144,104 @@ async function checkForAppUpdate(){
   else{toast('App is up to date.');}
 }
 
+function renderNotifications(){
+  ensureNotificationState();
+  const morning=document.getElementById('notifyMorningTime');
+  const score=document.getElementById('notifyScoreTime');
+  const status=document.getElementById('notificationStatus');
+  if(morning)morning.value=S.notifications.morningTime;
+  if(score)score.value=S.notifications.scoreTime;
+  if(!status)return;
+  if(!('Notification' in window)){status.textContent='Notifications are not supported in this browser.';return;}
+  if(Notification.permission==='denied'){status.textContent='Notifications are blocked. Enable them in browser settings.';return;}
+  if(S.notifications.enabled&&Notification.permission==='granted'){
+    status.textContent='On. Morning at '+S.notifications.morningTime+' and score reminder at '+S.notifications.scoreTime+'.';
+  }else if(Notification.permission==='granted'){
+    status.textContent='Permission granted. Tap Enable notifications to turn reminders on.';
+  }else{
+    status.textContent='Notifications are off.';
+  }
+}
+
+function nextReminderDelay(timeValue){
+  const parts=(timeValue||'09:00').split(':').map(n=>parseInt(n,10));
+  const target=new Date();
+  target.setHours(parts[0]||9,parts[1]||0,0,0);
+  if(target<=new Date())target.setDate(target.getDate()+1);
+  return target.getTime()-Date.now();
+}
+
+function clearNotificationTimers(){
+  notificationTimers.forEach(id=>clearTimeout(id));
+  notificationTimers=[];
+}
+
+function scheduleNotification(kind,timeValue,title,body){
+  const delay=nextReminderDelay(timeValue);
+  const id=setTimeout(async()=>{
+    await showPresenceNotification(title,body,kind);
+    scheduleNotifications();
+  },Math.min(delay,2147483647));
+  notificationTimers.push(id);
+}
+
+function scheduleNotifications(){
+  clearNotificationTimers();
+  ensureNotificationState();
+  if(!S.notifications.enabled||!('Notification' in window)||Notification.permission!=='granted')return;
+  scheduleNotification('presence-morning',S.notifications.morningTime,'Presence morning','Start the affirmation and meditation protocol.');
+  scheduleNotification('presence-score',S.notifications.scoreTime,'Presence score','Score today before the day closes.');
+}
+
+async function showPresenceNotification(title,body,tag){
+  if(!('Notification' in window)||Notification.permission!=='granted')return false;
+  const options={body,tag,icon:'icon-192.png',badge:'icon-180.png'};
+  try{
+    if('serviceWorker' in navigator){
+      const reg=await navigator.serviceWorker.ready;
+      if(reg&&reg.showNotification){await reg.showNotification(title,options);return true;}
+    }
+    new Notification(title,options);
+    return true;
+  }catch(e){
+    console.error('Presence notification error',e);
+    return false;
+  }
+}
+
+async function enableNotifications(){
+  if(!('Notification' in window)){toast('Notifications are not supported here.');renderNotifications();return;}
+  const permission=Notification.permission==='default'?await Notification.requestPermission():Notification.permission;
+  if(permission!=='granted'){toast('Notifications were not enabled.');renderNotifications();return;}
+  saveNotificationSettings(false);
+  S.notifications.enabled=true;
+  await save();
+  scheduleNotifications();
+  renderNotifications();
+  toast('Notifications enabled.');
+}
+
+async function saveNotificationSettings(showToast=true){
+  ensureNotificationState();
+  const morning=document.getElementById('notifyMorningTime');
+  const score=document.getElementById('notifyScoreTime');
+  S.notifications.morningTime=morning&&morning.value?morning.value:S.notifications.morningTime;
+  S.notifications.scoreTime=score&&score.value?score.value:S.notifications.scoreTime;
+  await save();
+  scheduleNotifications();
+  renderNotifications();
+  if(showToast)toast('Notification times saved.');
+}
+
+async function sendTestNotification(){
+  if(!('Notification' in window)){toast('Notifications are not supported here.');return;}
+  if(Notification.permission!=='granted'){await enableNotifications();}
+  if(Notification.permission==='granted'){
+    const sent=await showPresenceNotification('Presence','Notifications are working.','presence-test');
+    toast(sent?'Test notification sent.':'Could not send notification.');
+  }
+}
+
 // toast
 let toastT=null;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800);}
@@ -1107,7 +1258,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v12').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v13').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
