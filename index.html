@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PRESENCE — Your System</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0f0d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Presence">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0f0d;
+  --bg2:#0f1411;
+  --surface:#131a16;
+  --surface2:#1a221d;
+  --border:#243029;
+  --border2:#2f3d34;
+  --green:#3ddc91;
+  --green-dim:#2aa86e;
+  --green-deep:#0f6e56;
+  --green-glow:rgba(61,220,145,0.12);
+  --text:#e8efe9;
+  --text2:#9db0a4;
+  --text3:#647269;
+  --gold:#f2b950;
+  --coral:#e8765a;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Outfit',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;line-height:1.6;overflow-x:hidden;}
+body{min-height:100vh;}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+
+/* Ambient background */
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.ambient .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.5;}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(61,220,145,0.15),transparent 70%);top:-150px;right:-100px;animation:drift1 22s ease-in-out infinite;}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(15,110,86,0.18),transparent 70%);bottom:-100px;left:-80px;animation:drift2 28s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-40px,60px) scale(1.1);}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(50px,-40px) scale(1.08);}}
+
+.app{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 20px 120px;}
+
+/* Header */
+header{padding:32px 0 20px;text-align:center;position:relative;}
+.logo{font-family:var(--serif);font-size:13px;letter-spacing:0.5em;text-transform:uppercase;color:var(--green);font-weight:500;margin-bottom:6px;}
+.tagline{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--text2);font-weight:400;}
+.date-line{font-size:12px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-top:10px;}
+.settings-gear{position:fixed;top:18px;left:18px;width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:rgba(19,26,22,0.92);color:var(--text2);font-size:18px;line-height:1;cursor:pointer;transition:all 0.22s;z-index:85;backdrop-filter:blur(12px);}
+.settings-gear:hover,.settings-gear.active{color:var(--green);border-color:var(--green-dim);background:var(--green-glow);}
+
+/* Auth / sync */
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px;}
+.auth-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px;}
+.sync-status{font-size:12px;color:var(--text3);text-align:right;}
+.sync-status.on{color:var(--green);}
+.sync-status.warn{color:var(--gold);}
+.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.auth-field{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--sans);font-size:14px;font-weight:300;}
+.auth-field:focus{outline:none;border-color:var(--green-deep);}
+.auth-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.auth-actions .btn{margin-bottom:0;padding:12px;font-size:14px;}
+.btn-google{background:#f4f7f5;color:#0a0f0d;border-color:#f4f7f5;font-weight:600;}
+.btn-google:hover{background:#fff;border-color:#fff;}
+.auth-google{margin-top:8px;}
+.auth-google .btn{margin-bottom:0;padding:12px;font-size:14px;}
+.auth-signed-in{display:none;grid-template-columns:1fr auto auto;gap:8px;align-items:center;}
+.auth-email{font-size:13px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.auth-card.signed-in .auth-signed-out{display:none;}
+.auth-card.signed-in .auth-signed-in{display:grid;}
+.auth-card.signed-in{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;margin-bottom:12px;}
+.auth-card.signed-in .auth-head{display:contents;margin-bottom:0;}
+.auth-card.signed-in .section-label{font-size:10px;letter-spacing:0.18em;white-space:nowrap;}
+.auth-card.signed-in .sync-status{font-size:12px;text-align:left;white-space:nowrap;}
+.auth-card.signed-in .auth-signed-in{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;}
+.auth-card.signed-in .auth-email{font-size:12px;color:var(--text3);}
+.auth-card.signed-in .btn{padding:8px 10px;border-radius:10px;font-size:12px;width:auto;white-space:nowrap;}
+.auth-card.not-configured .auth-field,.auth-card.not-configured .auth-actions{display:none;}
+@media(max-width:560px){.auth-grid,.auth-actions,.auth-signed-in{grid-template-columns:1fr;}.auth-head{align-items:flex-start;}.sync-status{text-align:left;}.auth-card.signed-in{grid-template-columns:1fr auto;padding:9px 10px;}.auth-card.signed-in .section-label{display:none;}.auth-card.signed-in .sync-status{font-size:11px;}.auth-card.signed-in .auth-signed-in{grid-column:1/-1;grid-template-columns:minmax(0,1fr) auto auto;}.auth-card.signed-in .btn{padding:7px 9px;font-size:11px;}}
+
+/* Menu */
+.hamburger{position:fixed;top:18px;right:18px;width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:rgba(19,26,22,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:all 0.22s;z-index:95;backdrop-filter:blur(12px);}
+.hamburger span{width:17px;height:2px;border-radius:2px;background:var(--text2);transition:all 0.22s;}
+.hamburger:hover,.hamburger[aria-expanded="true"]{border-color:var(--green-dim);background:var(--green-glow);}
+.hamburger:hover span,.hamburger[aria-expanded="true"] span{background:var(--green);}
+.menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.52);opacity:0;pointer-events:none;transition:opacity 0.25s ease;z-index:88;}
+.drawer{position:fixed;top:0;right:0;width:min(330px,86vw);height:100vh;background:rgba(15,20,17,0.98);border-left:1px solid var(--border);box-shadow:-18px 0 50px rgba(0,0,0,0.38);transform:translateX(100%);transition:transform 0.28s cubic-bezier(0.22,1,0.36,1);z-index:90;padding:76px 20px 24px;backdrop-filter:blur(18px);}
+body.menu-open .menu-overlay{opacity:1;pointer-events:auto;}
+body.menu-open .drawer{transform:translateX(0);}
+.menu-overlay.open{opacity:1;pointer-events:auto;}
+.drawer.open{transform:translateX(0);}
+.drawer-nav{display:grid;gap:8px;}
+.nav-btn{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-family:var(--sans);font-size:14px;font-weight:400;cursor:pointer;text-align:left;transition:all 0.25s;letter-spacing:0.02em;}
+.nav-btn:hover{border-color:var(--border2);color:var(--text);}
+.nav-btn.active{background:var(--green-glow);border-color:var(--green-dim);color:var(--green);font-weight:500;}
+
+/* Panels */
+.panel{display:none;animation:fadeUp 0.5s ease;}
+.panel.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:16px;}
+.card-soft{background:var(--bg2);}
+.section-label{font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-weight:500;}
+
+/* The Question */
+.question-card{background:linear-gradient(135deg,rgba(61,220,145,0.08),rgba(15,110,86,0.04));border:1px solid var(--green-deep);border-radius:22px;padding:32px 28px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
+.question-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,var(--green-glow),transparent 60%);animation:pulse 5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:0.4;transform:scale(0.9);}50%{opacity:0.8;transform:scale(1.1);}}
+.question-text{font-family:var(--serif);font-size:26px;font-weight:500;color:var(--text);position:relative;line-height:1.3;}
+.question-hint{font-size:13px;color:var(--green);margin-top:10px;position:relative;letter-spacing:0.03em;}
+
+/* Stat grid */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 14px;text-align:center;}
+.stat-val{font-family:var(--serif);font-size:34px;font-weight:600;color:var(--green);line-height:1;}
+.stat-val.small{font-size:22px;}
+.stat-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-top:8px;}
+.lives{display:flex;gap:6px;justify-content:center;font-size:20px;}
+.life{color:var(--green);transition:all 0.4s;}
+.life.lost{color:var(--border2);transform:scale(0.8);}
+
+/* Buttons */
+.btn{display:block;width:100%;padding:15px;border-radius:14px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--sans);font-size:15px;font-weight:400;cursor:pointer;transition:all 0.22s;margin-bottom:10px;text-align:center;letter-spacing:0.01em;}
+.btn:hover{background:var(--border);border-color:var(--green-deep);}
+.btn:active{transform:scale(0.985);}
+.btn-primary{background:linear-gradient(135deg,var(--green-dim),var(--green-deep));border-color:var(--green-dim);color:#06120c;font-weight:600;}
+.btn-primary:hover{filter:brightness(1.12);background:linear-gradient(135deg,var(--green-dim),var(--green-deep));}
+.btn-ghost{background:transparent;}
+.btn-row{display:flex;gap:10px;}
+.btn-row .btn{margin-bottom:0;}
+
+/* Score selector */
+.score-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.score-dot{aspect-ratio:1;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:16px;font-weight:400;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.score-dot:hover{border-color:var(--green-dim);color:var(--text);}
+.score-dot.sel{background:var(--green-glow);border-color:var(--green);color:var(--green);font-weight:600;}
+
+/* Persona cards */
+.persona{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all 0.22s;margin-bottom:10px;}
+.persona:hover{border-color:var(--border2);transform:translateX(3px);}
+.persona-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.persona-name{font-weight:500;font-size:15px;color:var(--text);}
+.persona-desc{font-size:12.5px;color:var(--text2);margin-top:2px;line-height:1.4;}
+
+.response-box{background:var(--green-glow);border:1px solid var(--green-deep);border-radius:16px;padding:22px;margin-top:16px;animation:fadeUp 0.4s ease;}
+.response-name{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--green);margin-bottom:6px;}
+.response-action{font-size:14px;color:var(--text);line-height:1.65;margin:14px 0;}
+
+/* Protocol phases */
+.phase{margin-bottom:20px;}
+.phase-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.phase-num{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--green);background:var(--green-glow);border:1px solid var(--green-deep);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.phase-title{font-family:var(--serif);font-size:18px;font-weight:500;}
+.phase-sub{font-size:12px;color:var(--text3);font-style:italic;}
+.step{display:flex;gap:14px;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:all 0.2s;}
+.step:hover{border-color:var(--border2);}
+.step.done{background:var(--green-glow);border-color:var(--green-deep);}
+.step-check{width:24px;height:24px;border-radius:7px;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-size:13px;color:transparent;margin-top:1px;}
+.step.done .step-check{background:var(--green);border-color:var(--green);color:#06120c;}
+.step-body{flex:1;}
+.step-title{font-size:14.5px;font-weight:500;color:var(--text);}
+.step.done .step-title{color:var(--green);}
+.step-desc{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.55;}
+.step-time{font-size:11px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:6px;}
+
+/* Affirmation reader */
+.aff-card{background:linear-gradient(180deg,rgba(61,220,145,0.045),rgba(19,26,22,0.94));border-color:rgba(61,220,145,0.2);}
+.aff-reader{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:22px;align-items:center;padding:8px 0 18px;}
+.aff-text{font-family:var(--serif);font-size:22px;font-weight:400;line-height:1.62;color:var(--text);text-align:left;background:rgba(10,15,13,0.42);border:1px solid rgba(61,220,145,0.16);border-left:3px solid var(--green-dim);border-radius:16px;padding:22px 22px 24px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);text-wrap:pretty;}
+.aff-text em{color:var(--green);font-style:italic;text-shadow:0 0 18px rgba(61,220,145,0.16);}
+.counter-ring{position:relative;width:90px;height:90px;margin:0 auto;}
+.counter-ring svg{transform:rotate(-90deg);}
+.counter-ring .track{fill:none;stroke:var(--border);stroke-width:6;}
+.counter-ring .fill{fill:none;stroke:var(--green);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 0.5s ease;}
+.counter-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.counter-num b{font-family:var(--serif);font-size:30px;font-weight:600;color:var(--green);line-height:1;}
+.counter-num span{font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;}
+@media(max-width:560px){
+  .aff-card{padding:16px;}
+  .aff-reader{display:block;padding:2px 0 12px;}
+  .aff-text{font-size:17px;line-height:1.62;border-radius:14px;padding:18px 16px 19px;}
+  .counter-ring{margin:16px auto 0;}
+}
+
+/* Notepad */
+.note-field{margin-bottom:16px;}
+.note-q{font-size:13.5px;font-weight:500;color:var(--green);margin-bottom:8px;letter-spacing:0.01em;}
+textarea{width:100%;min-height:90px;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-family:var(--sans);font-size:14px;font-weight:300;resize:vertical;line-height:1.6;}
+textarea:focus{outline:none;border-color:var(--green-deep);}
+textarea::placeholder{color:var(--text3);}
+
+/* Why / reflective text */
+.prose{font-size:15px;line-height:1.8;color:var(--text2);}
+.prose p{margin-bottom:14px;}
+.prose strong{color:var(--text);font-weight:500;}
+.prose .green{color:var(--green);}
+.pleasure-pain{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+@media(max-width:560px){.pleasure-pain{grid-template-columns:1fr;}.stats{grid-template-columns:repeat(2,1fr);gap:8px;}.stat{padding:14px 8px;}}
+.pp-col{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;}
+.pp-col h4{font-family:var(--serif);font-size:15px;font-weight:500;margin-bottom:10px;}
+.pp-col.pain h4{color:var(--coral);}
+.pp-col.pleasure h4{color:var(--green);}
+.pp-col ul{list-style:none;}
+.pp-col li{font-size:13px;color:var(--text2);padding:5px 0 5px 16px;position:relative;line-height:1.5;}
+.pp-col li::before{content:'';position:absolute;left:0;top:12px;width:5px;height:5px;border-radius:50%;background:var(--text3);}
+
+/* Levels */
+.level-track{position:relative;}
+.level-item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.level-item:last-child{border-bottom:none;}
+.level-badge{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:15px;color:var(--text3);flex-shrink:0;}
+.level-item.current .level-badge{border-color:var(--green);color:var(--green);background:var(--green-glow);box-shadow:0 0 20px var(--green-glow);}
+.level-item.done .level-badge{border-color:var(--green-deep);color:var(--green-dim);}
+.level-info h4{font-size:14.5px;font-weight:500;color:var(--text);}
+.level-item.current h4{color:var(--green);}
+.level-info p{font-size:12.5px;color:var(--text2);margin-top:3px;line-height:1.5;}
+.level-info{flex:1;min-width:0;}
+.level-progress{margin-top:10px;}
+.level-progress-top{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;}
+.level-bar{height:6px;background:var(--bg2);border:1px solid var(--border);border-radius:100px;margin-top:6px;overflow:hidden;}
+.level-fill{height:100%;background:linear-gradient(90deg,var(--green-dim),var(--green));border-radius:100px;transition:width 0.4s ease;}
+.level-item.done .level-fill,.level-item.current .level-fill{box-shadow:0 0 16px var(--green-glow);}
+.history-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:12px;}
+.history-day{min-height:54px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;padding:8px 6px;cursor:pointer;transition:all 0.2s;text-align:left;}
+.history-day:hover,.history-day.selected{border-color:var(--green-dim);background:var(--green-glow);}
+.history-day.today{box-shadow:inset 0 0 0 1px var(--green-deep);}
+.history-date{font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;}
+.history-score{font-family:var(--serif);font-size:22px;line-height:1.1;color:var(--text2);margin-top:4px;}
+.history-day.scored .history-score{color:var(--green);}
+.history-editor{margin-top:14px;padding:14px;border:1px solid var(--border);background:var(--bg2);border-radius:14px;}
+.history-editor-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;font-size:13px;color:var(--text2);}
+.history-score-actions{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;}
+.history-score-actions .btn{margin-bottom:0;padding:10px 6px;border-radius:10px;font-size:13px;}
+.chart-wrap{height:190px;border:1px solid var(--border);background:var(--bg2);border-radius:14px;padding:12px;margin-top:12px;}
+.score-chart{width:100%;height:100%;display:block;overflow:visible;}
+.chart-grid{stroke:var(--border);stroke-width:1;}
+.chart-line{fill:none;stroke:var(--green);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+.chart-area{fill:rgba(61,220,145,0.1);}
+.chart-dot{fill:var(--green);stroke:var(--bg2);stroke-width:2;}
+.chart-empty{height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:13px;text-align:center;}
+.chart-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+.chart-stat{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:10px;text-align:center;}
+.chart-stat b{display:block;font-family:var(--serif);font-size:20px;color:var(--green);line-height:1.1;}
+.chart-stat span{display:block;font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:4px;}
+.data-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.data-tools .btn{margin-bottom:0;}
+@media(max-width:560px){.settings-gear,.hamburger{top:14px;width:38px;height:38px;font-size:16px;}.settings-gear{left:14px;}.hamburger{right:14px;}.history-grid{gap:6px;}.history-day{min-height:48px;padding:7px 5px;}.history-score{font-size:18px;}.history-score-actions{grid-template-columns:repeat(4,1fr);}.chart-wrap{height:160px;}.chart-stats{grid-template-columns:1fr;}.data-tools{grid-template-columns:1fr;}}
+
+/* Log */
+.log{max-height:200px;overflow-y:auto;}
+.log-entry{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:baseline;}
+.log-entry:last-child{border-bottom:none;}
+.log-time{font-size:11px;color:var(--text3);font-variant-numeric:tabular-nums;flex-shrink:0;width:42px;}
+.log-msg{color:var(--text2);}
+.log-msg.win{color:var(--green);}
+.log-msg.urge{color:var(--gold);}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green-dim);color:#06120c;padding:14px 24px;border-radius:100px;font-weight:500;font-size:14px;z-index:100;transition:transform 0.4s cubic-bezier(0.22,1,0.36,1);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+.commit-text{font-family:var(--serif);font-size:18px;font-style:italic;line-height:1.6;color:var(--text);text-align:center;padding:10px 0;}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+.mini-label{font-size:12px;color:var(--text3);text-align:center;margin-top:8px;letter-spacing:0.05em;}
+</style>
+</head>
+<body>
+<div class="ambient"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+
+<div class="app">
+<header>
+  <button class="settings-gear" id="settingsGear" onclick="go('settings')" aria-label="Settings">&#9881;</button>
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <div class="logo">Presence</div>
+  <div class="tagline">It is not over until I win</div>
+  <div class="date-line" id="dateLine"></div>
+</header>
+
+<!-- ============ HOME ============ -->
+<div class="panel active" id="panel-home">
+  <div class="question-card" onclick="flashQuestion()">
+    <div class="question-text" id="qText">What am I thinking right now?</div>
+    <div class="question-hint">Answer it. Stay there for three breaths.</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="streakVal">0</div><div class="stat-label">Day streak</div></div>
+    <div class="stat"><div class="stat-val small" id="scoreVal">—</div><div class="stat-label">Today's score</div></div>
+    <div class="stat"><div class="stat-val small" id="levelVal">L1</div><div class="stat-label">Level</div></div>
+    <div class="stat"><div class="lives" id="livesVal"><span class="life">●</span><span class="life">●</span><span class="life">●</span></div><div class="stat-label">Lives this week</div></div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Score this hour</div>
+    <div class="score-grid" id="scoreGrid"></div>
+    <div class="mini-label">A 10 = every urge instantly met with the question</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Instant tools</div>
+    <button class="btn btn-primary" onclick="flashQuestion()">Ask the presence question</button>
+    <button class="btn" onclick="go('urge')">An urge is coming</button>
+    <button class="btn" onclick="go('notepad')">My mind is full — empty it</button>
+    <button class="btn" onclick="go('breaker')">Break the pattern now</button>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="logWin()">＋ Presence win</button>
+      <button class="btn btn-ghost" onclick="loseLife()">－ Lost a life</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Today's log</div>
+    <div class="log" id="log"></div>
+  </div>
+</div>
+
+<!-- ============ MORNING ============ -->
+<div class="panel" id="panel-morning">
+  <div class="card">
+    <div class="section-label">Morning protocol · 20 minutes</div>
+    <p class="prose" style="margin-bottom:4px;">Wake 20 minutes early. Ten minutes of affirmation, then ten minutes of meditation. Own the morning before it owns you.</p>
+  </div>
+
+  <div class="card aff-card">
+    <div class="section-label">Part 1 · The affirmation ×10</div>
+    <div class="aff-reader">
+      <div class="aff-text" id="affText">
+        I am in love with presence. The moment I ask <em>"what am I thinking right now?"</em> I feel a rush of pure freedom flowing through me from my head down to my feet. It is a high from heaven, more powerful than any fantasy. Presence is my home. Every time I choose it, I choose myself. <em>I am presence itself.</em>
+      </div>
+      <div class="counter-ring">
+        <svg width="90" height="90"><circle class="track" cx="45" cy="45" r="40"/><circle class="fill" id="ringFill" cx="45" cy="45" r="40" stroke-dasharray="251" stroke-dashoffset="251"/></svg>
+        <div class="counter-num"><b id="affCount">0</b><span>of 10</span></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="countAff()">I said it — with intensity ＋</button>
+    <button class="btn btn-ghost" onclick="resetAff()">Reset counter</button>
+    <div class="mini-label">Start quiet. Build louder each time until your body believes it.</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Part 2 · Calm the nervous system · 10 min</div>
+    <p class="prose" style="margin-bottom:14px;">Settle into the meditation. After the 10th affirmation, take one breath, ask the question, answer it, feel it for ten seconds. Then begin.</p>
+    <button class="btn btn-primary" onclick="completeMeditation()">I completed the 10 min meditation</button>
+  </div>
+
+  <div class="card">
+    <button class="btn" onclick="completeMorning()">Morning protocol complete ✓</button>
+  </div>
+</div>
+
+<!-- ============ URGE ============ -->
+<div class="panel" id="panel-urge">
+  <div class="card">
+    <div class="section-label">Which one showed up?</div>
+    <div class="persona" onclick="labelUrge('captain')"><div class="persona-icon" style="background:rgba(242,185,80,0.15);">🎭</div><div><div class="persona-name">Captain Applause</div><div class="persona-desc">Hero daydream — wants to be seen as the best, craves admiration</div></div></div>
+    <div class="persona" onclick="labelUrge('grudge')"><div class="persona-icon" style="background:rgba(232,118,90,0.15);">⚔️</div><div><div class="persona-name">Major Grudge</div><div class="persona-desc">Revenge daydream — replaying a battle, seeking vindication</div></div></div>
+    <div class="persona" onclick="labelUrge('casanova')"><div class="persona-icon" style="background:rgba(220,83,126,0.15);">💫</div><div><div class="persona-name">Prince Casanova</div><div class="persona-desc">Romance daydream — wanting to be witnessed, chosen, desired</div></div></div>
+    <div class="persona" onclick="labelUrge('floaty')"><div class="persona-icon" style="background:rgba(55,138,221,0.15);">☁️</div><div><div class="persona-name">Floaty McFly</div><div class="persona-desc">Escape fantasy — running from pressure, seeking weightlessness</div></div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">Or the trigger?</div>
+    <div class="persona" onclick="labelUrge('crash')"><div class="persona-icon" style="background:rgba(61,220,145,0.13);">⚡</div><div><div class="persona-name">Post-excitement crash</div><div class="persona-desc">Catecholamine drop after a social high — energy needs to move</div></div></div>
+    <div class="persona" onclick="labelUrge('awkward')"><div class="persona-icon" style="background:rgba(83,74,183,0.18);">🔄</div><div><div class="persona-name">Awkwardness loop</div><div class="persona-desc">Replaying a moment — the brain trying to protect you</div></div></div>
+    <div class="persona" onclick="labelUrge('habit')"><div class="persona-icon" style="background:rgba(100,114,105,0.2);">🌀</div><div><div class="persona-name">Habit pull</div><div class="persona-desc">No trigger — just the old automatic pattern firing</div></div></div>
+  </div>
+  <div id="urgeResponse"></div>
+</div>
+
+<!-- ============ NOTEPAD ============ -->
+<div class="panel" id="panel-notepad">
+  <div class="card">
+    <div class="section-label">Magic notepad · dump without judgment</div>
+    <div class="note-field"><div class="note-q">What am I thinking right now? (label it)</div><textarea id="n1" placeholder="I am thinking about... and it is making me feel... because..."></textarea></div>
+    <div class="note-field"><div class="note-q">What am I feeling right now?</div><textarea id="n2" placeholder="Right now I feel..."></textarea></div>
+    <div class="note-field"><div class="note-q">What is going on inside of me right now?</div><textarea id="n3" placeholder="Inside of me there is..."></textarea></div>
+    <button class="btn btn-primary" onclick="emptyMind()">Mind is empty — I am the observer ✓</button>
+    <button class="btn btn-ghost" onclick="saveNote()">Save this entry</button>
+  </div>
+  <div class="card">
+    <div class="section-label">Saved entries</div>
+    <div id="savedNotes"><p class="prose" style="font-size:13px;">No entries yet. Each dump becomes a thought you no longer carry.</p></div>
+  </div>
+</div>
+
+<!-- ============ PATTERN BREAKER ============ -->
+<div class="panel" id="panel-breaker">
+  <div class="card">
+    <div class="section-label">The pattern breaker · ~45 min</div>
+    <p class="prose" style="font-size:14px;">You at the end will not be the person who started. Execute in order. Tap each step as you finish it.</p>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><div class="phase-num">1</div><div><div class="phase-title">Reset the body</div><div class="phase-sub">No mental strategy works during a dopamine crash</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b1')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Peak state</div><div class="step-desc">Cold shower or 10 burpees. Shuts down the Default Mode Network, hands control to the prefrontal cortex.</div><div class="step-time">2 min</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b2')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">4-7-8 breathing</div><div class="step-desc">3 rounds. Inhale 4, hold 7, exhale 8. Activates the parasympathetic system, lowers the adrenaline.</div><div class="step-time">5 min</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b3')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Movement discharge</div><div class="step-desc">Dance to one song, fully let go. Completes the catecholamine stress cycle so the charge stops pulling you.</div><div class="step-time">3 min</div></div></div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><div class="phase-num">2</div><div><div class="phase-title">Empty the mind</div><div class="phase-sub">You cannot build presence on top of noise</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b4')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Magic notepad</div><div class="step-desc">Write 5+ thoughts. What am I thinking / feeling / what's going on inside. No editing.</div><div class="step-time" onclick="event.stopPropagation();go('notepad')" style="cursor:pointer;color:var(--green);">Open notepad →</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b5')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Label & pop</div><div class="step-desc">Name each persona. Say "I see you, you are not me." Pop each thought like a bubble with your finger.</div></div></div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><div class="phase-num">3</div><div><div class="phase-title">Reconnect to identity</div><div class="phase-sub">The adult reclaims the chair from the kid</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b6')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">The Why</div><div class="step-desc">Read it. Feel the cost of another lost week. Feel the reward of arriving in Croatia fully alive.</div><div class="step-time" onclick="event.stopPropagation();go('why')" style="cursor:pointer;color:var(--green);">Open my Why →</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b7')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Affirmations ×5</div><div class="step-desc">Build intensity with each rep until you believe it. You are overwriting the kid's belief that he isn't enough.</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b8')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">The commitment</div><div class="step-desc">Hand on chest. Say it out loud.</div></div></div>
+    <div class="response-box" style="margin-top:8px;"><div class="commit-text">"The kid did his best with what he had. He was always enough. The adult is in charge now. I choose this week. I choose the now. It is not over until I win."</div></div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><div class="phase-num">4</div><div><div class="phase-title">Lock it in with action</div><div class="phase-sub">Presence without direction drifts back to fantasy</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b9')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Plan the week · 5 min</div><div class="step-desc">One thing tomorrow that makes everything easier. Biggest danger zone + ready response. What winning looks like in one sentence.</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b10')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Do one real thing now</div><div class="step-desc">25 min on MOUN, one genuine message, one piece created. Something fantasy would never require: action.</div></div></div>
+  </div>
+
+  <div class="card">
+    <button class="btn btn-primary" onclick="completeBreaker()">Pattern broken — 50th minute rule active ✓</button>
+    <div class="mini-label">From now: every urge waits for the 50th minute. "I can explore this then. Right now I choose presence."</div>
+  </div>
+</div>
+
+<!-- ============ WHY ============ -->
+<div class="panel" id="panel-why">
+  <div class="card">
+    <div class="section-label">The facts</div>
+    <div class="prose">
+      <p><strong>I am ready to die at any moment. What I am not ready for is to live another day with weakness.</strong> I am obsessed with becoming the best version of myself.</p>
+      <p>Daydream takes the essence of my life. All I have and will ever have is the <span class="green">NOW</span> — and daydream takes it from me every time.</p>
+      <p>Daydream's purpose was to protect me from my own life. <span class="green">Presence protects me from my thoughts.</span> All evil comes from thoughts.</p>
+      <p>When I become fully present, I can reach any dream, because every destination needs only two things: <strong>consistency and optimization.</strong> Daydream breaks my consistency. Presence restores it.</p>
+    </div>
+  </div>
+
+  <div class="pleasure-pain">
+    <div class="pp-col pain"><h4>The cost of failing</h4><ul>
+      <li>Stuck in the same loop, same goals, year after year</li>
+      <li>Constant noise in my head</li>
+      <li>Living below my standards</li>
+      <li>Fearful and weak — escaping my own life</li>
+      <li>Burning countless hours, mentally drained</li>
+    </ul></div>
+    <div class="pp-col pleasure"><h4>The reward of presence</h4><ul>
+      <li>Peace of mind</li>
+      <li>The joy of living</li>
+      <li>Working hard on my dreams, consistently</li>
+      <li>Genuine confidence</li>
+      <li>Free from attachment — presence anywhere</li>
+      <li>Living on my own terms</li>
+    </ul></div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">For the kid</div>
+    <div class="prose">
+      <p>The daydream was never about the validator. It was about a kid who needed to know he was enough. That kid did the best he could with what he had. He survived. He got me here.</p>
+      <p><strong>And now the adult is in charge.</strong> Every burpee, every cold shower, every choice to stay present is me telling that kid: <span class="green">you were enough all along. And now I am going to show you what that looks like lived.</span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">The dreamland · one week from now</div>
+    <div class="prose">
+      <p>Coming back from Croatia with a mind clear as the sky after a storm. Every moment lived. Every memory sharp and real and mine. No regret. No weight. Just the quiet confidence of a man who showed up for himself when it mattered.</p>
+      <p>Walking in next week as a 9 in presence, a 9 in confidence. People feel it. I am not performing anymore. <span class="green">I am just being.</span> And that is more magnetic than any fantasy could ever be.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LEVELS ============ -->
+<div class="panel" id="panel-levels">
+  <div class="card">
+    <div class="section-label">Score trend · last 28 days</div>
+    <div class="chart-wrap" id="scoreChart"></div>
+    <div class="chart-stats" id="scoreChartStats"></div>
+  </div>
+  <div class="card">
+    <div class="section-label">The versions to perfect presence</div>
+    <div class="level-track" id="levelTrack"></div>
+  </div>
+  <div class="card">
+    <div class="section-label">Score history · last 28 days</div>
+    <div class="history-grid" id="scoreHistoryGrid"></div>
+    <div class="history-editor" id="scoreHistoryEditor"></div>
+    <div class="mini-label">Tap a day to correct its score. Level progress updates from this history.</div>
+  </div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div class="panel" id="panel-settings">
+  <div class="card">
+    <div class="section-label">Account sync</div>
+    <div class="auth-card" id="authCard">
+      <div class="auth-head">
+        <div class="section-label" style="margin-bottom:0;">Firebase</div>
+        <div class="sync-status warn" id="syncStatus">Firebase not configured</div>
+      </div>
+      <div class="auth-signed-out">
+        <div class="auth-grid">
+          <input class="auth-field" id="authEmail" type="email" autocomplete="email" placeholder="Email">
+          <input class="auth-field" id="authPassword" type="password" autocomplete="current-password" placeholder="Password">
+        </div>
+        <div class="auth-actions">
+          <button class="btn btn-primary" onclick="signIn()">Sign in</button>
+          <button class="btn" onclick="createAccount()">Create account</button>
+        </div>
+        <div class="auth-google">
+          <button class="btn btn-google" onclick="signInWithGoogle()">Continue with Google</button>
+        </div>
+      </div>
+      <div class="auth-signed-in">
+        <div class="auth-email" id="authUserEmail">Signed in</div>
+        <button class="btn" onclick="syncNow()">Sync now</button>
+        <button class="btn btn-ghost" onclick="signOutUser()">Sign out</button>
+      </div>
+    </div>
+    <div class="mini-label" id="syncDetail">Your app data stays local when signed out and syncs to Firebase when signed in.</div>
+  </div>
+  <div class="card">
+    <div class="section-label">Data tools</div>
+    <div class="data-tools">
+      <button class="btn" onclick="exportData()">Export data</button>
+      <button class="btn" onclick="resetLocalData()">Reset local</button>
+      <button class="btn btn-ghost" onclick="deleteCloudData()">Delete cloud</button>
+    </div>
+    <div class="mini-label">App version presence-v11</div>
+  </div>
+</div>
+
+</div>
+
+<div class="menu-overlay" onclick="closeMenu()"></div>
+<aside class="drawer" id="drawer" aria-label="Navigation drawer">
+  <div class="section-label">Menu</div>
+  <nav id="nav" class="drawer-nav">
+    <button class="nav-btn active" data-p="home">Today</button>
+    <button class="nav-btn" data-p="morning">Morning</button>
+    <button class="nav-btn" data-p="urge">Urge</button>
+    <button class="nav-btn" data-p="notepad">Notepad</button>
+    <button class="nav-btn" data-p="breaker">Pattern Breaker</button>
+    <button class="nav-btn" data-p="why">My Why</button>
+    <button class="nav-btn" data-p="levels">Levels</button>
+    <button class="nav-btn" data-p="settings">Settings</button>
+  </nav>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script src="firebase-config.js?v=presence-v11"></script>
+<script>
+// ---------- State ----------
+const KEY='presence_state_v1';
+let S={streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null};
+
+// Storage: use the host window.storage API if present (Claude env),
+// otherwise fall back to the browser's localStorage so the app works
+// standalone on a phone or any normal browser.
+const store={
+  async get(k){
+    if(window.storage&&window.storage.get){return await window.storage.get(k);}
+    const v=localStorage.getItem(k);return v!==null?{value:v}:null;
+  },
+  async set(k,v){
+    if(window.storage&&window.storage.set){return await window.storage.set(k,v);}
+    localStorage.setItem(k,v);
+  }
+};
+
+const FIREBASE_SDK_VERSION='12.13.0';
+let FB={configured:false,ready:false,user:null,app:null,auth:null,db:null,mods:null,saveTimer:null,syncing:false,syncError:false,lastSyncAt:parseInt(localStorage.getItem('presence_last_sync_at')||'0')||null};
+let selectedHistoryDate=null;
+
+function firebaseConfig(){
+  return window.PRESENCE_FIREBASE_CONFIG||null;
+}
+
+function hasFirebaseConfig(){
+  const cfg=firebaseConfig();
+  return !!(cfg&&cfg.apiKey&&cfg.authDomain&&cfg.projectId&&cfg.appId);
+}
+
+function renderAuth(){
+  const card=document.getElementById('authCard');if(!card)return;
+  const status=document.getElementById('syncStatus');
+  const email=document.getElementById('authUserEmail');
+  const detail=document.getElementById('syncDetail');
+  card.classList.toggle('not-configured',!FB.configured);
+  card.classList.toggle('signed-in',!!FB.user);
+  status.className='sync-status'+(FB.user&&!FB.syncError?' on':(!FB.configured||FB.syncError?' warn':''));
+  if(!FB.configured){status.textContent='Firebase not configured';if(detail)detail.textContent='Add Firebase config before account sync can run.';return;}
+  if(FB.syncing){status.textContent='Syncing...';if(detail)detail.textContent='Saving the latest local state to Firebase.';return;}
+  if(FB.user){
+    email.textContent=FB.user.email||'Signed in';
+    if(FB.syncError){status.textContent='Sync needs attention';if(detail)detail.textContent='Last save failed. Check connection, then use Sync now.';}
+    else if(!navigator.onLine){status.textContent='Offline';if(detail)detail.textContent='Changes stay local and will sync when you are online.';}
+    else{status.textContent=FB.lastSyncAt?'Last synced '+relativeTime(FB.lastSyncAt):'Ready to sync';if(detail)detail.textContent='Signed in as '+(FB.user.email||'this account')+'.';}
+  }
+  else{status.textContent='Not signed in';if(detail)detail.textContent='Sign in to sync this device with Firebase.';}
+}
+
+function relativeTime(ts){
+  const seconds=Math.max(1,Math.round((Date.now()-ts)/1000));
+  if(seconds<60)return 'just now';
+  const minutes=Math.round(seconds/60);if(minutes<60)return minutes+' min ago';
+  const hours=Math.round(minutes/60);if(hours<24)return hours+' hr ago';
+  return Math.round(hours/24)+' days ago';
+}
+
+async function initFirebase(){
+  FB.configured=hasFirebaseConfig();
+  renderAuth();
+  if(!FB.configured)return;
+  try{
+    const [appMod,authMod,firestoreMod]=await Promise.all([
+      import('https://www.gstatic.com/firebasejs/'+FIREBASE_SDK_VERSION+'/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/'+FIREBASE_SDK_VERSION+'/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/'+FIREBASE_SDK_VERSION+'/firebase-firestore.js')
+    ]);
+    FB.mods={...appMod,...authMod,...firestoreMod};
+    FB.app=appMod.initializeApp(firebaseConfig());
+    FB.auth=authMod.getAuth(FB.app);
+    FB.db=firestoreMod.getFirestore(FB.app);
+    FB.ready=true;
+    authMod.onAuthStateChanged(FB.auth,async user=>{
+      FB.user=user;
+      renderAuth();
+      if(user){await loadCloudState();}
+    });
+  }catch(e){
+    FB.configured=false;
+    renderAuth();
+    toast('Firebase failed to load.');
+  }
+}
+
+function userStateDoc(){
+  return FB.mods.doc(FB.db,'users',FB.user.uid,'presence','state');
+}
+
+function copyState(state){
+  return JSON.parse(JSON.stringify(state||{}));
+}
+
+function mergeByDate(localItems,cloudItems){
+  const byDate={};
+  (cloudItems||[]).forEach(item=>{if(item&&item.date)byDate[item.date]=item;});
+  (localItems||[]).forEach(item=>{if(item&&item.date)byDate[item.date]=item;});
+  return Object.values(byDate).sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+function mergeByKey(localItems,cloudItems,keyFn,limit){
+  const map=new Map();
+  (cloudItems||[]).forEach(item=>map.set(keyFn(item),item));
+  (localItems||[]).forEach(item=>map.set(keyFn(item),item));
+  return Array.from(map.values()).slice(-limit);
+}
+
+function mergeStates(localState,cloudState){
+  const local=copyState(localState),cloud=copyState(cloudState);
+  const merged=Object.assign({},local,cloud);
+  merged.scoreHistory=mergeByDate(local.scoreHistory,cloud.scoreHistory);
+  if(local.lastDay===todayStr()&&local.score!==null&&local.score!==undefined){merged.score=local.score;merged.lastDay=local.lastDay;}
+  merged.level=Math.max(local.level||1,cloud.level||1);
+  merged.notes=mergeByKey(local.notes,cloud.notes,item=>(item&&item.d?item.d:'')+'|'+(item&&item.txt?item.txt:''),50);
+  merged.log=mergeByKey(local.log,cloud.log,item=>(item&&item.t?item.t:'')+'|'+(item&&item.m?item.m:''),40);
+  return Object.assign({streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null},merged);
+}
+
+async function loadCloudState(){
+  if(!FB.ready||!FB.user)return;
+  FB.syncing=true;renderAuth();
+  try{
+    const snap=await FB.mods.getDoc(userStateDoc());
+    if(snap.exists()){
+      S=mergeStates(S,snap.data().state||{});
+      normalizeScoreHistory();rolloverDay();calculateLevel();
+      await store.set(KEY,JSON.stringify(S));
+      render();initSteps();renderSteps();
+    }
+    await writeCloudState();
+    toast('Firebase sync complete.');
+  }catch(e){toast('Firebase sync failed.');}
+  FB.syncing=false;renderAuth();
+}
+
+function queueCloudSave(){
+  if(!FB.ready||!FB.user)return;
+  clearTimeout(FB.saveTimer);
+  FB.saveTimer=setTimeout(()=>writeCloudState(),400);
+}
+
+async function writeCloudState(){
+  if(!FB.ready||!FB.user)return true;
+  try{
+    await FB.mods.setDoc(userStateDoc(),{state:copyState(S),updatedAt:FB.mods.serverTimestamp()},{merge:true});
+    FB.lastSyncAt=Date.now();FB.syncError=false;localStorage.setItem('presence_last_sync_at',String(FB.lastSyncAt));renderAuth();
+    return true;
+  }catch(e){FB.syncError=true;renderAuth();toast('Could not save to Firebase.');return false;}
+}
+
+async function signIn(){
+  if(!FB.ready){toast('Add Firebase config first.');return;}
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  if(!email||!password){toast('Enter email and password.');return;}
+  try{await FB.mods.signInWithEmailAndPassword(FB.auth,email,password);toast('Signed in.');}
+  catch(e){toast(e.code==='auth/invalid-credential'?'Wrong email or password.':'Sign in failed.');}
+}
+
+async function createAccount(){
+  if(!FB.ready){toast('Add Firebase config first.');return;}
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  if(!email||!password){toast('Enter email and password.');return;}
+  try{await FB.mods.createUserWithEmailAndPassword(FB.auth,email,password);toast('Account created.');}
+  catch(e){toast(e.code==='auth/email-already-in-use'?'Account already exists.':'Could not create account.');}
+}
+
+async function signInWithGoogle(){
+  if(!FB.ready){toast('Add Firebase config first.');return;}
+  const provider=new FB.mods.GoogleAuthProvider();
+  provider.setCustomParameters({prompt:'select_account'});
+  try{
+    await FB.mods.signInWithPopup(FB.auth,provider);
+    toast('Signed in with Google.');
+  }catch(e){
+    if(e.code==='auth/operation-not-allowed'){toast('Enable Google sign-in in Firebase.');}
+    else if(e.code==='auth/unauthorized-domain'){toast('Add this domain in Firebase Auth settings.');}
+    else if(e.code!=='auth/popup-closed-by-user'){toast('Google sign-in failed.');}
+  }
+}
+
+async function signOutUser(){
+  if(!FB.ready||!FB.user)return;
+  FB.syncing=true;renderAuth();
+  const saved=await writeCloudState();
+  FB.syncing=false;renderAuth();
+  if(!saved){toast('Sync failed. Still signed in so your cloud data is safe.');return;}
+  await FB.mods.signOut(FB.auth);
+  FB.user=null;renderAuth();toast('Signed out. Cloud data is saved.');
+}
+
+async function syncNow(){
+  if(!FB.user){toast('Sign in first.');return;}
+  await loadCloudState();
+}
+
+async function loadState(){
+  try{const r=await store.get(KEY);if(r&&r.value){S=Object.assign(S,JSON.parse(r.value));}}catch(e){}
+  let dirty=normalizeScoreHistory();
+  rolloverDay();
+  dirty=calculateLevel()||dirty;
+  if(dirty){await save();}
+  render();
+}
+async function save(){try{await store.set(KEY,JSON.stringify(S));queueCloudSave();}catch(e){}}
+
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function weekStr(){const d=new Date();const o=new Date(d);o.setDate(d.getDate()-d.getDay());return o.toISOString().slice(0,10);}
+function dateOffsetStr(daysBack){const d=new Date(todayStr()+'T00:00:00Z');d.setUTCDate(d.getUTCDate()-daysBack);return d.toISOString().slice(0,10);}
+function displayDate(date){const d=new Date(date+'T00:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+
+function normalizeScoreHistory(){
+  let dirty=false;
+  if(!Array.isArray(S.scoreHistory)){S.scoreHistory=[];dirty=true;}
+  const byDate={};
+  S.scoreHistory.forEach(entry=>{
+    if(!entry||!entry.date||entry.score===undefined)return;
+    const score=parseInt(entry.score);
+    if(score>=1&&score<=10){byDate[entry.date]={date:entry.date,score};}
+  });
+  if(S.lastDay&&S.score!==null&&S.score!==undefined){
+    const score=parseInt(S.score);
+    if(score>=1&&score<=10&&!byDate[S.lastDay]){byDate[S.lastDay]={date:S.lastDay,score};dirty=true;}
+  }
+  const next=Object.values(byDate).sort((a,b)=>a.date.localeCompare(b.date));
+  if(next.length!==S.scoreHistory.length||JSON.stringify(next)!==JSON.stringify(S.scoreHistory)){S.scoreHistory=next;dirty=true;}
+  return dirty;
+}
+
+function updateScoreHistory(score){
+  normalizeScoreHistory();
+  const date=todayStr();
+  const existing=S.scoreHistory.find(entry=>entry.date===date);
+  if(existing){existing.score=score;}
+  else{S.scoreHistory.push({date,score});}
+  S.scoreHistory.sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+function getScoreForDate(date){
+  const entry=S.scoreHistory.find(item=>item.date===date);
+  return entry?entry.score:null;
+}
+
+function latestScoredDate(){
+  normalizeScoreHistory();
+  const scored=S.scoreHistory.filter(entry=>entry&&entry.date&&entry.score>0).sort((a,b)=>a.date.localeCompare(b.date));
+  return scored.length?scored[scored.length-1].date:null;
+}
+
+function dateBefore(date,daysBack){
+  const d=new Date(date+'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate()-daysBack);
+  return d.toISOString().slice(0,10);
+}
+
+function consecutiveScoreStreak({minScore,exactScore}){
+  const start=latestScoredDate();
+  if(!start)return 0;
+  let streak=0;
+  for(let i=0;i<3650;i++){
+    const score=getScoreForDate(dateBefore(start,i));
+    if(score===null)break;
+    if(exactScore!==undefined){if(score!==exactScore)break;}
+    else if(score<minScore){break;}
+    streak++;
+  }
+  return streak;
+}
+
+function levelRequirement(level){
+  return {
+    1:{target:7,minScore:1},
+    2:{target:7,minScore:9},
+    3:{target:14,minScore:9},
+    4:{target:28,minScore:9},
+    5:{target:28,exactScore:10}
+  }[level];
+}
+
+function levelProgress(level){
+  const req=levelRequirement(level);
+  return Math.min(consecutiveScoreStreak(req),req.target);
+}
+
+function qualifiesLevel(level){
+  const req=levelRequirement(level);
+  return consecutiveScoreStreak(req)>=req.target;
+}
+
+function calculateLevel(){
+  const current=S.level||1;
+  let next=current;
+  for(let level=1;level<=5;level++){if(qualifiesLevel(level)){next=Math.max(next,level);}}
+  if(next>current){S.level=next;return true;}
+  return false;
+}
+
+function rolloverDay(){
+  const t=todayStr();
+  if(S.lastDay!==t){
+    // streak logic: if yesterday had a score, streak continues
+    if(S.lastDay){
+      const prev=new Date(S.lastDay);const now=new Date(t);
+      const diff=Math.round((now-prev)/86400000);
+      if(diff===1 && S.score!==null && S.score>=7){S.streak++;}
+      else if(diff>=1){if(!(S.score!==null&&S.score>=7))S.streak=Math.max(0,S.streak);}
+    }
+    S.score=null;S.affCount=0;S.steps={};S.log=[];S.lastDay=t;
+  }
+  if(S.livesWeek!==weekStr()){S.lives=3;S.livesWeek=weekStr();}
+}
+
+// ---------- Render ----------
+function render(){
+  document.getElementById('dateLine').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('streakVal').textContent=consecutiveScoreStreak({minScore:1});
+  document.getElementById('scoreVal').textContent=S.score!==null?S.score+'/10':'—';
+  document.getElementById('levelVal').textContent='L'+(S.level||1);
+  // lives
+  const lv=document.getElementById('livesVal');lv.innerHTML='';
+  for(let i=0;i<3;i++){const s=document.createElement('span');s.className='life'+(i>=S.lives?' lost':'');s.textContent='●';lv.appendChild(s);}
+  // score grid
+  const sg=document.getElementById('scoreGrid');if(!sg.dataset.built){[1,3,5,7,9,10].forEach(n=>{const d=document.createElement('div');d.className='score-dot';d.textContent=n;d.onclick=()=>setScore(n);d.dataset.n=n;sg.appendChild(d);});sg.dataset.built=1;}
+  document.querySelectorAll('.score-dot').forEach(d=>d.classList.toggle('sel',parseInt(d.dataset.n)===S.score));
+  // aff
+  document.getElementById('affCount').textContent=S.affCount;
+  const off=251-(251*S.affCount/10);document.getElementById('ringFill').style.strokeDashoffset=off;
+  // steps
+  document.querySelectorAll('.step').forEach(st=>{});
+  for(const k in S.steps){const el=document.querySelector('.step[data-skey="'+k+'"]');}
+  renderLog();renderNotes();renderLevels();renderScoreChart();renderSteps();
+  renderScoreHistory();
+}
+
+function renderSteps(){
+  // re-apply step states by index since onclick passes element
+  const map=S.steps;
+  document.querySelectorAll('#panel-breaker .step').forEach((el,i)=>{
+    const key=el.getAttribute('data-skey');
+    if(key&&map[key])el.classList.add('done');else el.classList.remove('done');
+  });
+}
+
+function renderLog(){
+  const l=document.getElementById('log');l.innerHTML='';
+  if(!S.log.length){l.innerHTML='<p class="prose" style="font-size:13px;">Your day begins. You are presence itself.</p>';return;}
+  S.log.slice().reverse().forEach(e=>{const d=document.createElement('div');d.className='log-entry';d.innerHTML='<span class="log-time">'+e.t+'</span><span class="log-msg '+(e.k||'')+'">'+e.m+'</span>';l.appendChild(d);});
+}
+function renderNotes(){
+  const c=document.getElementById('savedNotes');if(!S.notes.length){c.innerHTML='<p class="prose" style="font-size:13px;">No entries yet. Each dump becomes a thought you no longer carry.</p>';return;}
+  c.innerHTML='';S.notes.slice().reverse().slice(0,10).forEach(n=>{const d=document.createElement('div');d.style.cssText='padding:12px 0;border-bottom:1px solid var(--border);';d.innerHTML='<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">'+n.d+'</div><div style="font-size:13px;color:var(--text2);line-height:1.5;">'+n.txt.replace(/</g,'&lt;')+'</div>';c.appendChild(d);});
+}
+function renderLevels(){
+  const levels=[
+    [1,'Presence for 7 scored days','Any score above zero counts',7],
+    [2,'7 days at 9+','Every day must score 9 or 10',7],
+    [3,'14 days at 9+','A single lower score resets this qualifying streak',14],
+    [4,'28 days at 9+','Twenty-eight consecutive strong days',28],
+    [5,'28 perfect 10s','Every day must be exactly 10',28]
+  ];
+  const t=document.getElementById('levelTrack');t.innerHTML='';
+  levels.forEach(([n,h,p,required])=>{
+    const cur=n===S.level;const done=n<S.level;const progress=levelProgress(n);const pct=Math.min(100,Math.round((progress/required)*100));
+    const d=document.createElement('div');d.className='level-item'+(cur?' current':'')+(done?' done':'');
+    d.innerHTML='<div class="level-badge">'+n+'</div><div class="level-info"><h4>'+h+'</h4><p>'+p+'</p><div class="level-progress"><div class="level-progress-top"><span>'+progress+'/'+required+' qualifying days</span><span>'+pct+'%</span></div><div class="level-bar"><div class="level-fill" style="width:'+pct+'%;"></div></div></div></div>';
+    t.appendChild(d);
+  });
+}
+
+function renderScoreChart(){
+  const chart=document.getElementById('scoreChart');const stats=document.getElementById('scoreChartStats');
+  if(!chart||!stats)return;
+  const days=[];for(let i=27;i>=0;i--){const date=dateOffsetStr(i);days.push({date,score:getScoreForDate(date)});}
+  const scored=days.filter(day=>day.score!==null);
+  if(!scored.length){
+    chart.innerHTML="<div class=\"chart-empty\">No scores yet. Save today's score to start the trend.</div>";
+    stats.innerHTML='<div class="chart-stat"><b>—</b><span>7 day avg</span></div><div class="chart-stat"><b>—</b><span>28 day avg</span></div><div class="chart-stat"><b>0</b><span>scored days</span></div>';
+    return;
+  }
+  const w=560,h=160,pad=18;
+  const x=i=>pad+(i*(w-pad*2)/27);
+  const y=score=>h-pad-((score-1)*(h-pad*2)/9);
+  const points=days.map((day,i)=>day.score!==null?{x:x(i),y:y(day.score),score:day.score}:null);
+  const line=points.map(point=>point?point.x.toFixed(1)+','+point.y.toFixed(1):null).filter(Boolean).join(' ');
+  const first=points.find(Boolean),last=points.slice().reverse().find(Boolean);
+  const area=first&&last?first.x.toFixed(1)+','+(h-pad)+' '+line+' '+last.x.toFixed(1)+','+(h-pad):'';
+  const dots=points.map(point=>point?'<circle class="chart-dot" cx="'+point.x.toFixed(1)+'" cy="'+point.y.toFixed(1)+'" r="4"><title>'+point.score+'/10</title></circle>':'').join('');
+  chart.innerHTML='<svg class="score-chart" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Score trend chart"><line class="chart-grid" x1="'+pad+'" y1="'+y(10).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(10).toFixed(1)+'"></line><line class="chart-grid" x1="'+pad+'" y1="'+y(5).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(5).toFixed(1)+'"></line><line class="chart-grid" x1="'+pad+'" y1="'+y(1).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(1).toFixed(1)+'"></line><polygon class="chart-area" points="'+area+'"></polygon><polyline class="chart-line" points="'+line+'"></polyline>'+dots+'<text x="'+pad+'" y="12" fill="var(--text3)" font-size="10">10</text><text x="'+pad+'" y="'+(y(5)-4).toFixed(1)+'" fill="var(--text3)" font-size="10">5</text></svg>';
+  const avgFor=days=>{const values=days.map(day=>day.score).filter(score=>score!==null);return values.length?(values.reduce((a,b)=>a+b,0)/values.length).toFixed(1):'—';};
+  stats.innerHTML='<div class="chart-stat"><b>'+avgFor(days.slice(-7))+'</b><span>7 day avg</span></div><div class="chart-stat"><b>'+avgFor(days)+'</b><span>28 day avg</span></div><div class="chart-stat"><b>'+scored.length+'</b><span>scored days</span></div>';
+}
+
+function renderScoreHistory(){
+  const grid=document.getElementById('scoreHistoryGrid');const editor=document.getElementById('scoreHistoryEditor');
+  if(!grid||!editor)return;
+  if(!selectedHistoryDate)selectedHistoryDate=todayStr();
+  grid.innerHTML='';
+  for(let i=27;i>=0;i--){
+    const date=dateOffsetStr(i);const score=getScoreForDate(date);
+    const d=document.createElement('button');
+    d.type='button';
+    d.className='history-day'+(score!==null?' scored':'')+(date===todayStr()?' today':'')+(date===selectedHistoryDate?' selected':'');
+    d.onclick=()=>selectHistoryDate(date);
+    d.innerHTML='<div class="history-date">'+displayDate(date)+'</div><div class="history-score">'+(score!==null?score:'—')+'</div>';
+    grid.appendChild(d);
+  }
+  const selectedScore=getScoreForDate(selectedHistoryDate);
+  const buttons=[1,3,5,7,9,10].map(n=>"<button class=\"btn "+(selectedScore===n?'btn-primary':'')+"\" onclick=\"setHistoryScore('"+selectedHistoryDate+"',"+n+")\">"+n+"</button>").join('');
+  editor.innerHTML="<div class=\"history-editor-head\"><span>"+displayDate(selectedHistoryDate)+"</span><span>"+(selectedScore!==null?selectedScore+'/10':'No score')+"</span></div><div class=\"history-score-actions\">"+buttons+"<button class=\"btn btn-ghost\" onclick=\"setHistoryScore('"+selectedHistoryDate+"',null)\">Clear</button></div>";
+}
+
+function selectHistoryDate(date){selectedHistoryDate=date;renderScoreHistory();}
+
+function setHistoryScore(date,score){
+  normalizeScoreHistory();
+  S.scoreHistory=S.scoreHistory.filter(entry=>entry.date!==date);
+  if(score!==null){S.scoreHistory.push({date,score});}
+  S.scoreHistory.sort((a,b)=>a.date.localeCompare(b.date));
+  if(date===todayStr()){S.score=score;}
+  calculateLevel();save();render();toast(score===null?'Score cleared.':'Score updated.');
+}
+
+// ---------- Actions ----------
+function openMenu(){document.body.classList.add('menu-open');const drawer=document.getElementById('drawer');const overlay=document.querySelector('.menu-overlay');if(drawer){drawer.classList.add('open');drawer.style.transform='translateX(0)';}if(overlay){overlay.classList.add('open');overlay.style.opacity='1';overlay.style.pointerEvents='auto';}const btn=document.getElementById('hamburgerBtn');if(btn)btn.setAttribute('aria-expanded','true');}
+function closeMenu(){document.body.classList.remove('menu-open');const drawer=document.getElementById('drawer');const overlay=document.querySelector('.menu-overlay');if(drawer){drawer.classList.remove('open');drawer.style.transform='translateX(100%)';}if(overlay){overlay.classList.remove('open');overlay.style.opacity='';overlay.style.pointerEvents='';}const btn=document.getElementById('hamburgerBtn');if(btn)btn.setAttribute('aria-expanded','false');}
+function toggleMenu(){document.body.classList.contains('menu-open')?closeMenu():openMenu();}
+function go(p){closeMenu();document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.p===p));const gear=document.getElementById('settingsGear');if(gear)gear.classList.toggle('active',p==='settings');document.querySelectorAll('.panel').forEach(pn=>pn.classList.toggle('active',pn.id==='panel-'+p));window.scrollTo({top:0,behavior:'smooth'});}
+document.getElementById('nav').addEventListener('click',e=>{if(e.target.dataset.p)go(e.target.dataset.p);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+
+function nowT(){return new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});}
+function addLog(m,k){S.log.push({t:nowT(),m,k});if(S.log.length>40)S.log.shift();save();renderLog();}
+
+function flashQuestion(){const q=document.getElementById('qText');q.style.transition='none';q.style.opacity='0.2';setTimeout(()=>{q.style.transition='opacity 0.6s';q.style.opacity='1';},80);addLog('asked the presence question','win');toast('Three breaths. Stay here.');}
+
+function setScore(n){S.score=n;updateScoreHistory(n);const leveledUp=calculateLevel();addLog('scored this hour: '+n+'/10',n>=8?'win':'urge');save();render();toast(leveledUp?'Level '+S.level+' unlocked.':n>=9?'A nine. The system is working.':n>=7?'Solid. Hold the line.':'Reset. You know the protocol.');}
+
+function logWin(){addLog('presence win','win');save();toast('Logged. Momentum compounds.');}
+function loseLife(){if(S.lives>0)S.lives--;addLog('lost a life — redeem within the hour','urge');save();render();toast(S.lives>0?(S.lives+' lives left. Redeem within the hour.'):'Last stand. Break the pattern now.');}
+
+function countAff(){if(S.affCount<10){S.affCount++;}const off=251-(251*S.affCount/10);document.getElementById('ringFill').style.strokeDashoffset=off;document.getElementById('affCount').textContent=S.affCount;save();if(S.affCount>=10){toast('Ten. Now one breath, ask, answer, feel it.');addLog('completed morning affirmation ×10','win');}}
+function resetAff(){S.affCount=0;document.getElementById('affCount').textContent=0;document.getElementById('ringFill').style.strokeDashoffset=251;save();}
+function completeMeditation(){addLog('completed 10 min morning meditation','win');save();toast('Meditation complete. Carry it into the day.');}
+function completeMorning(){S.morningDone=todayStr();addLog('morning protocol complete','win');save();toast('The morning is yours. Carry it into the day.');go('home');}
+
+const urgeData={
+  captain:['Captain Applause','I see you, Captain Applause. I do not need your applause to know my worth.','Do 10 push-ups or dance for 60 seconds. Move the validation energy through your body. The need is real — meet it with contribution, not fantasy.'],
+  grudge:['Major Grudge','Major Grudge, I know you crave justice — but you will not take my now to rewrite old battles.','Open the notepad. Name what happened without judgment. Then let it go. The replay only steals your peace.'],
+  casanova:['Prince Casanova','Aha — here is Prince Casanova again, wanting to be witnessed.','This is not about her. It is about being seen by the kid who felt unseen. Be the witness now. Write one thing you admire about yourself today.'],
+  floaty:['Floaty McFly','Floaty McFly, you want to escape the pressure. Not this time, buddy.','Name what you are avoiding. Then do that one thing for just 5 minutes. Presence is the real escape from pressure.'],
+  crash:['Post-excitement crash','This energy is not a threat. I release it with movement and return to presence.','Dance to music, let the charge move through you. Or 10–20 push-ups. Complete the catecholamine cycle physically.'],
+  awkward:['Awkwardness loop','I do not need to escape. I can feel and release. I am safe with myself now.','People only remember your last move. Name what happened in the notepad without judgment, then come back to your feet.'],
+  habit:['Habit pull','I do not need fantasy to feel alive. I create momentum in real life.','Move toward a real goal — even one micro step. Write, record, create. Do something that makes you feel growth.']
+};
+function labelUrge(k){const[name,line,action]=urgeData[k];const c=document.getElementById('urgeResponse');c.innerHTML='<div class="response-box"><div class="response-name">'+name+'</div><div class="prose" style="font-size:14px;font-style:italic;color:var(--text);">"'+line+'"</div><div class="response-action">'+action+'</div><button class="btn" onclick="postpone()">Postpone to the 50th minute</button><button class="btn btn-primary" onclick="released()">I released it — back to presence ✓</button></div>';c.scrollIntoView({behavior:'smooth',block:'center'});addLog('labeled urge: '+name,'urge');save();}
+function postpone(){addLog('urge postponed to 50th minute','win');save();go('home');toast('Postponed. It will run out before the window comes.');}
+function released(){addLog('released the urge — returned to presence','win');save();go('home');toast('That is the win. The next 60 minutes.');}
+
+function saveNote(){const txt=[document.getElementById('n1').value,document.getElementById('n2').value,document.getElementById('n3').value].filter(Boolean).join(' · ');if(!txt.trim()){toast('Write something first.');return;}S.notes.push({d:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),txt});save();renderNotes();toast('Saved. You are the observer now.');}
+function emptyMind(){saveNoteSilent();document.getElementById('n1').value='';document.getElementById('n2').value='';document.getElementById('n3').value='';addLog('emptied the mind — magic notepad','win');save();go('home');toast('Empty. You are not trapped by those thoughts.');}
+function saveNoteSilent(){const txt=[document.getElementById('n1').value,document.getElementById('n2').value,document.getElementById('n3').value].filter(Boolean).join(' · ');if(txt.trim()){S.notes.push({d:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),txt});renderNotes();}}
+
+// breaker steps
+let stepKeys={};
+function toggleStep(el,key){el.setAttribute('data-skey',key);if(S.steps[key]){delete S.steps[key];el.classList.remove('done');}else{S.steps[key]=1;el.classList.add('done');}save();}
+// assign data-skey on load
+function initSteps(){const els=document.querySelectorAll('#panel-breaker .step');const keys=['b1','b2','b3','b4','b5','b6','b7','b8','b9','b10'];els.forEach((el,i)=>{el.setAttribute('data-skey',keys[i]);if(S.steps[keys[i]])el.classList.add('done');});}
+function completeBreaker(){addLog('PATTERN BROKEN — 50th minute rule active','win');S.score=9;updateScoreHistory(9);calculateLevel();save();render();toast('You are not the person who started. The week is yours.');go('home');}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='presence-data-'+todayStr()+'.json';a.click();URL.revokeObjectURL(a.href);
+  toast('Data exported.');
+}
+
+function resetLocalData(){
+  if(!confirm('Reset local Presence data on this device? Cloud data is not deleted.'))return;
+  localStorage.removeItem(KEY);
+  S={streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null};
+  rolloverDay();save();render();initSteps();renderSteps();toast('Local data reset.');
+}
+
+async function deleteCloudData(){
+  if(!FB.ready||!FB.user){toast('Sign in first.');return;}
+  if(!confirm('Delete your cloud sync data from Firebase? Local data on this device stays.'))return;
+  try{await FB.mods.deleteDoc(userStateDoc());FB.lastSyncAt=null;localStorage.removeItem('presence_last_sync_at');renderAuth();toast('Cloud data deleted.');}
+  catch(e){toast('Could not delete cloud data.');}
+}
+
+// toast
+let toastT=null;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800);}
+
+// init
+loadState().then(()=>{initSteps();renderSteps();initFirebase();});
+
+// Register service worker for offline / installable PWA support
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+}
+</script>
+</body>
+</html>
