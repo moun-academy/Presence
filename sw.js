@@ -1,5 +1,5 @@
 // Network-first cache for the Presence PWA.
-const CACHE = 'presence-v13';
+const CACHE = 'presence-v17';
 const ASSETS = [
   './',
   './index.html',

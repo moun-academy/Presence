@@ -144,7 +144,7 @@ body.menu-open .drawer{transform:translateX(0);}
 .btn-row .btn{margin-bottom:0;}
 
 /* Score selector */
-.score-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.score-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
 .score-dot{aspect-ratio:1;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:16px;font-weight:400;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .score-dot:hover{border-color:var(--green-dim);color:var(--text);}
 .score-dot.sel{background:var(--green-glow);border-color:var(--green);color:var(--green);font-weight:600;}
@@ -280,6 +280,15 @@ textarea::placeholder{color:var(--text3);}
 .commit-text{font-family:var(--serif);font-size:18px;font-style:italic;line-height:1.6;color:var(--text);text-align:center;padding:10px 0;}
 .divider{height:1px;background:var(--border);margin:20px 0;}
 .mini-label{font-size:12px;color:var(--text3);text-align:center;margin-top:8px;letter-spacing:0.05em;}
+.score-desc{font-size:13px;line-height:1.55;color:var(--text2);text-align:center;margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);opacity:0;max-height:0;overflow:hidden;transition:opacity 0.25s,max-height 0.25s,margin-top 0.25s,padding 0.25s;padding-top:0;padding-bottom:0;margin-top:0;}
+.score-desc.show{opacity:1;max-height:200px;margin-top:14px;padding-top:12px;padding-bottom:12px;}
+.score-desc strong{color:var(--green);font-weight:600;}
+/* Meditation timer */
+.med-timer{text-align:center;margin:6px 0 16px;}
+.med-time{font-family:var(--serif);font-size:54px;font-weight:500;color:var(--green);letter-spacing:0.04em;line-height:1;font-variant-numeric:tabular-nums;}
+.med-time.done{color:var(--gold);}
+.med-bar{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden;margin:16px 0;}
+.med-fill{height:100%;width:0;background:var(--green);border-radius:3px;transition:width 1s linear;}
 </style>
 </head>
 <body>
@@ -309,8 +318,9 @@ textarea::placeholder{color:var(--text3);}
   </div>
 
   <div class="card">
-    <div class="section-label">Score this hour</div>
+    <div class="section-label">Score today</div>
     <div class="score-grid" id="scoreGrid"></div>
+    <div class="score-desc" id="scoreDesc"></div>
     <div class="mini-label">A 10 = every urge instantly met with the question</div>
   </div>
 
@@ -358,7 +368,14 @@ textarea::placeholder{color:var(--text3);}
   <div class="card">
     <div class="section-label">Part 2 · Calm the nervous system · 10 min</div>
     <p class="prose" style="margin-bottom:14px;">Settle into the meditation. After the 10th affirmation, take one breath, ask the question, answer it, feel it for ten seconds. Then begin.</p>
-    <button class="btn btn-primary" onclick="completeMeditation()">I completed the 10 min meditation</button>
+    <div class="med-timer">
+      <div class="med-time" id="medTime">10:00</div>
+      <div class="med-bar"><div class="med-fill" id="medBar"></div></div>
+      <button class="btn btn-primary" id="medToggle" onclick="toggleMedTimer()">Start 10 min timer</button>
+      <button class="btn btn-ghost" onclick="resetMedTimer()">Reset</button>
+    </div>
+    <div class="mini-label">A chime and vibration will signal when the 10 minutes are done. Keep the screen on for the alert.</div>
+    <button class="btn" onclick="completeMeditation()" style="margin-top:14px;">I completed the 10 min meditation</button>
   </div>
 
   <div class="card">
@@ -389,8 +406,8 @@ textarea::placeholder{color:var(--text3);}
   <div class="card">
     <div class="section-label">Magic notepad · dump without judgment</div>
     <div class="note-field"><div class="note-q">What am I thinking right now? (label it)</div><textarea id="n1" placeholder="I am thinking about... and it is making me feel... because..."></textarea></div>
-    <div class="note-field"><div class="note-q">What am I feeling right now?</div><textarea id="n2" placeholder="Right now I feel..."></textarea></div>
-    <div class="note-field"><div class="note-q">What is going on inside of me right now?</div><textarea id="n3" placeholder="Inside of me there is..."></textarea></div>
+    <div class="note-field"><div class="note-q">What is the story I'm telling myself about this?</div><textarea id="n2" placeholder="The story I'm telling myself is..."></textarea></div>
+    <div class="note-field"><div class="note-q">What's the hidden belief underneath this?</div><textarea id="n3" placeholder="e.g. I'm not enough, people won't like me, I need to be perfect..."></textarea></div>
     <button class="btn btn-primary" onclick="emptyMind()">Mind is empty — I am the observer ✓</button>
     <button class="btn btn-ghost" onclick="saveNote()">Save this entry</button>
   </div>
@@ -544,7 +561,7 @@ textarea::placeholder{color:var(--text3);}
       <button class="btn" onclick="resetLocalData()">Reset local</button>
       <button class="btn btn-ghost" onclick="deleteCloudData()">Delete cloud</button>
     </div>
-    <div class="mini-label">App version presence-v13</div>
+    <div class="mini-label">App version presence-v17</div>
   </div>
   <div class="card">
     <div class="section-label">Notifications</div>
@@ -586,10 +603,20 @@ textarea::placeholder{color:var(--text3);}
 
 <div class="toast" id="toast"></div>
 
-<script src="firebase-config.js?v=presence-v13"></script>
+<script src="firebase-config.js?v=presence-v17"></script>
 <script>
 // ---------- State ----------
 const KEY='presence_state_v1';
+const SCORE_VALUES=[0,5,6,7,8,9,10];
+const SCORE_DESC={
+  0:'Fully lost in daydream. The presence question was never asked.',
+  5:'Heavy battle with daydream, but still in the game.',
+  6:'Heavy battle with daydream, but using the coach and the app to get back on track.',
+  7:'Good use of the presence question, but some urges still come.',
+  8:'Solid use of the presence question. Head is empty in normal situations.',
+  9:'Perfect use of the presence question, with no desire to daydream.',
+  10:'Not using the presence question anymore because there is nothing to catch. Presence is not something I do — it is what I am.'
+};
 let S={streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null,notifications:{enabled:false,morningTime:'07:00',scoreTime:'21:00'}};
 
 // Storage: use the host window.storage API if present (Claude env),
@@ -864,11 +891,11 @@ function normalizeScoreHistory(){
   S.scoreHistory.forEach(entry=>{
     if(!entry||!entry.date||entry.score===undefined)return;
     const score=parseInt(entry.score);
-    if(score>=1&&score<=10){byDate[entry.date]={date:entry.date,score};}
+    if(score>=0&&score<=10){byDate[entry.date]={date:entry.date,score};}
   });
   if(S.lastDay&&S.score!==null&&S.score!==undefined){
     const score=parseInt(S.score);
-    if(score>=1&&score<=10&&!byDate[S.lastDay]){byDate[S.lastDay]={date:S.lastDay,score};dirty=true;}
+    if(score>=0&&score<=10&&!byDate[S.lastDay]){byDate[S.lastDay]={date:S.lastDay,score};dirty=true;}
   }
   const next=Object.values(byDate).sort((a,b)=>a.date.localeCompare(b.date));
   if(next.length!==S.scoreHistory.length||JSON.stringify(next)!==JSON.stringify(S.scoreHistory)){S.scoreHistory=next;dirty=true;}
@@ -891,7 +918,7 @@ function getScoreForDate(date){
 
 function latestScoredDate(){
   normalizeScoreHistory();
-  const scored=S.scoreHistory.filter(entry=>entry&&entry.date&&entry.score>0).sort((a,b)=>a.date.localeCompare(b.date));
+  const scored=S.scoreHistory.filter(entry=>entry&&entry.date&&entry.score!==null&&entry.score!==undefined).sort((a,b)=>a.date.localeCompare(b.date));
   return scored.length?scored[scored.length-1].date:null;
 }
 
@@ -918,10 +945,10 @@ function consecutiveScoreStreak({minScore,exactScore}){
 function levelRequirement(level){
   return {
     1:{target:7,minScore:1},
-    2:{target:7,minScore:9},
-    3:{target:14,minScore:9},
-    4:{target:28,minScore:9},
-    5:{target:28,exactScore:10}
+    2:{target:7,minScore:8},
+    3:{target:14,minScore:8},
+    4:{target:28,minScore:8},
+    5:{target:28,minScore:9}
   }[level];
 }
 
@@ -968,8 +995,14 @@ function render(){
   const lv=document.getElementById('livesVal');lv.innerHTML='';
   for(let i=0;i<3;i++){const s=document.createElement('span');s.className='life'+(i>=S.lives?' lost':'');s.textContent='●';lv.appendChild(s);}
   // score grid
-  const sg=document.getElementById('scoreGrid');if(!sg.dataset.built){[1,3,5,7,9,10].forEach(n=>{const d=document.createElement('div');d.className='score-dot';d.textContent=n;d.onclick=()=>setScore(n);d.dataset.n=n;sg.appendChild(d);});sg.dataset.built=1;}
+  const sg=document.getElementById('scoreGrid');if(!sg.dataset.built){SCORE_VALUES.forEach(n=>{const d=document.createElement('div');d.className='score-dot';d.textContent=n;d.onclick=()=>setScore(n);d.dataset.n=n;sg.appendChild(d);});sg.dataset.built=1;}
   document.querySelectorAll('.score-dot').forEach(d=>d.classList.toggle('sel',parseInt(d.dataset.n)===S.score));
+  // score description
+  const sd=document.getElementById('scoreDesc');
+  if(sd){
+    if(S.score!==null&&S.score!==undefined&&SCORE_DESC[S.score]!==undefined){sd.innerHTML='<strong>'+S.score+'</strong> — '+SCORE_DESC[S.score];sd.classList.add('show');}
+    else{sd.textContent='';sd.classList.remove('show');}
+  }
   // aff
   document.getElementById('affCount').textContent=S.affCount;
   const off=251-(251*S.affCount/10);document.getElementById('ringFill').style.strokeDashoffset=off;
@@ -1000,17 +1033,18 @@ function renderNotes(){
 }
 function renderLevels(){
   const levels=[
-    [1,'Presence for 7 scored days','Any score above zero counts',7],
-    [2,'7 days at 9+','Every day must score 9 or 10',7],
-    [3,'14 days at 9+','A single lower score resets this qualifying streak',14],
-    [4,'28 days at 9+','Twenty-eight consecutive strong days',28],
-    [5,'28 perfect 10s','Every day must be exactly 10',28]
+    [1,'7 scored days in a row','Any score above zero counts',7,'scored'],
+    [2,'7 days at 8 or above','Every day must score 8, 9, or 10',7,'at 8+'],
+    [3,'14 days at 8 or above','A single day below 8 resets the streak to zero',14,'at 8+'],
+    [4,'28 days at 8 or above','Twenty-eight consecutive days, none below 8',28,'at 8+'],
+    [5,'28 days at 9 or 10','Every day must score 9 or 10',28,'at 9+']
   ];
   const t=document.getElementById('levelTrack');t.innerHTML='';
-  levels.forEach(([n,h,p,required])=>{
+  levels.forEach(([n,h,p,required,suffix])=>{
     const cur=n===S.level;const done=n<S.level;const progress=levelProgress(n);const pct=Math.min(100,Math.round((progress/required)*100));
+    const label=done?'Achieved':(progress+' of '+required+' days '+suffix);
     const d=document.createElement('div');d.className='level-item'+(cur?' current':'')+(done?' done':'');
-    d.innerHTML='<div class="level-badge">'+n+'</div><div class="level-info"><h4>'+h+'</h4><p>'+p+'</p><div class="level-progress"><div class="level-progress-top"><span>'+progress+'/'+required+' qualifying days</span><span>'+pct+'%</span></div><div class="level-bar"><div class="level-fill" style="width:'+pct+'%;"></div></div></div></div>';
+    d.innerHTML='<div class="level-badge">'+n+'</div><div class="level-info"><h4>'+h+'</h4><p>'+p+'</p><div class="level-progress"><div class="level-progress-top"><span>'+label+'</span><span>'+pct+'%</span></div><div class="level-bar"><div class="level-fill" style="width:'+pct+'%;"></div></div></div></div>';
     t.appendChild(d);
   });
 }
@@ -1027,13 +1061,13 @@ function renderScoreChart(){
   }
   const w=560,h=160,pad=18;
   const x=i=>pad+(i*(w-pad*2)/27);
-  const y=score=>h-pad-((score-1)*(h-pad*2)/9);
+  const y=score=>h-pad-(score*(h-pad*2)/10);
   const points=days.map((day,i)=>day.score!==null?{x:x(i),y:y(day.score),score:day.score}:null);
   const line=points.map(point=>point?point.x.toFixed(1)+','+point.y.toFixed(1):null).filter(Boolean).join(' ');
   const first=points.find(Boolean),last=points.slice().reverse().find(Boolean);
   const area=first&&last?first.x.toFixed(1)+','+(h-pad)+' '+line+' '+last.x.toFixed(1)+','+(h-pad):'';
   const dots=points.map(point=>point?'<circle class="chart-dot" cx="'+point.x.toFixed(1)+'" cy="'+point.y.toFixed(1)+'" r="4"><title>'+point.score+'/10</title></circle>':'').join('');
-  chart.innerHTML='<svg class="score-chart" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Score trend chart"><line class="chart-grid" x1="'+pad+'" y1="'+y(10).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(10).toFixed(1)+'"></line><line class="chart-grid" x1="'+pad+'" y1="'+y(5).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(5).toFixed(1)+'"></line><line class="chart-grid" x1="'+pad+'" y1="'+y(1).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(1).toFixed(1)+'"></line><polygon class="chart-area" points="'+area+'"></polygon><polyline class="chart-line" points="'+line+'"></polyline>'+dots+'<text x="'+pad+'" y="12" fill="var(--text3)" font-size="10">10</text><text x="'+pad+'" y="'+(y(5)-4).toFixed(1)+'" fill="var(--text3)" font-size="10">5</text></svg>';
+  chart.innerHTML='<svg class="score-chart" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Score trend chart"><line class="chart-grid" x1="'+pad+'" y1="'+y(10).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(10).toFixed(1)+'"></line><line class="chart-grid" x1="'+pad+'" y1="'+y(5).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(5).toFixed(1)+'"></line><line class="chart-grid" x1="'+pad+'" y1="'+y(0).toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y(0).toFixed(1)+'"></line><polygon class="chart-area" points="'+area+'"></polygon><polyline class="chart-line" points="'+line+'"></polyline>'+dots+'<text x="'+pad+'" y="12" fill="var(--text3)" font-size="10">10</text><text x="'+pad+'" y="'+(y(5)-4).toFixed(1)+'" fill="var(--text3)" font-size="10">5</text></svg>';
   const avgFor=days=>{const values=days.map(day=>day.score).filter(score=>score!==null);return values.length?(values.reduce((a,b)=>a+b,0)/values.length).toFixed(1):'—';};
   stats.innerHTML='<div class="chart-stat"><b>'+avgFor(days.slice(-7))+'</b><span>7 day avg</span></div><div class="chart-stat"><b>'+avgFor(days)+'</b><span>28 day avg</span></div><div class="chart-stat"><b>'+scored.length+'</b><span>scored days</span></div>';
 }
@@ -1053,7 +1087,7 @@ function renderScoreHistory(){
     grid.appendChild(d);
   }
   const selectedScore=getScoreForDate(selectedHistoryDate);
-  const buttons=[1,3,5,7,9,10].map(n=>"<button class=\"btn "+(selectedScore===n?'btn-primary':'')+"\" onclick=\"setHistoryScore('"+selectedHistoryDate+"',"+n+")\">"+n+"</button>").join('');
+  const buttons=SCORE_VALUES.map(n=>"<button class=\"btn "+(selectedScore===n?'btn-primary':'')+"\" onclick=\"setHistoryScore('"+selectedHistoryDate+"',"+n+")\">"+n+"</button>").join('');
   editor.innerHTML="<div class=\"history-editor-head\"><span>"+displayDate(selectedHistoryDate)+"</span><span>"+(selectedScore!==null?selectedScore+'/10':'No score')+"</span></div><div class=\"history-score-actions\">"+buttons+"<button class=\"btn btn-ghost\" onclick=\"setHistoryScore('"+selectedHistoryDate+"',null)\">Clear</button></div>";
 }
 
@@ -1081,7 +1115,7 @@ function addLog(m,k){S.log.push({t:nowT(),m,k});if(S.log.length>40)S.log.shift()
 
 function flashQuestion(){const q=document.getElementById('qText');q.style.transition='none';q.style.opacity='0.2';setTimeout(()=>{q.style.transition='opacity 0.6s';q.style.opacity='1';},80);addLog('asked the presence question','win');toast('Three breaths. Stay here.');}
 
-function setScore(n){S.score=n;updateScoreHistory(n);const leveledUp=calculateLevel();addLog('scored this hour: '+n+'/10',n>=8?'win':'urge');save();render();toast(leveledUp?'Level '+S.level+' unlocked.':n>=9?'A nine. The system is working.':n>=7?'Solid. Hold the line.':'Reset. You know the protocol.');}
+function setScore(n){S.score=n;updateScoreHistory(n);const leveledUp=calculateLevel();addLog('scored today: '+n+'/10',n>=8?'win':'urge');save();render();toast(leveledUp?'Level '+S.level+' unlocked.':n>=9?'A nine. The system is working.':n>=7?'Solid. Hold the line.':'Reset. You know the protocol.');}
 
 function logWin(){addLog('presence win','win');save();toast('Logged. Momentum compounds.');}
 function loseLife(){if(S.lives>0)S.lives--;addLog('lost a life — redeem within the hour','urge');save();render();toast(S.lives>0?(S.lives+' lives left. Redeem within the hour.'):'Last stand. Break the pattern now.');}
@@ -1089,6 +1123,66 @@ function loseLife(){if(S.lives>0)S.lives--;addLog('lost a life — redeem within
 function countAff(){if(S.affCount<10){S.affCount++;}const off=251-(251*S.affCount/10);document.getElementById('ringFill').style.strokeDashoffset=off;document.getElementById('affCount').textContent=S.affCount;save();if(S.affCount>=10){toast('Ten. Now one breath, ask, answer, feel it.');addLog('completed morning affirmation ×10','win');}}
 function resetAff(){S.affCount=0;document.getElementById('affCount').textContent=0;document.getElementById('ringFill').style.strokeDashoffset=251;save();}
 function completeMeditation(){addLog('completed 10 min morning meditation','win');save();toast('Meditation complete. Carry it into the day.');}
+
+// ---------- Meditation timer ----------
+const MED_DURATION=600; // 10 minutes in seconds
+let medRemaining=MED_DURATION,medInterval=null,medRunning=false,medAudioCtx=null;
+function fmtTime(s){const m=Math.floor(s/60);const sec=s%60;return m+':'+String(sec).padStart(2,'0');}
+function renderMedTimer(){
+  const t=document.getElementById('medTime');const bar=document.getElementById('medBar');const btn=document.getElementById('medToggle');
+  if(t){t.textContent=fmtTime(medRemaining);t.classList.toggle('done',medRemaining===0);}
+  if(bar)bar.style.width=((MED_DURATION-medRemaining)/MED_DURATION*100)+'%';
+  if(btn)btn.textContent=medRunning?'Pause':(medRemaining===MED_DURATION?'Start 10 min timer':(medRemaining===0?'Start again':'Resume'));
+}
+function unlockMedAudio(){
+  try{
+    const Ctx=window.AudioContext||window.webkitAudioContext;
+    if(!Ctx)return;
+    if(!medAudioCtx)medAudioCtx=new Ctx();
+    if(medAudioCtx.state==='suspended')medAudioCtx.resume();
+  }catch(e){}
+}
+function medChime(){
+  try{
+    if(!medAudioCtx){const Ctx=window.AudioContext||window.webkitAudioContext;if(Ctx)medAudioCtx=new Ctx();}
+    if(!medAudioCtx)return;
+    if(medAudioCtx.state==='suspended')medAudioCtx.resume();
+    const ctx=medAudioCtx;const now=ctx.currentTime;
+    const notes=[523.25,659.25,783.99,1046.5]; // C5 E5 G5 C6
+    notes.forEach((f,i)=>{
+      const o=ctx.createOscillator();const g=ctx.createGain();
+      o.type='sine';o.frequency.value=f;o.connect(g);g.connect(ctx.destination);
+      const start=now+i*0.22;
+      g.gain.setValueAtTime(0.0001,start);
+      g.gain.exponentialRampToValueAtTime(0.35,start+0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001,start+1.6);
+      o.start(start);o.stop(start+1.7);
+    });
+  }catch(e){}
+}
+function toggleMedTimer(){
+  if(medRunning){pauseMedTimer();return;}
+  unlockMedAudio();
+  if(medRemaining===0)medRemaining=MED_DURATION;
+  medRunning=true;
+  medInterval=setInterval(()=>{
+    medRemaining--;
+    if(medRemaining<=0){medRemaining=0;renderMedTimer();finishMedTimer();return;}
+    renderMedTimer();
+  },1000);
+  renderMedTimer();
+}
+function pauseMedTimer(){medRunning=false;if(medInterval){clearInterval(medInterval);medInterval=null;}renderMedTimer();}
+function resetMedTimer(){pauseMedTimer();medRemaining=MED_DURATION;renderMedTimer();}
+function finishMedTimer(){
+  medRunning=false;if(medInterval){clearInterval(medInterval);medInterval=null;}
+  medChime();
+  if(navigator.vibrate)navigator.vibrate([400,150,400,150,600]);
+  showPresenceNotification('Presence','Your 10-minute meditation is complete.','presence-med');
+  addLog('completed 10 min morning meditation','win');save();
+  toast('10 minutes complete. Carry it into the day.');
+  renderMedTimer();
+}
 function completeMorning(){S.morningDone=todayStr();addLog('morning protocol complete','win');save();toast('The morning is yours. Carry it into the day.');go('home');}
 
 const urgeData={
@@ -1113,7 +1207,7 @@ let stepKeys={};
 function toggleStep(el,key){el.setAttribute('data-skey',key);if(S.steps[key]){delete S.steps[key];el.classList.remove('done');}else{S.steps[key]=1;el.classList.add('done');}save();}
 // assign data-skey on load
 function initSteps(){const els=document.querySelectorAll('#panel-breaker .step');const keys=['b1','b2','b3','b4','b5','b6','b7','b8','b9','b10'];els.forEach((el,i)=>{el.setAttribute('data-skey',keys[i]);if(S.steps[keys[i]])el.classList.add('done');});}
-function completeBreaker(){addLog('PATTERN BROKEN — 50th minute rule active','win');S.score=9;updateScoreHistory(9);calculateLevel();save();render();toast('You are not the person who started. The week is yours.');go('home');}
+function completeBreaker(){addLog('PATTERN BROKEN — 50th minute rule active','win');S.score=9;updateScoreHistory(9);calculateLevel();S.steps={};save();render();toast('You are not the person who started. The week is yours.');go('home');}
 
 function exportData(){
   const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
@@ -1247,7 +1341,7 @@ let toastT=null;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800);}
 
 // init
-loadState().then(()=>{initSteps();renderSteps();initFirebase();});
+loadState().then(()=>{initSteps();renderSteps();renderMedTimer();initFirebase();});
 
 // Register service worker for offline / installable PWA support
 if('serviceWorker' in navigator){
@@ -1258,7 +1352,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v13').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v17').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
