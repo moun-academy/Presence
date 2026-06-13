@@ -406,9 +406,10 @@ textarea::placeholder{color:var(--text3);}
   <div class="card">
     <div class="section-label">Magic notepad · dump without judgment</div>
     <div class="note-field"><div class="note-q">What am I thinking right now? (label it)</div><textarea id="n1" placeholder="I am thinking about... and it is making me feel... because..."></textarea></div>
-    <div class="note-field"><div class="note-q">What is the story I'm telling myself about this?</div><textarea id="n2" placeholder="The story I'm telling myself is..."></textarea></div>
+    <div class="note-field"><div class="note-q">What is the story I'm telling myself about this?</div><textarea id="n2" placeholder='e.g. &quot;This proves I&#39;ll never change&quot; or &quot;Everyone will finally see how exceptional I am&quot; — write the dramatic version, exactly as it sounds in your head'></textarea></div>
     <div class="note-field"><div class="note-q">What's the hidden belief underneath this?</div><textarea id="n3" placeholder="e.g. I'm not enough, people won't like me, I need to be perfect..."></textarea></div>
-    <button class="btn btn-primary" onclick="emptyMind()">Mind is empty — I am the observer ✓</button>
+    <div class="note-field"><div class="note-q">What is the smallest real action I can take right now that honors what this daydream is actually asking for?</div><textarea id="n4" placeholder="The smallest thing I can do right now is..."></textarea></div>
+    <button class="btn btn-primary" onclick="emptyMind()">I am the observer. Going to do this now ✓</button>
     <button class="btn btn-ghost" onclick="saveNote()">Save this entry</button>
   </div>
   <div class="card">
@@ -561,7 +562,7 @@ textarea::placeholder{color:var(--text3);}
       <button class="btn" onclick="resetLocalData()">Reset local</button>
       <button class="btn btn-ghost" onclick="deleteCloudData()">Delete cloud</button>
     </div>
-    <div class="mini-label">App version presence-v17</div>
+    <div class="mini-label">App version presence-v18</div>
   </div>
   <div class="card">
     <div class="section-label">Notifications</div>
@@ -603,7 +604,7 @@ textarea::placeholder{color:var(--text3);}
 
 <div class="toast" id="toast"></div>
 
-<script src="firebase-config.js?v=presence-v17"></script>
+<script src="firebase-config.js?v=presence-v18"></script>
 <script>
 // ---------- State ----------
 const KEY='presence_state_v1';
@@ -1198,9 +1199,9 @@ function labelUrge(k){const[name,line,action]=urgeData[k];const c=document.getEl
 function postpone(){addLog('urge postponed to 50th minute','win');save();go('home');toast('Postponed. It will run out before the window comes.');}
 function released(){addLog('released the urge — returned to presence','win');save();go('home');toast('That is the win. The next 60 minutes.');}
 
-function saveNote(){const txt=[document.getElementById('n1').value,document.getElementById('n2').value,document.getElementById('n3').value].filter(Boolean).join(' · ');if(!txt.trim()){toast('Write something first.');return;}S.notes.push({d:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),txt});save();renderNotes();toast('Saved. You are the observer now.');}
-function emptyMind(){saveNoteSilent();document.getElementById('n1').value='';document.getElementById('n2').value='';document.getElementById('n3').value='';addLog('emptied the mind — magic notepad','win');save();go('home');toast('Empty. You are not trapped by those thoughts.');}
-function saveNoteSilent(){const txt=[document.getElementById('n1').value,document.getElementById('n2').value,document.getElementById('n3').value].filter(Boolean).join(' · ');if(txt.trim()){S.notes.push({d:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),txt});renderNotes();}}
+function saveNote(){const txt=[document.getElementById('n1').value,document.getElementById('n2').value,document.getElementById('n3').value,document.getElementById('n4').value].filter(Boolean).join(' · ');if(!txt.trim()){toast('Write something first.');return;}S.notes.push({d:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),txt});save();renderNotes();toast('Saved. You are the observer now.');}
+function emptyMind(){saveNoteSilent();document.getElementById('n1').value='';document.getElementById('n2').value='';document.getElementById('n3').value='';document.getElementById('n4').value='';addLog('emptied the mind — magic notepad','win');save();go('home');toast('Empty. You are not trapped by those thoughts.');}
+function saveNoteSilent(){const txt=[document.getElementById('n1').value,document.getElementById('n2').value,document.getElementById('n3').value,document.getElementById('n4').value].filter(Boolean).join(' · ');if(txt.trim()){S.notes.push({d:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),txt});renderNotes();}}
 
 // breaker steps
 let stepKeys={};
@@ -1352,7 +1353,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v17').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v18').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
