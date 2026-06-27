@@ -591,7 +591,7 @@ textarea::placeholder{color:var(--text3);}
       <button class="btn" onclick="resetLocalData()">Reset local</button>
       <button class="btn btn-ghost" onclick="deleteCloudData()">Delete cloud</button>
     </div>
-    <div class="mini-label">App version presence-v18</div>
+    <div class="mini-label" id="appBuildLabel">App version</div>
   </div>
   <div class="card">
     <div class="section-label">Notifications</div>
@@ -636,6 +636,8 @@ textarea::placeholder{color:var(--text3);}
 <script src="firebase-config.js?v=presence-v18"></script>
 <script>
 // ---------- State ----------
+// Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
+const APP_BUILD={version:'v19',date:'Jun 27, 2026',time:'4:35 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -1039,7 +1041,7 @@ function render(){
   // steps
   document.querySelectorAll('.step').forEach(st=>{});
   for(const k in S.steps){const el=document.querySelector('.step[data-skey="'+k+'"]');}
-  renderLog();renderNotes();renderLevels();renderScoreChart();renderSteps();renderNotifications();
+  renderLog();renderNotes();renderLevels();renderScoreChart();renderSteps();renderNotifications();renderBuild();
   renderScoreHistory();
 }
 
@@ -1330,6 +1332,11 @@ async function deleteCloudData(){
   if(!confirm('Delete your cloud sync data from Firebase? Local data on this device stays.'))return;
   try{await FB.mods.deleteDoc(userStateDoc());FB.lastSyncAt=null;localStorage.removeItem('presence_last_sync_at');renderAuth();toast('Cloud data deleted.');}
   catch(e){toast('Could not delete cloud data.');}
+}
+
+function renderBuild(){
+  const el=document.getElementById('appBuildLabel');
+  if(el)el.textContent='App version '+APP_BUILD.version+' · Updated '+APP_BUILD.date+' · '+APP_BUILD.time;
 }
 
 async function checkForAppUpdate(){
