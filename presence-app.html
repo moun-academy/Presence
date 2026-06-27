@@ -1333,12 +1333,34 @@ async function deleteCloudData(){
 }
 
 async function checkForAppUpdate(){
-  if(!('serviceWorker' in navigator)){toast('App updates on refresh.');return;}
+  if(!('serviceWorker' in navigator)){location.reload();return;}
   const reg=await navigator.serviceWorker.getRegistration();
-  if(!reg){toast('Update service not ready. Reopen the app.');return;}
-  await reg.update();
-  if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});toast('Update found. Reloading...');}
-  else{toast('App is up to date.');}
+  if(!reg){toast('Reloading latest version…');setTimeout(()=>location.reload(),400);return;}
+  toast('Checking for updates…');
+  try{await reg.update();}catch(e){}
+  // reg.update() resolves when the check finishes, but a new worker may
+  // still be installing — wait for it to reach waiting/active before deciding.
+  const installing=reg.installing;
+  if(installing){
+    await new Promise(res=>{
+      const done=()=>res();
+      installing.addEventListener('statechange',()=>{
+        if(installing.state==='installed'||installing.state==='activated'||installing.state==='redundant')done();
+      });
+      setTimeout(done,8000);
+    });
+  }
+  if(reg.waiting){
+    // New version downloaded — activate it; the controllerchange handler reloads.
+    reg.waiting.postMessage({type:'SKIP_WAITING'});
+    toast('Update found. Reloading…');
+    return;
+  }
+  // No new service worker was found. Content is served network-first, so the
+  // surest way to land on the latest build is to drop caches and hard reload.
+  try{const keys=await caches.keys();await Promise.all(keys.map(k=>caches.delete(k)));}catch(e){}
+  toast('Reloading latest version…');
+  setTimeout(()=>location.reload(),400);
 }
 
 function renderNotifications(){
@@ -1455,7 +1477,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v18').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v19').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
