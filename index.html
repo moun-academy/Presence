@@ -177,6 +177,26 @@ body.menu-open .drawer{transform:translateX(0);}
 .step-desc{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.55;}
 .step-time{font-size:11px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:6px;}
 
+/* Inline step actions (play button, navigate button, breathing) */
+.step-action{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:8px 14px;border-radius:11px;border:1px solid var(--green-deep);background:var(--green-glow);color:var(--green);font-family:var(--sans);font-size:12.5px;font-weight:500;letter-spacing:0.02em;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.step-action:hover{background:rgba(61,220,145,0.18);border-color:var(--green-dim);}
+.step-action .play-ico{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--green);color:#06120c;font-size:9px;flex-shrink:0;}
+
+/* 4-7-8 breathing circle */
+.breath-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;border-radius:11px;border:1px solid var(--green-deep);background:var(--green-glow);color:var(--green);font-family:var(--sans);font-size:12.5px;font-weight:500;letter-spacing:0.02em;cursor:pointer;transition:all 0.2s;}
+.breath-toggle:hover{background:rgba(61,220,145,0.18);}
+.breath-wrap{margin-top:14px;padding:24px 16px 20px;border-radius:16px;background:rgba(10,15,13,0.5);border:1px solid var(--green-deep);text-align:center;cursor:default;}
+.breath-stage{position:relative;width:100%;height:240px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
+.breath-circle{width:200px;height:200px;border-radius:50%;background:radial-gradient(circle at 50% 42%,rgba(61,220,145,0.55),rgba(15,110,86,0.32) 55%,rgba(15,110,86,0.06) 100%);border:2px solid var(--green-dim);box-shadow:0 0 50px rgba(61,220,145,0.32),inset 0 0 40px rgba(61,220,145,0.18);transform:scale(0.45);will-change:transform;}
+.breath-phase{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--green);letter-spacing:0.04em;min-height:30px;}
+.breath-count{font-size:12px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px;min-height:16px;}
+.breath-start{margin-top:16px;padding:11px 22px;border-radius:12px;border:1px solid var(--green-dim);background:linear-gradient(135deg,var(--green-dim),var(--green-deep));color:#06120c;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.breath-start:hover{filter:brightness(1.12);}
+.breath-start:disabled{opacity:0.55;cursor:default;filter:none;}
+.breath-done{display:none;margin-top:16px;}
+.breath-done-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 20px;border-radius:12px;border:1px solid var(--green-deep);background:var(--green-glow);color:var(--green);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.breath-done-btn:hover{background:rgba(61,220,145,0.18);}
+
 /* Affirmation reader */
 .aff-card{background:linear-gradient(180deg,rgba(61,220,145,0.045),rgba(19,26,22,0.94));border-color:rgba(61,220,145,0.2);}
 .aff-reader{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:22px;align-items:center;padding:8px 0 18px;}
@@ -427,15 +447,24 @@ textarea::placeholder{color:var(--text3);}
 
   <div class="phase">
     <div class="phase-head"><div class="phase-num">1</div><div><div class="phase-title">Reset the body</div><div class="phase-sub">No mental strategy works during a dopamine crash</div></div></div>
-    <div class="step" onclick="toggleStep(this,'b1')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Peak state</div><div class="step-desc">Cold shower or 10 burpees. Shuts down the Default Mode Network, hands control to the prefrontal cortex.</div><div class="step-time">2 min</div></div></div>
-    <div class="step" onclick="toggleStep(this,'b2')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">4-7-8 breathing</div><div class="step-desc">3 rounds. Inhale 4, hold 7, exhale 8. Activates the parasympathetic system, lowers the adrenaline.</div><div class="step-time">5 min</div></div></div>
-    <div class="step" onclick="toggleStep(this,'b3')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Movement discharge</div><div class="step-desc">Dance to one song, fully let go. Completes the catecholamine stress cycle so the charge stops pulling you.</div><div class="step-time">3 min</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b1')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Burpees × 10</div><div class="step-desc">Physically shuts down the Default Mode Network and hands control back to the prefrontal cortex. Do them now before reading further.</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b2')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Cold shower · 2 minutes</div><div class="step-desc">Resets the nervous system. Lowers cortisol. Creates the chemical condition for presence to land.</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b3')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">It's My Life — Bon Jovi</div><div class="step-desc">Jump, move, celebrate like every dream has already come true. Get your state to a 10 before moving to Phase 2. Do not skip this step.</div><a class="step-action" href="https://www.youtube.com/results?search_query=It%27s+My+Life+Bon+Jovi" target="_blank" rel="noopener" onclick="event.stopPropagation();"><span class="play-ico">▶</span>Play on YouTube</a></div></div>
   </div>
 
   <div class="phase">
     <div class="phase-head"><div class="phase-num">2</div><div><div class="phase-title">Empty the mind</div><div class="phase-sub">You cannot build presence on top of noise</div></div></div>
-    <div class="step" onclick="toggleStep(this,'b4')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Magic notepad</div><div class="step-desc">Write 5+ thoughts. What am I thinking / feeling / what's going on inside. No editing.</div><div class="step-time" onclick="event.stopPropagation();go('notepad')" style="cursor:pointer;color:var(--green);">Open notepad →</div></div></div>
-    <div class="step" onclick="toggleStep(this,'b5')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Label & pop</div><div class="step-desc">Name each persona. Say "I see you, you are not me." Pop each thought like a bubble with your finger.</div></div></div>
+    <div class="step" onclick="toggleStep(this,'b4')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">4-7-8 breathing · 3 rounds</div><div class="step-desc">Brings your elevated state back to calm and conscious. Parasympathetic system activates. Follow the circle with your eyes closed.</div>
+      <button class="breath-toggle" onclick="event.stopPropagation();toggleBreath(this)">Open breathing circle ▾</button>
+      <div class="breath-wrap" id="breathWrap" style="display:none;" onclick="event.stopPropagation();">
+        <div class="breath-stage"><div class="breath-circle" id="breathCircle"></div></div>
+        <div class="breath-phase" id="breathPhase">Ready</div>
+        <div class="breath-count" id="breathCount"></div>
+        <button class="breath-start" id="breathStartBtn" onclick="startBreath()">Begin 3 rounds</button>
+        <div class="breath-done" id="breathDone"><button class="breath-done-btn" onclick="go('notepad')">Breathing complete — open the notepad →</button></div>
+      </div>
+    </div></div>
+    <div class="step" onclick="toggleStep(this,'b5')"><div class="step-check">✓</div><div class="step-body"><div class="step-title">Magic Notepad</div><div class="step-desc">Your mind is now calm enough to excavate. Write until you are empty.</div><div class="step-action" onclick="event.stopPropagation();go('notepad')">Open the Notepad →</div></div></div>
   </div>
 
   <div class="phase">
@@ -1209,6 +1238,79 @@ function toggleStep(el,key){el.setAttribute('data-skey',key);if(S.steps[key]){de
 // assign data-skey on load
 function initSteps(){const els=document.querySelectorAll('#panel-breaker .step');const keys=['b1','b2','b3','b4','b5','b6','b7','b8','b9','b10'];els.forEach((el,i)=>{el.setAttribute('data-skey',keys[i]);if(S.steps[keys[i]])el.classList.add('done');});}
 function completeBreaker(){addLog('PATTERN BROKEN — 50th minute rule active','win');S.score=9;updateScoreHistory(9);calculateLevel();S.steps={};save();render();toast('You are not the person who started. The week is yours.');go('home');}
+
+// 4-7-8 breathing circle
+let breathState={running:false,round:0,timer:null};
+let breathAudioCtx=null;
+function toggleBreath(btn){
+  const w=document.getElementById('breathWrap');
+  const open=w.style.display==='none';
+  w.style.display=open?'block':'none';
+  btn.textContent=open?'Close breathing circle ▴':'Open breathing circle ▾';
+}
+function unlockBreathAudio(){try{const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;if(!breathAudioCtx)breathAudioCtx=new Ctx();if(breathAudioCtx.state==='suspended')breathAudioCtx.resume();}catch(e){}}
+function breathTone(kind){
+  try{
+    if(!breathAudioCtx){const Ctx=window.AudioContext||window.webkitAudioContext;if(Ctx)breathAudioCtx=new Ctx();}
+    if(!breathAudioCtx)return;
+    if(breathAudioCtx.state==='suspended')breathAudioCtx.resume();
+    const ctx=breathAudioCtx;const now=ctx.currentTime;
+    const o=ctx.createOscillator();const g=ctx.createGain();o.type='sine';o.connect(g);g.connect(ctx.destination);
+    if(kind==='inhale'){
+      o.frequency.setValueAtTime(174,now);o.frequency.linearRampToValueAtTime(232,now+4);
+      g.gain.setValueAtTime(0.0001,now);g.gain.exponentialRampToValueAtTime(0.16,now+0.5);g.gain.setValueAtTime(0.16,now+3.3);g.gain.exponentialRampToValueAtTime(0.0001,now+4);
+      o.start(now);o.stop(now+4.05);
+    }else{
+      o.frequency.setValueAtTime(210,now);o.frequency.linearRampToValueAtTime(116,now+8);
+      g.gain.setValueAtTime(0.0001,now);g.gain.exponentialRampToValueAtTime(0.14,now+0.6);g.gain.setValueAtTime(0.14,now+6.4);g.gain.exponentialRampToValueAtTime(0.0001,now+8);
+      o.start(now);o.stop(now+8.05);
+    }
+  }catch(e){}
+}
+function startBreath(){
+  if(breathState.running)return;
+  unlockBreathAudio();
+  breathState.running=true;breathState.round=0;
+  document.getElementById('breathDone').style.display='none';
+  const btn=document.getElementById('breathStartBtn');btn.textContent='Breathing…';btn.disabled=true;
+  const c=document.getElementById('breathCircle');c.style.transition='none';c.style.transform='scale(0.45)';
+  void c.offsetWidth; // force reflow so the first inhale animates from small
+  breathNextRound();
+}
+function breathNextRound(){
+  if(!breathState.running)return;
+  breathState.round++;
+  if(breathState.round>3){finishBreath();return;}
+  document.getElementById('breathCount').textContent='Round '+breathState.round+' of 3';
+  breathRunPhase('inhale');
+}
+function breathRunPhase(phase){
+  if(!breathState.running)return;
+  const c=document.getElementById('breathCircle');
+  const ph=document.getElementById('breathPhase');
+  if(phase==='inhale'){
+    ph.textContent='Breathe in';breathTone('inhale');
+    c.style.transition='transform 4s ease-in-out';c.style.transform='scale(1)';
+    breathState.timer=setTimeout(()=>breathRunPhase('hold'),4000);
+  }else if(phase==='hold'){
+    ph.textContent='Hold';
+    breathState.timer=setTimeout(()=>breathRunPhase('exhale'),7000);
+  }else{
+    ph.textContent='Breathe out';breathTone('exhale');
+    c.style.transition='transform 8s ease-in-out';c.style.transform='scale(0.45)';
+    breathState.timer=setTimeout(()=>breathNextRound(),8000);
+  }
+}
+function finishBreath(){
+  breathState.running=false;
+  if(breathState.timer){clearTimeout(breathState.timer);breathState.timer=null;}
+  document.getElementById('breathPhase').textContent='Complete';
+  document.getElementById('breathCount').textContent='';
+  const btn=document.getElementById('breathStartBtn');btn.textContent='Run again';btn.disabled=false;
+  document.getElementById('breathDone').style.display='block';
+  const el=document.querySelector('#panel-breaker .step[data-skey="b4"]');
+  if(el&&!S.steps['b4']){S.steps['b4']=1;el.classList.add('done');save();}
+}
 
 function exportData(){
   const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
