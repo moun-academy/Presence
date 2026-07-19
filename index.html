@@ -466,7 +466,7 @@ textarea::placeholder{color:var(--text3);}
       </div>
       <button class="btn btn-primary terms-start" id="termsStartButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Keep it going</button>
       <button class="btn btn-ghost" id="termsCompleteButton" type="button" onclick="completeTermsTask()">Task complete — next</button>
-      <div class="mini-label">Apply the rule whenever resistance appears. Finishing a task keeps your chain alive.</div>
+      <div class="mini-label">Each application starts or continues the task. Only “Task done” completes it.</div>
     </div>
   </div>
 
@@ -784,8 +784,9 @@ textarea::placeholder{color:var(--text3);}
       <div class="terms-count" id="termsCount" aria-live="assertive">5</div>
       <div class="terms-overlay-action" id="termsOverlayAction"></div>
       <div class="terms-overlay-actions" id="termsOverlayActions">
-        <button class="btn btn-primary" type="button" onclick="completeTermsMove()">I'm moving — living on my terms</button>
-        <button class="btn btn-ghost" type="button" onclick="missTermsMove()">Not this time</button>
+        <button class="btn btn-primary" id="termsContinueButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Keep going</button>
+        <button class="btn btn-ghost" type="button" onclick="completeTermsTaskFromOverlay()">Task done — next</button>
+        <button class="btn btn-ghost" type="button" onclick="closeTermsOverlay()">Back to plan</button>
       </div>
     </div>
     <div class="terms-celebration" id="termsCelebration">
@@ -793,16 +794,16 @@ textarea::placeholder{color:var(--text3);}
       <div class="terms-celebration-icon">⚡</div>
       <div class="terms-celebration-title" id="termsCelebrationTitle">You moved.</div>
       <div class="terms-celebration-copy" id="termsCelebrationCopy"></div>
-      <button class="btn btn-primary" type="button" onclick="closeTermsOverlay()">Keep living on my terms</button>
+      <button class="btn btn-primary" id="termsCelebrationButton" type="button" onclick="resumeTermsMomentum()">5-4-3-2-1 — Keep going</button>
     </div>
   </div>
 </div>
 
-<script src="firebase-config.js?v=presence-v21"></script>
+<script src="firebase-config.js?v=presence-v22"></script>
 <script>
 // ---------- State ----------
 // Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
-const APP_BUILD={version:'v21',date:'Jul 19, 2026',time:'1:07 PM'};
+const APP_BUILD={version:'v22',date:'Jul 19, 2026',time:'1:18 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -1562,9 +1563,9 @@ function startTermsCountdown(){
     if(n>0){count.textContent=n;termsTick();}
     else{
       clearInterval(termsCountdownTimer);termsCountdownTimer=null;
-      count.textContent='GO';count.classList.add('go');actions.classList.add('show');
+      count.textContent='GO';count.classList.add('go');
       termsGoTone();if(navigator.vibrate)navigator.vibrate([120,60,220]);
-      const primary=actions.querySelector('.btn-primary');if(primary)primary.focus();
+      completeTermsMove();
     }
   },1000);
 }
@@ -1610,7 +1611,33 @@ function completeTermsMove(){
   TERMS_DAY_MILESTONES.forEach(n=>unlockTermsMilestone('day-'+n,t.daily[today]>=n,n+' Moves Today',n+' applications in one day',unlocked));
   addLog('5-second rule: '+pendingTermsAction,'win');save();render();
   if(unlocked.length)showTermsCelebration(unlocked);
-  else{closeTermsOverlay();toast('Chain '+t.currentChain+'. Keep it going on '+pendingTermsAction+'.');}
+  else showTermsMomentumReady();
+}
+
+function showTermsMomentumReady(){
+  const task=S.terms.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);
+  if(!task){closeTermsOverlay();return;}
+  document.getElementById('termsCountdownView').style.display='block';
+  document.getElementById('termsCelebration').classList.remove('show');
+  const count=document.getElementById('termsCount');count.textContent='GO';count.className='terms-count go';
+  document.getElementById('termsOverlayAction').textContent='Application '+task.apps+' · Chain '+S.terms.currentChain+' · Keep working on: '+task.text;
+  document.getElementById('termsOverlayActions').classList.add('show');
+  const button=document.getElementById('termsContinueButton');if(button)button.focus();
+}
+
+function resumeTermsMomentum(){
+  document.getElementById('termsCelebration').classList.remove('show');
+  showTermsMomentumReady();
+}
+
+function completeTermsTaskFromOverlay(){
+  const completedId=pendingTermsTaskId;
+  completeTermsTask(completedId);
+  const next=getActiveTermsTask();
+  if(!next)return;
+  pendingTermsTaskId=next.id;pendingTermsAction=next.text;
+  document.getElementById('termsOverlayAction').textContent='Next task ready: '+next.text;
+  showTermsMomentumReady();
 }
 
 function unlockTermsMilestone(key,qualified,title,detail,unlocked){
@@ -1641,6 +1668,9 @@ function showTermsCelebration(unlocked){
     document.getElementById('termsConfetti').innerHTML='';
   }
   celebration.classList.add('show');
+  const celebrationButton=document.getElementById('termsCelebrationButton');
+  celebrationButton.textContent='5-4-3-2-1 — Keep going';
+  celebrationButton.onclick=resumeTermsMomentum;
   if(navigator.vibrate)navigator.vibrate(unlocked.length?[100,60,100,60,240]:80);
   const button=celebration.querySelector('button');if(button)button.focus();
 }
@@ -1652,6 +1682,8 @@ function showTermsPlanCelebration(){
   document.getElementById('termsCelebrationTitle').textContent='Today’s straight line complete!';
   document.getElementById('termsCelebrationCopy').textContent='Every important task is complete, and your 5-second chain is still alive. You pursued the day on your terms.';
   buildTermsConfetti();celebration.classList.add('show');overlay.classList.add('open');document.body.style.overflow='hidden';
+  const celebrationButton=document.getElementById('termsCelebrationButton');
+  celebrationButton.textContent='Back to my day';celebrationButton.onclick=closeTermsOverlay;
   if(navigator.vibrate)navigator.vibrate([100,60,100,60,260]);
   const button=celebration.querySelector('button');if(button)button.focus();
 }
@@ -2007,7 +2039,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v21').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v22').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
