@@ -1,0 +1,11 @@
+{
+  "appId": "com.mounacademy.presence",
+  "appName": "Presence",
+  "webDir": "dist",
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_presence",
+      "iconColor": "#3DDC91"
+    }
+  }
+}

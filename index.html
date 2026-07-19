@@ -860,11 +860,11 @@ textarea::placeholder{color:var(--text3);}
   </div>
 </div>
 
-<script src="firebase-config.js?v=presence-v24"></script>
+<script src="firebase-config.js?v=presence-v25"></script>
 <script>
 // ---------- State ----------
 // Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
-const APP_BUILD={version:'v24',date:'Jul 19, 2026',time:'2:05 PM'};
+const APP_BUILD={version:'v25',date:'Jul 19, 2026',time:'2:14 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -2166,6 +2166,12 @@ function renderNotifications(){
   if(morning)morning.value=S.notifications.morningTime;
   if(score)score.value=S.notifications.scoreTime;
   if(!status)return;
+  if(getNativeLocalNotifications()){
+    status.textContent=S.notifications.enabled
+      ?'Native Android reminders are on. Morning at '+S.notifications.morningTime+' and score reminder at '+S.notifications.scoreTime+'.'
+      :'Notifications are off. Enable them to schedule native Android reminders.';
+    return;
+  }
   if(!('Notification' in window)){status.textContent='Notifications are not supported in this browser.';return;}
   if(Notification.permission==='denied'){status.textContent='Notifications are blocked. Enable them in browser settings.';return;}
   if(S.notifications.enabled&&Notification.permission==='granted'){
@@ -2175,6 +2181,37 @@ function renderNotifications(){
   }else{
     status.textContent='Notifications are off.';
   }
+}
+
+function getNativeLocalNotifications(){
+  const capacitor=window.Capacitor;
+  if(!capacitor||typeof capacitor.isNativePlatform!=='function'||!capacitor.isNativePlatform())return null;
+  return capacitor.Plugins&&capacitor.Plugins.LocalNotifications||null;
+}
+
+function notificationTimeParts(timeValue){
+  const [hour,minute]=(timeValue||'09:00').split(':').map(value=>parseInt(value,10));
+  return {hour:Number.isFinite(hour)?hour:9,minute:Number.isFinite(minute)?minute:0};
+}
+
+async function scheduleNativeNotifications(){
+  const native=getNativeLocalNotifications();
+  if(!native)return false;
+  const reminders=[{id:101},{id:102}];
+  try{
+    await native.cancel({notifications:reminders});
+    if(!S.notifications.enabled)return true;
+    const permission=await native.checkPermissions();
+    if(permission.display!=='granted')return false;
+    const morning=notificationTimeParts(S.notifications.morningTime);
+    const score=notificationTimeParts(S.notifications.scoreTime);
+    await native.createChannel({id:'presence-reminders',name:'Presence reminders',description:'Daily Presence actions and score reminders',importance:4,visibility:1,vibration:true});
+    await native.schedule({notifications:[
+      {id:101,title:'Presence morning',body:'Start the affirmation and meditation protocol.',channelId:'presence-reminders',schedule:{on:morning,repeats:true,allowWhileIdle:true},extra:{panel:'morning'}},
+      {id:102,title:'Presence score',body:'Score today before the day closes.',channelId:'presence-reminders',schedule:{on:score,repeats:true,allowWhileIdle:true},extra:{panel:'home'}}
+    ]});
+    return true;
+  }catch(e){console.error('Presence native notification error',e);return false;}
 }
 
 function nextReminderDelay(timeValue){
@@ -2202,12 +2239,23 @@ function scheduleNotification(kind,timeValue,title,body){
 function scheduleNotifications(){
   clearNotificationTimers();
   ensureNotificationState();
+  if(getNativeLocalNotifications()){scheduleNativeNotifications();return;}
   if(!S.notifications.enabled||!('Notification' in window)||Notification.permission!=='granted')return;
   scheduleNotification('presence-morning',S.notifications.morningTime,'Presence morning','Start the affirmation and meditation protocol.');
   scheduleNotification('presence-score',S.notifications.scoreTime,'Presence score','Score today before the day closes.');
 }
 
 async function showPresenceNotification(title,body,tag){
+  const native=getNativeLocalNotifications();
+  if(native){
+    const ids={'presence-test':103,'presence-med':104};
+    try{
+      const permission=await native.checkPermissions();
+      if(permission.display!=='granted')return false;
+      await native.schedule({notifications:[{id:ids[tag]||199,title,body,channelId:'presence-reminders',schedule:{at:new Date(Date.now()+350),allowWhileIdle:true}}]});
+      return true;
+    }catch(e){console.error('Presence native notification error',e);return false;}
+  }
   if(!('Notification' in window)||Notification.permission!=='granted')return false;
   const options={body,tag,icon:'icon-192.png',badge:'icon-180.png'};
   try{
@@ -2224,6 +2272,18 @@ async function showPresenceNotification(title,body,tag){
 }
 
 async function enableNotifications(){
+  const native=getNativeLocalNotifications();
+  if(native){
+    let permission=await native.checkPermissions();
+    if(permission.display!=='granted')permission=await native.requestPermissions();
+    if(permission.display!=='granted'){toast('Notifications were not enabled.');renderNotifications();return;}
+    S.notifications.enabled=true;
+    await save();
+    const scheduled=await scheduleNativeNotifications();
+    renderNotifications();
+    toast(scheduled?'Native Android reminders enabled.':'Notifications enabled, but reminders could not be scheduled.');
+    return;
+  }
   if(!('Notification' in window)){toast('Notifications are not supported here.');renderNotifications();return;}
   const permission=Notification.permission==='default'?await Notification.requestPermission():Notification.permission;
   if(permission!=='granted'){toast('Notifications were not enabled.');renderNotifications();return;}
@@ -2248,6 +2308,14 @@ async function saveNotificationSettings(showToast=true){
 }
 
 async function sendTestNotification(){
+  const native=getNativeLocalNotifications();
+  if(native){
+    const permission=await native.checkPermissions();
+    if(permission.display!=='granted'){await enableNotifications();}
+    const sent=await showPresenceNotification('Presence','Notifications are working.','presence-test');
+    toast(sent?'Test notification sent.':'Could not send notification.');
+    return;
+  }
   if(!('Notification' in window)){toast('Notifications are not supported here.');return;}
   if(Notification.permission!=='granted'){await enableNotifications();}
   if(Notification.permission==='granted'){
@@ -2272,7 +2340,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v24').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v25').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
