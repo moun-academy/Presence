@@ -314,11 +314,19 @@ textarea::placeholder{color:var(--text3);}
 .terms-hero{background:linear-gradient(145deg,rgba(61,220,145,0.13),rgba(242,185,80,0.06));border-color:var(--green-deep);text-align:center;overflow:hidden;position:relative;}
 .terms-hero::after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(61,220,145,0.08);filter:blur(28px);right:-80px;top:-100px;pointer-events:none;}
 .terms-title{font-family:var(--serif);font-size:30px;line-height:1.2;color:var(--text);position:relative;z-index:1;}
-.terms-quote{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--green);line-height:1.55;margin:12px auto 0;max-width:560px;position:relative;z-index:1;}
-.terms-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0;}
-.terms-stat{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:16px 8px;text-align:center;}
-.terms-stat b{display:block;font-family:var(--serif);font-size:30px;color:var(--green);line-height:1;}
-.terms-stat span{display:block;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-top:8px;line-height:1.35;}
+.terms-quote{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--green);line-height:1.5;margin:10px auto 16px;max-width:520px;position:relative;z-index:1;}
+.terms-rank{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:10px;}
+.terms-rank-badge{border:1px solid rgba(242,185,80,0.65);color:var(--gold);border-radius:999px;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;padding:4px 11px;font-weight:600;}
+.terms-rank-name{font-family:var(--serif);font-size:17px;color:var(--text);}
+.terms-rank-bar{height:5px;border-radius:999px;background:rgba(4,9,7,0.55);overflow:hidden;position:relative;z-index:1;max-width:320px;margin:0 auto;}
+.terms-rank-fill{height:100%;width:0;background:linear-gradient(90deg,var(--green-deep),var(--gold));border-radius:999px;transition:width 0.5s ease;}
+.terms-rank-copy{position:relative;z-index:1;font-size:11px;color:var(--text3);margin-top:8px;letter-spacing:0.05em;}
+.terms-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0;}
+.terms-stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 6px;text-align:center;}
+.terms-stat b{display:block;font-family:var(--serif);font-size:27px;color:var(--green);line-height:1;}
+.terms-stat.gold b{color:var(--gold);}
+.terms-stat span{display:block;font-size:9px;color:var(--text3);letter-spacing:0.09em;text-transform:uppercase;margin-top:7px;line-height:1.35;}
+.terms-coach{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--text2);text-align:center;line-height:1.55;margin-bottom:14px;}
 .terms-progress-copy{display:flex;justify-content:space-between;gap:12px;color:var(--text2);font-size:12px;margin-bottom:8px;}
 .terms-progress{height:8px;border-radius:999px;background:var(--bg);overflow:hidden;border:1px solid var(--border);}
 .terms-progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--green-deep),var(--green));border-radius:999px;transition:width 0.5s ease;}
@@ -346,12 +354,23 @@ textarea::placeholder{color:var(--text3);}
 .terms-active-task{font-family:var(--serif);font-size:27px;line-height:1.3;text-align:center;color:var(--text);margin:10px auto 8px;max-width:560px;text-wrap:pretty;}
 .terms-active-meta{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-size:11px;color:var(--text3);margin-bottom:18px;}
 .terms-active-empty{font-size:14px;color:var(--text2);text-align:center;padding:10px 0 14px;line-height:1.6;}
-.terms-plan-progress{height:6px;border-radius:999px;background:var(--bg);overflow:hidden;margin-bottom:14px;}
-.terms-plan-progress-fill{height:100%;width:0;border-radius:999px;background:var(--green);transition:width 0.35s ease;}
+.terms-daywon{border:1px solid rgba(242,185,80,0.5);background:rgba(242,185,80,0.08);color:var(--gold);border-radius:12px;padding:10px 12px;font-size:13px;text-align:center;margin-bottom:12px;display:none;}
+.terms-daywon.show{display:block;}
+.terms-plan-progress{display:flex;gap:4px;margin-bottom:14px;}
+.terms-plan-seg{height:7px;border-radius:999px;background:var(--bg);border:1px solid var(--border);flex:1;transition:all 0.3s ease;}
+.terms-plan-seg.done{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(61,220,145,0.35);}
 .terms-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
 .terms-chip{border:1px solid var(--border2);background:var(--surface2);color:var(--text2);border-radius:999px;padding:8px 12px;font:400 12px var(--sans);cursor:pointer;}
 .terms-chip:hover,.terms-chip:focus{color:var(--green);border-color:var(--green-deep);outline:none;}
-.terms-start{font-size:17px;padding:17px;}
+.terms-start{font-size:17px;padding:17px;animation:termsPulse 2.6s ease-in-out infinite;}
+@keyframes termsPulse{0%,100%{box-shadow:0 0 0 0 rgba(61,220,145,0);}50%{box-shadow:0 0 24px 2px rgba(61,220,145,0.28);}}
+.terms-links{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px;}
+.terms-link{width:14px;height:14px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);transition:all 0.3s ease;}
+.terms-link.filled{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(61,220,145,0.4);}
+.terms-sticky{position:fixed;left:50%;transform:translateX(-50%) translateY(80px);bottom:16px;width:min(560px,calc(100vw - 32px));display:flex;gap:10px;align-items:center;background:rgba(15,20,17,0.96);border:1px solid var(--green-deep);border-radius:16px;padding:10px 12px;z-index:60;box-shadow:0 12px 34px rgba(0,0,0,0.45);backdrop-filter:blur(14px);opacity:0;pointer-events:none;transition:opacity 0.3s ease,transform 0.3s ease;}
+.terms-sticky.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);}
+.terms-sticky-task{flex:1;min-width:0;font-size:13px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
+.terms-sticky .btn{width:auto;margin:0;padding:12px 16px;font-size:14px;white-space:nowrap;}
 .terms-milestones{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .terms-badge{border:1px solid var(--border);background:var(--bg2);border-radius:14px;padding:14px 10px;text-align:center;opacity:0.55;}
 .terms-badge.unlocked{opacity:1;border-color:var(--green-deep);background:var(--green-glow);}
@@ -370,22 +389,36 @@ textarea::placeholder{color:var(--text3);}
 .terms-overlay-card{width:min(520px,100%);position:relative;}
 .terms-count{font-family:var(--serif);font-size:clamp(112px,34vw,210px);color:var(--green);line-height:0.9;text-shadow:0 0 55px rgba(61,220,145,0.3);animation:termsPop 0.55s ease;}
 .terms-count.go{font-size:clamp(72px,24vw,130px);color:var(--gold);}
-.terms-overlay-action{font-size:16px;color:var(--text2);margin:24px auto 18px;max-width:420px;}
-.terms-overlay-actions{display:none;gap:10px;}
-.terms-overlay-actions.show{display:grid;}
+.terms-overlay-action{font-family:var(--serif);font-size:19px;color:var(--text);line-height:1.4;margin:22px auto 14px;max-width:420px;text-wrap:pretty;}
+.terms-go-panel{display:none;}
+.terms-go-panel.show{display:block;animation:termsFade 0.3s ease;}
+.terms-go-chips{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:2px 0 14px;}
+.terms-go-chip{border:1px solid var(--border2);background:rgba(19,26,22,0.9);color:var(--text3);border-radius:999px;padding:6px 12px;font-size:12px;}
+.terms-go-chip b{color:var(--green);font-weight:600;}
+.terms-go-record{display:inline-block;border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:5px 13px;font-size:12px;letter-spacing:0.08em;margin-bottom:12px;animation:termsPop 0.5s ease;}
+.terms-go-next{font-size:13px;color:var(--text2);margin-bottom:8px;}
+.terms-go-next b{color:var(--gold);font-weight:600;}
+.terms-motion{font-size:11px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;}
+.terms-motion b{color:var(--green);font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:0.05em;}
+.terms-go-coach{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--text2);margin:0 auto 18px;max-width:400px;line-height:1.55;}
+.terms-overlay-actions{display:grid;gap:10px;}
+.terms-overlay-actions .btn{margin-bottom:0;}
+.terms-overlay-secondary{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .terms-celebration{display:none;}
 .terms-celebration.show{display:block;animation:termsPop 0.5s ease;}
 .terms-celebration-icon{font-size:72px;line-height:1;}
 .terms-celebration-title{font-family:var(--serif);font-size:34px;color:var(--gold);margin-top:12px;}
-.terms-celebration-copy{font-size:16px;color:var(--text2);line-height:1.65;margin:12px auto 22px;max-width:440px;}
+.terms-celebration-copy{font-size:16px;color:var(--text2);line-height:1.65;margin:12px auto 16px;max-width:440px;}
+.terms-celebration-stats{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 22px;}
 .terms-celebration-actions{display:grid;gap:10px;}
+.terms-celebration-actions .btn{margin-bottom:0;}
 .terms-confetti{position:absolute;inset:-80px -20px;pointer-events:none;overflow:hidden;}
 .terms-confetti i{position:absolute;width:9px;height:16px;border-radius:3px;animation:termsFall 1.8s ease-in forwards;}
 @keyframes termsFade{from{opacity:0;}to{opacity:1;}}
 @keyframes termsPop{0%{opacity:0;transform:scale(0.75);}70%{transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
 @keyframes termsFall{0%{opacity:0;transform:translateY(-30px) rotate(0);}15%{opacity:1;}100%{opacity:0;transform:translateY(520px) rotate(540deg);}}
-@media(max-width:560px){.terms-title{font-size:26px;}.terms-stats{grid-template-columns:repeat(2,1fr);}.terms-stat b{font-size:28px;}.terms-milestones{grid-template-columns:repeat(2,1fr);}.terms-overlay-actions.show{display:block;}.terms-plan-add{grid-template-columns:1fr;}.terms-plan-add .btn{width:100%;}.terms-task{grid-template-columns:auto minmax(0,1fr);}.terms-task-controls{grid-column:2;justify-content:flex-end;}.terms-active-task{font-size:23px;}}
-@media(prefers-reduced-motion:reduce){.terms-count,.terms-celebration.show,.terms-overlay.open,.terms-confetti i{animation:none!important;}.terms-progress-fill{transition:none;}}
+@media(max-width:560px){.terms-title{font-size:26px;}.terms-stats{grid-template-columns:repeat(3,1fr);gap:6px;}.terms-stat b{font-size:23px;}.terms-milestones{grid-template-columns:repeat(2,1fr);}.terms-plan-add{grid-template-columns:1fr;}.terms-plan-add .btn{width:100%;}.terms-task{grid-template-columns:auto minmax(0,1fr);}.terms-task-controls{grid-column:2;justify-content:flex-end;}.terms-active-task{font-size:23px;}}
+@media(prefers-reduced-motion:reduce){.terms-count,.terms-celebration.show,.terms-overlay.open,.terms-confetti i,.terms-start,.terms-go-record{animation:none!important;}.terms-progress-fill,.terms-rank-fill,.terms-plan-seg,.terms-link{transition:none;}}
 </style>
 </head>
 <body>
@@ -445,39 +478,46 @@ textarea::placeholder{color:var(--text3);}
   <div class="card terms-hero">
     <div class="section-label">The straight line is five seconds away</div>
     <div class="terms-title">Livin' on My Terms</div>
-    <div class="terms-quote">“I do not need to feel ready. I am always five seconds away from taking the straight line and living on my terms.”</div>
+    <div class="terms-quote">“I do not need to feel ready. I am always five seconds away from the straight line.”</div>
+    <div class="terms-rank"><span class="terms-rank-badge" id="termsRankBadge">Rank 1</span><span class="terms-rank-name" id="termsRankName">Starter</span></div>
+    <div class="terms-rank-bar"><div class="terms-rank-fill" id="termsRankFill"></div></div>
+    <div class="terms-rank-copy" id="termsRankCopy"></div>
   </div>
 
   <div class="terms-stats">
-    <div class="terms-stat"><b id="termsToday">0</b><span>Today</span></div>
-    <div class="terms-stat"><b id="termsChain">0</b><span>Current chain</span></div>
+    <div class="terms-stat"><b id="termsToday">0</b><span>Moves today</span></div>
+    <div class="terms-stat"><b id="termsChain">0</b><span>Chain</span></div>
     <div class="terms-stat"><b id="termsBestChain">0</b><span>Best chain</span></div>
-    <div class="terms-stat"><b id="termsTotal">0</b><span>Lifetime moves</span></div>
+    <div class="terms-stat"><b id="termsDayStreak">0</b><span>Day streak</span></div>
+    <div class="terms-stat gold"><b id="termsDaysWon">0</b><span>Days won</span></div>
+    <div class="terms-stat"><b id="termsTotal">0</b><span>Lifetime</span></div>
   </div>
 
-  <div class="card terms-momentum">
-    <div class="section-label">Momentum mode</div>
-    <div id="termsActiveEmpty" class="terms-active-empty">Build today's plan below. Your first important move will appear here.</div>
+  <div class="card terms-momentum" id="termsMomentumCard">
+    <div class="section-label">Momentum</div>
+    <div class="terms-coach" id="termsCoach"></div>
+    <div id="termsActiveEmpty" class="terms-active-empty">Name today's mission below. Your first move will appear here.</div>
     <div id="termsActiveMission" style="display:none;">
-      <div class="terms-active-label">Current important task</div>
+      <div class="terms-active-label">Now moving on</div>
       <div class="terms-active-task" id="termsActiveTask"></div>
       <div class="terms-active-meta">
         <span id="termsActiveApps">0 applications on this task</span>
         <span id="termsActivePosition">Task 1 of 1</span>
       </div>
-      <button class="btn btn-primary terms-start" id="termsStartButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Keep it going</button>
-      <button class="btn btn-ghost" id="termsCompleteButton" type="button" onclick="completeTermsTask()">Task complete — next</button>
-      <div class="mini-label">Each application starts or continues the task. Only “Task done” completes it.</div>
+      <button class="btn btn-primary terms-start" id="termsStartButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Start now</button>
+      <button class="btn btn-ghost" id="termsCompleteButton" type="button" onclick="completeTermsTask()">Task done — next</button>
+      <div class="mini-label">Every 5-4-3-2-1 starts or continues the task. Only “Task done” completes it.</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="section-label">Today's straight line</div>
-    <div class="terms-plan-summary" id="termsPlanSummary">0 of 0 important tasks complete</div>
-    <div class="terms-plan-progress"><div class="terms-plan-progress-fill" id="termsPlanProgress"></div></div>
+    <div class="section-label">Today's mission</div>
+    <div class="terms-daywon" id="termsDayWonBanner">★ Day won — every important task is done.</div>
+    <div class="terms-plan-summary" id="termsPlanSummary">No mission yet.</div>
+    <div class="terms-plan-progress" id="termsPlanProgress" style="display:none;"></div>
     <div class="terms-plan-add">
-      <input class="terms-action-input" id="termsTaskInput" maxlength="100" placeholder="Add an important task for today" onkeydown="if(event.key==='Enter'){event.preventDefault();addTermsTask();}">
-      <button class="btn" type="button" onclick="addTermsTask()">Add task</button>
+      <input class="terms-action-input" id="termsTaskInput" maxlength="100" placeholder="What must happen today?" onkeydown="if(event.key==='Enter'){event.preventDefault();addTermsTask();}">
+      <button class="btn" type="button" onclick="addTermsTask()">Add</button>
     </div>
     <div class="terms-chips" aria-label="Quick task ideas" style="margin-top:12px;">
       <button class="terms-chip" type="button" onclick="addTermsQuickTask('Get out of bed')">Get up</button>
@@ -490,9 +530,10 @@ textarea::placeholder{color:var(--text3);}
   </div>
 
   <div class="card">
-    <div class="section-label">Next record</div>
+    <div class="section-label">Next milestone</div>
     <div class="terms-progress-copy"><span id="termsNextLabel">First Move</span><span id="termsNextCount">0 of 1</span></div>
-    <div class="terms-progress"><div class="terms-progress-fill" id="termsProgressFill"></div></div>
+    <div class="terms-links" id="termsChainLinks" style="display:none;"></div>
+    <div class="terms-progress" id="termsProgressTrack"><div class="terms-progress-fill" id="termsProgressFill"></div></div>
     <div class="mini-label" id="termsBestDay">Best day: 0 applications</div>
   </div>
 
@@ -504,6 +545,11 @@ textarea::placeholder{color:var(--text3);}
   <div class="card">
     <div class="section-label">Recent moves</div>
     <div class="terms-history" id="termsHistory"></div>
+  </div>
+
+  <div class="terms-sticky" id="termsSticky">
+    <div class="terms-sticky-task" id="termsStickyTask"></div>
+    <button class="btn btn-primary" type="button" onclick="startTermsCountdown()">5-4-3-2-1</button>
   </div>
 </div>
 
@@ -781,22 +827,32 @@ textarea::placeholder{color:var(--text3);}
 <div class="terms-overlay" id="termsOverlay" role="dialog" aria-modal="true" aria-labelledby="termsOverlayTitle">
   <div class="terms-overlay-card">
     <div id="termsCountdownView">
-      <div class="section-label" id="termsOverlayTitle">No negotiation. Just the next move.</div>
+      <div class="section-label" id="termsOverlayTitle">No negotiation. Just move.</div>
       <div class="terms-count" id="termsCount" aria-live="assertive">5</div>
       <div class="terms-overlay-action" id="termsOverlayAction"></div>
-      <div class="terms-overlay-actions" id="termsOverlayActions">
-        <button class="btn btn-primary" id="termsContinueButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Keep going</button>
-        <button class="btn btn-ghost" type="button" onclick="completeTermsTaskFromOverlay()">Task done — next</button>
-        <button class="btn btn-ghost" type="button" onclick="closeTermsOverlay()">Back to plan</button>
+      <div class="terms-go-panel" id="termsGoPanel">
+        <div class="terms-go-chips" id="termsGoChips"></div>
+        <div class="terms-go-record" id="termsGoRecord" style="display:none;">★ New personal-best chain</div>
+        <div class="terms-go-next" id="termsGoNext"></div>
+        <div class="terms-motion">In motion · <b id="termsMotionClock">0:00</b></div>
+        <div class="terms-go-coach" id="termsGoCoach"></div>
+        <div class="terms-overlay-actions">
+          <button class="btn btn-primary terms-start" id="termsContinueButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Keep going</button>
+          <div class="terms-overlay-secondary">
+            <button class="btn btn-ghost" type="button" onclick="completeTermsTaskFromOverlay()">Task done — next</button>
+            <button class="btn btn-ghost" type="button" onclick="closeTermsOverlay()">Back to plan</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="terms-celebration" id="termsCelebration">
       <div class="terms-confetti" id="termsConfetti"></div>
-      <div class="terms-celebration-icon">⚡</div>
+      <div class="terms-celebration-icon" id="termsCelebrationIcon">⚡</div>
       <div class="terms-celebration-title" id="termsCelebrationTitle">You moved.</div>
       <div class="terms-celebration-copy" id="termsCelebrationCopy"></div>
+      <div class="terms-celebration-stats" id="termsCelebrationStats"></div>
       <div class="terms-celebration-actions">
-        <button class="btn btn-primary" id="termsCelebrationContinue" type="button" onclick="continueTermsFromCelebration()">5-4-3-2-1 — Keep going</button>
+        <button class="btn btn-primary terms-start" id="termsCelebrationContinue" type="button" onclick="continueTermsFromCelebration()">5-4-3-2-1 — Keep going</button>
         <button class="btn btn-ghost" id="termsCelebrationComplete" type="button" onclick="completeTermsTaskFromCelebration()">Task done — next</button>
         <button class="btn btn-ghost" id="termsCelebrationBack" type="button" onclick="closeTermsOverlay()">Back to plan</button>
       </div>
@@ -804,11 +860,11 @@ textarea::placeholder{color:var(--text3);}
   </div>
 </div>
 
-<script src="firebase-config.js?v=presence-v23"></script>
+<script src="firebase-config.js?v=presence-v24"></script>
 <script>
 // ---------- State ----------
 // Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
-const APP_BUILD={version:'v23',date:'Jul 19, 2026',time:'1:29 PM'};
+const APP_BUILD={version:'v24',date:'Jul 19, 2026',time:'2:05 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -850,13 +906,26 @@ const TERMS_CHAIN_MILESTONES=[
 ];
 const TERMS_TOTAL_MILESTONES=[10,25,50,100,250,500,1000];
 const TERMS_DAY_MILESTONES=[5,10,20,30];
+const TERMS_RANKS=[
+  {at:0,name:'Starter'},
+  {at:10,name:'Mover'},
+  {at:25,name:'Doer'},
+  {at:60,name:'Operator'},
+  {at:120,name:'Executor'},
+  {at:250,name:'Commander'},
+  {at:500,name:'Force'},
+  {at:1000,name:'Unstoppable'}
+];
 let termsCountdownTimer=null;
+let termsMotionTimer=null;
+let termsMotionSince=null;
 let pendingTermsAction='';
 let pendingTermsTaskId=null;
+let termsNewBestChain=false;
 let termsAudioCtx=null;
 
 function termsDefaults(){
-  return {total:0,currentChain:0,bestChain:0,bestDay:0,daily:{},history:[],unlocked:[],updatedAt:0,planDate:'',tasks:[],activeTaskId:null};
+  return {total:0,currentChain:0,bestChain:0,bestDay:0,daily:{},history:[],unlocked:[],updatedAt:0,planDate:'',tasks:[],activeTaskId:null,wonDays:[]};
 }
 
 function ensureTermsState(){
@@ -866,6 +935,7 @@ function ensureTermsState(){
   if(!Array.isArray(S.terms.history)){S.terms.history=[];changed=true;}
   if(!Array.isArray(S.terms.unlocked)){S.terms.unlocked=[];changed=true;}
   if(!Array.isArray(S.terms.tasks)){S.terms.tasks=[];changed=true;}
+  if(!Array.isArray(S.terms.wonDays)){S.terms.wonDays=[];changed=true;}
   const today=localDateStr();
   if(!S.terms.planDate){S.terms.planDate=today;changed=true;}
   else if(S.terms.planDate!==today){
@@ -1278,26 +1348,89 @@ function render(){
   renderScoreHistory();renderTerms();
 }
 
+function termsRankInfo(total){
+  let idx=0;
+  TERMS_RANKS.forEach((rank,i)=>{if(total>=rank.at)idx=i;});
+  return {index:idx+1,current:TERMS_RANKS[idx],next:TERMS_RANKS[idx+1]||null};
+}
+
+function termsDayStreak(t){
+  let streak=0;const d=new Date();
+  if(!((t.daily[localDateStr(d)]||0)>0))d.setDate(d.getDate()-1);
+  while((t.daily[localDateStr(d)]||0)>0){streak++;d.setDate(d.getDate()-1);}
+  return streak;
+}
+
+function termsNextChainMilestone(t){
+  return TERMS_CHAIN_MILESTONES.find(m=>t.currentChain<m.count)||null;
+}
+
+function termsCoachLine(){
+  const t=S.terms;const today=localDateStr();const todayCount=t.daily[today]||0;
+  const tasks=t.tasks||[];const open=tasks.filter(task=>!task.done);
+  const next=termsNextChainMilestone(t);
+  if(!tasks.length)return 'Name the mission. One important task is enough to start.';
+  if(!open.length)return 'Day won. Anything you add now is bonus territory.';
+  if(next&&t.currentChain>0&&next.count-t.currentChain===1)return 'One more move and '+next.name+' is yours.';
+  if(next&&t.currentChain>0&&next.count-t.currentChain===2)return 'Two moves from '+next.name+'. Stay on the line.';
+  if(todayCount===0)return 'You do not need to feel ready. Five seconds from now, you are moving.';
+  const last=t.history[t.history.length-1];
+  if(last&&Date.now()-last.ts>45*60*1000)return 'The gap does not matter. One countdown puts you back in motion.';
+  if(open.length===1&&tasks.length>1)return 'One task stands between you and winning the day.';
+  const lines=[
+    'Momentum is alive. Protect it with the next move.',
+    'Discipline is just five seconds, repeated.',
+    'Every move makes the straight line easier to choose.',
+    'Keep stacking. The chain is doing its work.'
+  ];
+  return lines[(t.total||0)%lines.length];
+}
+
 function renderTerms(){
   if(ensureTermsState())save();
   const t=S.terms;const today=localDateStr();const todayCount=t.daily[today]||0;
-  const values={termsToday:todayCount,termsChain:t.currentChain,termsBestChain:t.bestChain,termsTotal:t.total};
+  const values={termsToday:todayCount,termsChain:t.currentChain,termsBestChain:t.bestChain,termsTotal:t.total,termsDayStreak:termsDayStreak(t),termsDaysWon:(t.wonDays||[]).length};
   Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value;});
+  const rank=termsRankInfo(t.total||0);
+  const rankBadge=document.getElementById('termsRankBadge');if(rankBadge)rankBadge.textContent='Rank '+rank.index;
+  const rankName=document.getElementById('termsRankName');if(rankName)rankName.textContent=rank.current.name;
+  const rankFill=document.getElementById('termsRankFill');
+  const rankCopy=document.getElementById('termsRankCopy');
+  if(rank.next){
+    const pct=Math.max(0,Math.min(100,((t.total-rank.current.at)/(rank.next.at-rank.current.at))*100));
+    if(rankFill)rankFill.style.width=pct+'%';
+    if(rankCopy)rankCopy.textContent=(rank.next.at-t.total)+' move'+(rank.next.at-t.total===1?'':'s')+' to '+rank.next.name;
+  }else{
+    if(rankFill)rankFill.style.width='100%';
+    if(rankCopy)rankCopy.textContent='Top rank. You are the proof it works.';
+  }
+  const coach=document.getElementById('termsCoach');if(coach)coach.textContent=termsCoachLine();
   renderTermsPlan(t);
-  const next=TERMS_CHAIN_MILESTONES.find(m=>t.currentChain<m.count);
+  const next=termsNextChainMilestone(t);
   const nextLabel=document.getElementById('termsNextLabel');
   const nextCount=document.getElementById('termsNextCount');
   const fill=document.getElementById('termsProgressFill');
+  const track=document.getElementById('termsProgressTrack');
+  const links=document.getElementById('termsChainLinks');
   if(next){
-    const previous=[...TERMS_CHAIN_MILESTONES].reverse().find(m=>m.count<=t.currentChain);
-    const base=previous?previous.count:0;
-    const pct=Math.max(0,Math.min(100,((t.currentChain-base)/(next.count-base))*100));
     if(nextLabel)nextLabel.textContent=next.name+' at '+next.count+' consecutive moves';
     if(nextCount)nextCount.textContent=t.currentChain+' of '+next.count;
-    if(fill)fill.style.width=pct+'%';
+    if(links&&next.count<=20){
+      links.style.display='flex';if(track)track.style.display='none';
+      links.innerHTML='';
+      for(let i=0;i<next.count;i++){const dot=document.createElement('span');dot.className='terms-link'+(i<t.currentChain?' filled':'');links.appendChild(dot);}
+    }else{
+      if(links)links.style.display='none';if(track)track.style.display='block';
+      const previous=[...TERMS_CHAIN_MILESTONES].reverse().find(m=>m.count<=t.currentChain);
+      const base=previous?previous.count:0;
+      const pct=Math.max(0,Math.min(100,((t.currentChain-base)/(next.count-base))*100));
+      if(fill)fill.style.width=pct+'%';
+    }
   }else{
     if(nextLabel)nextLabel.textContent='All consecutive milestones unlocked';
     if(nextCount)nextCount.textContent=t.currentChain+' chain';
+    if(links)links.style.display='none';
+    if(track)track.style.display='block';
     if(fill)fill.style.width='100%';
   }
   const bestDay=document.getElementById('termsBestDay');
@@ -1327,16 +1460,28 @@ function renderTerms(){
       row.append(num,action,time);history.appendChild(row);
     });
   }
+  updateTermsSticky();
 }
 
 function renderTermsPlan(t){
   const tasks=t.tasks||[];
   const completed=tasks.filter(task=>task.done).length;
   const remaining=tasks.length-completed;
+  const dayWon=tasks.length>0&&remaining===0;
+  const banner=document.getElementById('termsDayWonBanner');
+  if(banner)banner.classList.toggle('show',dayWon);
   const summary=document.getElementById('termsPlanSummary');
-  if(summary)summary.textContent=completed+' of '+tasks.length+' important task'+(tasks.length===1?'':'s')+' complete';
-  const planFill=document.getElementById('termsPlanProgress');
-  if(planFill)planFill.style.width=(tasks.length?(completed/tasks.length)*100:0)+'%';
+  if(summary){
+    if(!tasks.length)summary.textContent='No mission yet. Add the few tasks that would make today yours.';
+    else if(dayWon)summary.textContent='All '+tasks.length+' task'+(tasks.length===1?'':'s')+' down. The day is yours.';
+    else summary.textContent=completed+' of '+tasks.length+' down — finish all '+tasks.length+' to win the day';
+  }
+  const segments=document.getElementById('termsPlanProgress');
+  if(segments){
+    segments.innerHTML='';
+    segments.style.display=tasks.length?'flex':'none';
+    tasks.forEach(task=>{const seg=document.createElement('div');seg.className='terms-plan-seg'+(task.done?' done':'');segments.appendChild(seg);});
+  }
   const active=tasks.find(task=>task.id===t.activeTaskId&&!task.done)||null;
   const empty=document.getElementById('termsActiveEmpty');
   const mission=document.getElementById('termsActiveMission');
@@ -1347,8 +1492,10 @@ function renderTermsPlan(t){
     const activeApps=document.getElementById('termsActiveApps');if(activeApps)activeApps.textContent=(active.apps||0)+' application'+((active.apps||0)===1?'':'s')+' on this task';
     const openTasks=tasks.filter(task=>!task.done);const position=Math.max(1,openTasks.findIndex(task=>task.id===active.id)+1);
     const activePosition=document.getElementById('termsActivePosition');if(activePosition)activePosition.textContent='Task '+position+' of '+remaining+' remaining';
+    const startButton=document.getElementById('termsStartButton');
+    if(startButton)startButton.textContent=(active.apps||0)>0?'5-4-3-2-1 — Keep going':'5-4-3-2-1 — Start now';
   }else if(empty){
-    empty.textContent=tasks.length?'Today’s straight line is complete. Add another important task or carry the momentum into the rest of your day.':'Build today’s plan below. Your first important move will appear here.';
+    empty.textContent=tasks.length?'Mission complete. Add a bonus task, or carry the momentum into the rest of your day.':'Name today’s mission below. Your first move will appear here.';
   }
   const list=document.getElementById('termsTaskList');
   if(!list)return;
@@ -1371,6 +1518,25 @@ function renderTermsPlan(t){
 function termsTaskControl(textValue,label,handler,disabled){
   const button=document.createElement('button');button.type='button';button.className='terms-task-control';button.textContent=textValue;button.setAttribute('aria-label',label);button.disabled=disabled;button.onclick=handler;return button;
 }
+
+function updateTermsSticky(){
+  const bar=document.getElementById('termsSticky');if(!bar)return;
+  const panel=document.getElementById('panel-terms');
+  const card=document.getElementById('termsMomentumCard');
+  const overlay=document.getElementById('termsOverlay');
+  const active=S.terms&&S.terms.tasks?S.terms.tasks.find(task=>task.id===S.terms.activeTaskId&&!task.done):null;
+  let show=false;
+  if(active&&panel&&panel.classList.contains('active')&&card&&!(overlay&&overlay.classList.contains('open'))){
+    show=card.getBoundingClientRect().bottom<0;
+  }
+  bar.classList.toggle('show',!!show);
+  const label=document.getElementById('termsStickyTask');
+  if(label&&active)label.textContent=active.text;
+}
+window.addEventListener('scroll',()=>{
+  const panel=document.getElementById('panel-terms');
+  if(panel&&panel.classList.contains('active'))updateTermsSticky();
+},{passive:true});
 
 function renderSteps(){
   // re-apply step states by index since onclick passes element
@@ -1493,7 +1659,7 @@ function addTermsTask(textValue){
   if(!S.terms.activeTaskId)S.terms.activeTaskId=task.id;
   S.terms.updatedAt=Date.now();
   if(input)input.value='';
-  save();render();toast('Added to today’s straight line.');
+  save();render();toast('Locked into today’s mission.');
   const start=document.getElementById('termsStartButton');if(S.terms.activeTaskId===task.id&&start)start.focus();
 }
 
@@ -1540,8 +1706,13 @@ function completeTermsTask(taskId){
   task.done=true;task.completedAt=Date.now();
   const next=S.terms.tasks.find(item=>!item.done);
   S.terms.activeTaskId=next?next.id:null;S.terms.updatedAt=Date.now();
-  addLog('completed important task: '+task.text,'win');save();render();
-  if(next){toast('Task complete. Next: '+next.text);const start=document.getElementById('termsStartButton');if(start)start.focus();}
+  addLog('completed important task: '+task.text,'win');
+  if(!next){
+    const today=localDateStr();
+    if(!S.terms.wonDays.includes(today)){S.terms.wonDays.push(today);addLog('won the day — every important task complete','win');}
+  }
+  save();render();
+  if(next){toast('Down. Next: '+next.text);const start=document.getElementById('termsStartButton');if(start)start.focus();}
   else{showTermsPlanCelebration();}
 }
 
@@ -1551,16 +1722,18 @@ function startTermsCountdown(){
   pendingTermsAction=task.text;pendingTermsTaskId=task.id;
   unlockTermsAudio();
   clearInterval(termsCountdownTimer);
+  stopTermsMotionClock();
   const overlay=document.getElementById('termsOverlay');
   const count=document.getElementById('termsCount');
-  const actions=document.getElementById('termsOverlayActions');
   const celebration=document.getElementById('termsCelebration');
   document.getElementById('termsCountdownView').style.display='block';
   celebration.classList.remove('show');
+  document.getElementById('termsOverlayTitle').textContent='No negotiation. Just move.';
   document.getElementById('termsOverlayAction').textContent=pendingTermsAction;
-  actions.classList.remove('show');
+  document.getElementById('termsGoPanel').classList.remove('show');
   count.className='terms-count';count.textContent='5';
   overlay.classList.add('open');document.body.style.overflow='hidden';
+  updateTermsSticky();
   let n=5;
   termsCountdownTimer=setInterval(()=>{
     n--;
@@ -1601,9 +1774,11 @@ function termsGoTone(){
 function completeTermsMove(){
   ensureTermsState();
   const t=S.terms;const today=localDateStr();const previousChain=t.currentChain||0;
+  const previousBest=t.bestChain||0;
   t.currentChain=previousChain+1;t.total=(t.total||0)+1;
   t.daily[today]=(t.daily[today]||0)+1;
-  t.bestChain=Math.max(t.bestChain||0,t.currentChain);
+  termsNewBestChain=t.currentChain>previousBest&&previousBest>=3;
+  t.bestChain=Math.max(previousBest,t.currentChain);
   t.bestDay=Math.max(t.bestDay||0,t.daily[today]);
   t.updatedAt=Date.now();
   const task=t.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);
@@ -1619,20 +1794,56 @@ function completeTermsMove(){
   else showTermsMomentumReady();
 }
 
+function termsGoChip(container,value,label){
+  const chip=document.createElement('span');chip.className='terms-go-chip';
+  const strong=document.createElement('b');strong.textContent=value;
+  chip.appendChild(strong);chip.appendChild(document.createTextNode(' '+label));
+  container.appendChild(chip);
+}
+
 function showTermsMomentumReady(){
-  const task=S.terms.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);
+  const t=S.terms;
+  const task=t.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);
   if(!task){closeTermsOverlay();return;}
   document.getElementById('termsCountdownView').style.display='block';
   document.getElementById('termsCelebration').classList.remove('show');
   const count=document.getElementById('termsCount');count.textContent='GO';count.className='terms-count go';
-  document.getElementById('termsOverlayAction').textContent='Application '+task.apps+' · Chain '+S.terms.currentChain+' · Keep working on: '+task.text;
-  document.getElementById('termsOverlayActions').classList.add('show');
+  document.getElementById('termsOverlayTitle').textContent='You are in motion';
+  document.getElementById('termsOverlayAction').textContent=task.text;
+  const chips=document.getElementById('termsGoChips');
+  chips.innerHTML='';
+  termsGoChip(chips,t.currentChain,'chain');
+  termsGoChip(chips,t.daily[localDateStr()]||0,'today');
+  termsGoChip(chips,task.apps||0,'on this task');
+  document.getElementById('termsGoRecord').style.display=termsNewBestChain?'inline-block':'none';
+  const next=termsNextChainMilestone(t);
+  const goNext=document.getElementById('termsGoNext');
+  if(next){
+    const gap=next.count-t.currentChain;
+    goNext.innerHTML='';
+    const strong=document.createElement('b');strong.textContent=gap+' more';
+    goNext.appendChild(strong);goNext.appendChild(document.createTextNode(' to '+next.name+' '+next.icon));
+  }else{goNext.textContent='Every consecutive milestone unlocked.';}
+  document.getElementById('termsGoCoach').textContent=termsCoachLine();
+  document.getElementById('termsGoPanel').classList.add('show');
+  startTermsMotionClock();
   const button=document.getElementById('termsContinueButton');if(button)button.focus();
 }
 
-function resumeTermsMomentum(){
-  document.getElementById('termsCelebration').classList.remove('show');
-  showTermsMomentumReady();
+function startTermsMotionClock(){
+  stopTermsMotionClock();
+  termsMotionSince=Date.now();
+  const clock=document.getElementById('termsMotionClock');
+  if(clock)clock.textContent='0:00';
+  termsMotionTimer=setInterval(()=>{
+    const el=document.getElementById('termsMotionClock');if(!el)return;
+    const seconds=Math.floor((Date.now()-termsMotionSince)/1000);
+    el.textContent=Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
+  },1000);
+}
+
+function stopTermsMotionClock(){
+  clearInterval(termsMotionTimer);termsMotionTimer=null;
 }
 
 function continueTermsFromCelebration(){
@@ -1651,8 +1862,8 @@ function completeTermsTaskFromOverlay(){
   const next=getActiveTermsTask();
   if(!next)return;
   pendingTermsTaskId=next.id;pendingTermsAction=next.text;
-  document.getElementById('termsOverlayAction').textContent='Next task ready: '+next.text;
   showTermsMomentumReady();
+  document.getElementById('termsOverlayTitle').textContent='Task down. Next up';
 }
 
 function unlockTermsMilestone(key,qualified,title,detail,unlocked){
@@ -1660,50 +1871,51 @@ function unlockTermsMilestone(key,qualified,title,detail,unlocked){
   S.terms.unlocked.push(key);unlocked.push({title,detail});
 }
 
-function missTermsMove(){
-  ensureTermsState();const broken=S.terms.currentChain;
-  S.terms.currentChain=0;S.terms.updatedAt=Date.now();save();render();
-  closeTermsOverlay();
-  toast(broken?'The chain resets. The straight line is still five seconds away.':'No shame. Start again when you are ready to move.');
+function renderTermsCelebrationStats(entries){
+  const stats=document.getElementById('termsCelebrationStats');
+  stats.innerHTML='';
+  entries.forEach(([value,label])=>termsGoChip(stats,value,label));
 }
 
 function showTermsCelebration(unlocked){
   document.getElementById('termsCountdownView').style.display='none';
+  stopTermsMotionClock();
+  const t=S.terms;
   const celebration=document.getElementById('termsCelebration');
-  const title=document.getElementById('termsCelebrationTitle');
-  const copy=document.getElementById('termsCelebrationCopy');
-  if(unlocked.length){
-    const milestone=unlocked[unlocked.length-1];
-    title.textContent=milestone.title+' unlocked!';
-    copy.textContent=milestone.detail+'. You did not wait to feel ready. You chose the straight line and lived on your terms.';
-    buildTermsConfetti();
-  }else{
-    title.textContent='You moved.';
-    copy.textContent='Application '+S.terms.total+'. Current chain: '+S.terms.currentChain+'. Every decisive move makes the straight line easier to choose.';
-    document.getElementById('termsConfetti').innerHTML='';
-  }
+  const milestone=unlocked[unlocked.length-1];
+  document.getElementById('termsCelebrationIcon').textContent='⚡';
+  document.getElementById('termsCelebrationTitle').textContent=milestone.title+' unlocked';
+  document.getElementById('termsCelebrationCopy').textContent=milestone.detail+'. You did not wait to feel ready. You moved.';
+  renderTermsCelebrationStats([[t.currentChain,'chain'],[t.daily[localDateStr()]||0,'today'],[t.total,'lifetime']]);
+  buildTermsConfetti();
   celebration.classList.add('show');
   document.getElementById('termsCelebrationContinue').style.display='';
   document.getElementById('termsCelebrationComplete').style.display='';
   const celebrationBack=document.getElementById('termsCelebrationBack');
   celebrationBack.textContent='Back to plan';celebrationBack.onclick=closeTermsOverlay;
-  if(navigator.vibrate)navigator.vibrate(unlocked.length?[100,60,100,60,240]:80);
+  if(navigator.vibrate)navigator.vibrate([100,60,100,60,240]);
   const button=celebration.querySelector('button');if(button)button.focus();
 }
 
 function showTermsPlanCelebration(){
   const overlay=document.getElementById('termsOverlay');
   document.getElementById('termsCountdownView').style.display='none';
+  stopTermsMotionClock();
+  const t=S.terms;const today=localDateStr();
+  const doneCount=t.tasks.filter(task=>task.done).length;
   const celebration=document.getElementById('termsCelebration');
-  document.getElementById('termsCelebrationTitle').textContent='Today’s straight line complete!';
-  document.getElementById('termsCelebrationCopy').textContent='Every important task is complete, and your 5-second chain is still alive. You pursued the day on your terms.';
+  document.getElementById('termsCelebrationIcon').textContent='🏆';
+  document.getElementById('termsCelebrationTitle').textContent='You won the day.';
+  document.getElementById('termsCelebrationCopy').textContent='Every important task is done. Not because you felt ready — because you moved anyway. This is what living on your terms looks like.';
+  renderTermsCelebrationStats([[doneCount,'task'+(doneCount===1?'':'s')+' won'],[t.daily[today]||0,'move'+((t.daily[today]||0)===1?'':'s')+' today'],[t.wonDays.length,'day'+(t.wonDays.length===1?'':'s')+' won']]);
   buildTermsConfetti();celebration.classList.add('show');overlay.classList.add('open');document.body.style.overflow='hidden';
   document.getElementById('termsCelebrationContinue').style.display='none';
   document.getElementById('termsCelebrationComplete').style.display='none';
   const celebrationBack=document.getElementById('termsCelebrationBack');
-  celebrationBack.textContent='Back to my day';celebrationBack.onclick=closeTermsOverlay;
+  celebrationBack.textContent='Claim it — back to my day';celebrationBack.onclick=closeTermsOverlay;
   if(navigator.vibrate)navigator.vibrate([100,60,100,60,260]);
   const button=celebration.querySelector('button');if(button)button.focus();
+  updateTermsSticky();
 }
 
 function buildTermsConfetti(){
@@ -1714,9 +1926,12 @@ function buildTermsConfetti(){
 
 function closeTermsOverlay(){
   clearInterval(termsCountdownTimer);termsCountdownTimer=null;
+  stopTermsMotionClock();
   document.getElementById('termsOverlay').classList.remove('open');document.body.style.overflow='';
   document.getElementById('termsCelebration').classList.remove('show');
+  document.getElementById('termsGoPanel').classList.remove('show');
   pendingTermsTaskId=null;
+  updateTermsSticky();
   const start=document.getElementById('termsStartButton');if(start&&start.offsetParent!==null)start.focus();
 }
 
@@ -2057,7 +2272,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v23').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v24').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
