@@ -378,6 +378,7 @@ textarea::placeholder{color:var(--text3);}
 .terms-celebration-icon{font-size:72px;line-height:1;}
 .terms-celebration-title{font-family:var(--serif);font-size:34px;color:var(--gold);margin-top:12px;}
 .terms-celebration-copy{font-size:16px;color:var(--text2);line-height:1.65;margin:12px auto 22px;max-width:440px;}
+.terms-celebration-actions{display:grid;gap:10px;}
 .terms-confetti{position:absolute;inset:-80px -20px;pointer-events:none;overflow:hidden;}
 .terms-confetti i{position:absolute;width:9px;height:16px;border-radius:3px;animation:termsFall 1.8s ease-in forwards;}
 @keyframes termsFade{from{opacity:0;}to{opacity:1;}}
@@ -794,16 +795,20 @@ textarea::placeholder{color:var(--text3);}
       <div class="terms-celebration-icon">⚡</div>
       <div class="terms-celebration-title" id="termsCelebrationTitle">You moved.</div>
       <div class="terms-celebration-copy" id="termsCelebrationCopy"></div>
-      <button class="btn btn-primary" id="termsCelebrationButton" type="button" onclick="resumeTermsMomentum()">5-4-3-2-1 — Keep going</button>
+      <div class="terms-celebration-actions">
+        <button class="btn btn-primary" id="termsCelebrationContinue" type="button" onclick="continueTermsFromCelebration()">5-4-3-2-1 — Keep going</button>
+        <button class="btn btn-ghost" id="termsCelebrationComplete" type="button" onclick="completeTermsTaskFromCelebration()">Task done — next</button>
+        <button class="btn btn-ghost" id="termsCelebrationBack" type="button" onclick="closeTermsOverlay()">Back to plan</button>
+      </div>
     </div>
   </div>
 </div>
 
-<script src="firebase-config.js?v=presence-v22"></script>
+<script src="firebase-config.js?v=presence-v23"></script>
 <script>
 // ---------- State ----------
 // Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
-const APP_BUILD={version:'v22',date:'Jul 19, 2026',time:'1:18 PM'};
+const APP_BUILD={version:'v23',date:'Jul 19, 2026',time:'1:29 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -1630,6 +1635,16 @@ function resumeTermsMomentum(){
   showTermsMomentumReady();
 }
 
+function continueTermsFromCelebration(){
+  document.getElementById('termsCelebration').classList.remove('show');
+  startTermsCountdown();
+}
+
+function completeTermsTaskFromCelebration(){
+  document.getElementById('termsCelebration').classList.remove('show');
+  completeTermsTaskFromOverlay();
+}
+
 function completeTermsTaskFromOverlay(){
   const completedId=pendingTermsTaskId;
   completeTermsTask(completedId);
@@ -1668,9 +1683,10 @@ function showTermsCelebration(unlocked){
     document.getElementById('termsConfetti').innerHTML='';
   }
   celebration.classList.add('show');
-  const celebrationButton=document.getElementById('termsCelebrationButton');
-  celebrationButton.textContent='5-4-3-2-1 — Keep going';
-  celebrationButton.onclick=resumeTermsMomentum;
+  document.getElementById('termsCelebrationContinue').style.display='';
+  document.getElementById('termsCelebrationComplete').style.display='';
+  const celebrationBack=document.getElementById('termsCelebrationBack');
+  celebrationBack.textContent='Back to plan';celebrationBack.onclick=closeTermsOverlay;
   if(navigator.vibrate)navigator.vibrate(unlocked.length?[100,60,100,60,240]:80);
   const button=celebration.querySelector('button');if(button)button.focus();
 }
@@ -1682,8 +1698,10 @@ function showTermsPlanCelebration(){
   document.getElementById('termsCelebrationTitle').textContent='Today’s straight line complete!';
   document.getElementById('termsCelebrationCopy').textContent='Every important task is complete, and your 5-second chain is still alive. You pursued the day on your terms.';
   buildTermsConfetti();celebration.classList.add('show');overlay.classList.add('open');document.body.style.overflow='hidden';
-  const celebrationButton=document.getElementById('termsCelebrationButton');
-  celebrationButton.textContent='Back to my day';celebrationButton.onclick=closeTermsOverlay;
+  document.getElementById('termsCelebrationContinue').style.display='none';
+  document.getElementById('termsCelebrationComplete').style.display='none';
+  const celebrationBack=document.getElementById('termsCelebrationBack');
+  celebrationBack.textContent='Back to my day';celebrationBack.onclick=closeTermsOverlay;
   if(navigator.vibrate)navigator.vibrate([100,60,100,60,260]);
   const button=celebration.querySelector('button');if(button)button.focus();
 }
@@ -2039,7 +2057,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v22').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v23').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
