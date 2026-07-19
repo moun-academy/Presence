@@ -325,6 +325,29 @@ textarea::placeholder{color:var(--text3);}
 .terms-action-label{display:block;color:var(--green);font-size:13px;font-weight:500;margin-bottom:8px;}
 .terms-action-input{width:100%;padding:15px;border-radius:13px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font:300 15px var(--sans);margin-bottom:12px;}
 .terms-action-input:focus{outline:none;border-color:var(--green);}
+.terms-plan-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:start;}
+.terms-plan-add .terms-action-input{margin-bottom:0;}
+.terms-plan-add .btn{width:auto;margin:0;padding:14px 20px;}
+.terms-plan-summary{font-size:12px;color:var(--text3);margin:-6px 0 14px;}
+.terms-task-list{display:grid;gap:8px;margin-top:14px;}
+.terms-task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--border);background:var(--bg2);border-radius:13px;padding:10px;transition:all 0.2s;}
+.terms-task.active{border-color:var(--green-dim);background:var(--green-glow);}
+.terms-task.done{opacity:0.62;}
+.terms-task-check{width:32px;height:32px;border-radius:9px;border:1px solid var(--border2);background:var(--surface);color:var(--text3);font:600 15px var(--sans);cursor:pointer;}
+.terms-task.done .terms-task-check{background:var(--green);border-color:var(--green);color:#06120c;}
+.terms-task-main{min-width:0;text-align:left;border:0;background:transparent;color:var(--text);font:400 14px var(--sans);cursor:pointer;padding:2px 0;}
+.terms-task.done .terms-task-main{text-decoration:line-through;color:var(--text3);}
+.terms-task-meta{display:block;font-size:10px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-top:3px;}
+.terms-task-controls{display:flex;gap:4px;}
+.terms-task-control{width:27px;height:27px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text3);font:500 12px var(--sans);cursor:pointer;}
+.terms-task-control:hover,.terms-task-control:focus{color:var(--green);border-color:var(--green-deep);outline:none;}
+.terms-momentum{border-color:var(--green-deep);background:linear-gradient(155deg,rgba(61,220,145,0.09),rgba(19,26,22,0.96));}
+.terms-active-label{font-size:11px;color:var(--green);letter-spacing:0.16em;text-transform:uppercase;text-align:center;}
+.terms-active-task{font-family:var(--serif);font-size:27px;line-height:1.3;text-align:center;color:var(--text);margin:10px auto 8px;max-width:560px;text-wrap:pretty;}
+.terms-active-meta{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-size:11px;color:var(--text3);margin-bottom:18px;}
+.terms-active-empty{font-size:14px;color:var(--text2);text-align:center;padding:10px 0 14px;line-height:1.6;}
+.terms-plan-progress{height:6px;border-radius:999px;background:var(--bg);overflow:hidden;margin-bottom:14px;}
+.terms-plan-progress-fill{height:100%;width:0;border-radius:999px;background:var(--green);transition:width 0.35s ease;}
 .terms-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
 .terms-chip{border:1px solid var(--border2);background:var(--surface2);color:var(--text2);border-radius:999px;padding:8px 12px;font:400 12px var(--sans);cursor:pointer;}
 .terms-chip:hover,.terms-chip:focus{color:var(--green);border-color:var(--green-deep);outline:none;}
@@ -360,7 +383,7 @@ textarea::placeholder{color:var(--text3);}
 @keyframes termsFade{from{opacity:0;}to{opacity:1;}}
 @keyframes termsPop{0%{opacity:0;transform:scale(0.75);}70%{transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
 @keyframes termsFall{0%{opacity:0;transform:translateY(-30px) rotate(0);}15%{opacity:1;}100%{opacity:0;transform:translateY(520px) rotate(540deg);}}
-@media(max-width:560px){.terms-title{font-size:26px;}.terms-stats{grid-template-columns:repeat(2,1fr);}.terms-stat b{font-size:28px;}.terms-milestones{grid-template-columns:repeat(2,1fr);}.terms-overlay-actions.show{display:block;}}
+@media(max-width:560px){.terms-title{font-size:26px;}.terms-stats{grid-template-columns:repeat(2,1fr);}.terms-stat b{font-size:28px;}.terms-milestones{grid-template-columns:repeat(2,1fr);}.terms-overlay-actions.show{display:block;}.terms-plan-add{grid-template-columns:1fr;}.terms-plan-add .btn{width:100%;}.terms-task{grid-template-columns:auto minmax(0,1fr);}.terms-task-controls{grid-column:2;justify-content:flex-end;}.terms-active-task{font-size:23px;}}
 @media(prefers-reduced-motion:reduce){.terms-count,.terms-celebration.show,.terms-overlay.open,.terms-confetti i{animation:none!important;}.terms-progress-fill{transition:none;}}
 </style>
 </head>
@@ -431,19 +454,38 @@ textarea::placeholder{color:var(--text3);}
     <div class="terms-stat"><b id="termsTotal">0</b><span>Lifetime moves</span></div>
   </div>
 
-  <div class="card">
-    <div class="section-label">Your next move</div>
-    <label class="terms-action-label" for="termsAction">What will benefit you right now?</label>
-    <input class="terms-action-input" id="termsAction" maxlength="100" placeholder="Example: open the document and write one line">
-    <div class="terms-chips" aria-label="Quick actions">
-      <button class="terms-chip" type="button" onclick="chooseTermsAction('Get out of bed')">Get up</button>
-      <button class="terms-chip" type="button" onclick="chooseTermsAction('Start the work in front of me')">Start work</button>
-      <button class="terms-chip" type="button" onclick="chooseTermsAction('Move my body')">Move</button>
-      <button class="terms-chip" type="button" onclick="chooseTermsAction('Clean one thing')">Clean one thing</button>
-      <button class="terms-chip" type="button" onclick="chooseTermsAction('Send the message')">Send it</button>
+  <div class="card terms-momentum">
+    <div class="section-label">Momentum mode</div>
+    <div id="termsActiveEmpty" class="terms-active-empty">Build today's plan below. Your first important move will appear here.</div>
+    <div id="termsActiveMission" style="display:none;">
+      <div class="terms-active-label">Current important task</div>
+      <div class="terms-active-task" id="termsActiveTask"></div>
+      <div class="terms-active-meta">
+        <span id="termsActiveApps">0 applications on this task</span>
+        <span id="termsActivePosition">Task 1 of 1</span>
+      </div>
+      <button class="btn btn-primary terms-start" id="termsStartButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Keep it going</button>
+      <button class="btn btn-ghost" id="termsCompleteButton" type="button" onclick="completeTermsTask()">Task complete — next</button>
+      <div class="mini-label">Apply the rule whenever resistance appears. Finishing a task keeps your chain alive.</div>
     </div>
-    <button class="btn btn-primary terms-start" type="button" onclick="startTermsCountdown()">Start the 5-Second Rule</button>
-    <div class="mini-label">Name it. Count down. Move before your mind negotiates.</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Today's straight line</div>
+    <div class="terms-plan-summary" id="termsPlanSummary">0 of 0 important tasks complete</div>
+    <div class="terms-plan-progress"><div class="terms-plan-progress-fill" id="termsPlanProgress"></div></div>
+    <div class="terms-plan-add">
+      <input class="terms-action-input" id="termsTaskInput" maxlength="100" placeholder="Add an important task for today" onkeydown="if(event.key==='Enter'){event.preventDefault();addTermsTask();}">
+      <button class="btn" type="button" onclick="addTermsTask()">Add task</button>
+    </div>
+    <div class="terms-chips" aria-label="Quick task ideas" style="margin-top:12px;">
+      <button class="terms-chip" type="button" onclick="addTermsQuickTask('Get out of bed')">Get up</button>
+      <button class="terms-chip" type="button" onclick="addTermsQuickTask('Start the work in front of me')">Start work</button>
+      <button class="terms-chip" type="button" onclick="addTermsQuickTask('Move my body')">Move</button>
+      <button class="terms-chip" type="button" onclick="addTermsQuickTask('Clean one thing')">Clean one thing</button>
+      <button class="terms-chip" type="button" onclick="addTermsQuickTask('Send the message')">Send it</button>
+    </div>
+    <div class="terms-task-list" id="termsTaskList"></div>
   </div>
 
   <div class="card">
@@ -756,11 +798,11 @@ textarea::placeholder{color:var(--text3);}
   </div>
 </div>
 
-<script src="firebase-config.js?v=presence-v20"></script>
+<script src="firebase-config.js?v=presence-v21"></script>
 <script>
 // ---------- State ----------
 // Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
-const APP_BUILD={version:'v20',date:'Jul 19, 2026',time:'12:51 PM'};
+const APP_BUILD={version:'v21',date:'Jul 19, 2026',time:'1:07 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -804,17 +846,34 @@ const TERMS_TOTAL_MILESTONES=[10,25,50,100,250,500,1000];
 const TERMS_DAY_MILESTONES=[5,10,20,30];
 let termsCountdownTimer=null;
 let pendingTermsAction='';
+let pendingTermsTaskId=null;
 let termsAudioCtx=null;
 
 function termsDefaults(){
-  return {total:0,currentChain:0,bestChain:0,bestDay:0,daily:{},history:[],unlocked:[],updatedAt:0};
+  return {total:0,currentChain:0,bestChain:0,bestDay:0,daily:{},history:[],unlocked:[],updatedAt:0,planDate:'',tasks:[],activeTaskId:null};
 }
 
 function ensureTermsState(){
+  let changed=false;
   S.terms=Object.assign(termsDefaults(),S.terms||{});
-  if(!S.terms.daily||typeof S.terms.daily!=='object')S.terms.daily={};
-  if(!Array.isArray(S.terms.history))S.terms.history=[];
-  if(!Array.isArray(S.terms.unlocked))S.terms.unlocked=[];
+  if(!S.terms.daily||typeof S.terms.daily!=='object'){S.terms.daily={};changed=true;}
+  if(!Array.isArray(S.terms.history)){S.terms.history=[];changed=true;}
+  if(!Array.isArray(S.terms.unlocked)){S.terms.unlocked=[];changed=true;}
+  if(!Array.isArray(S.terms.tasks)){S.terms.tasks=[];changed=true;}
+  const today=localDateStr();
+  if(!S.terms.planDate){S.terms.planDate=today;changed=true;}
+  else if(S.terms.planDate!==today){
+    S.terms.tasks=S.terms.tasks.filter(task=>!task.done).map(task=>Object.assign({},task,{done:false,apps:0,completedAt:null}));
+    S.terms.planDate=today;S.terms.activeTaskId=null;changed=true;
+  }
+  const active=S.terms.tasks.find(task=>task.id===S.terms.activeTaskId&&!task.done);
+  if(!active){
+    const next=S.terms.tasks.find(task=>!task.done);
+    const nextId=next?next.id:null;
+    if(S.terms.activeTaskId!==nextId){S.terms.activeTaskId=nextId;changed=true;}
+  }
+  if(changed)S.terms.updatedAt=Date.now();
+  return changed;
 }
 
 function firebaseConfig(){
@@ -1069,8 +1128,8 @@ async function syncNow(){
 async function loadState(){
   try{const r=await store.get(KEY);if(r&&r.value){S=Object.assign(S,JSON.parse(r.value));}}catch(e){}
   ensureNotificationState();
-  ensureTermsState();
-  let dirty=normalizeScoreHistory();
+  let dirty=ensureTermsState();
+  dirty=normalizeScoreHistory()||dirty;
   rolloverDay();
   dirty=calculateLevel()||dirty;
   if(dirty){await save();}
@@ -1214,10 +1273,11 @@ function render(){
 }
 
 function renderTerms(){
-  ensureTermsState();
+  if(ensureTermsState())save();
   const t=S.terms;const today=localDateStr();const todayCount=t.daily[today]||0;
   const values={termsToday:todayCount,termsChain:t.currentChain,termsBestChain:t.bestChain,termsTotal:t.total};
   Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value;});
+  renderTermsPlan(t);
   const next=TERMS_CHAIN_MILESTONES.find(m=>t.currentChain<m.count);
   const nextLabel=document.getElementById('termsNextLabel');
   const nextCount=document.getElementById('termsNextCount');
@@ -1261,6 +1321,49 @@ function renderTerms(){
       row.append(num,action,time);history.appendChild(row);
     });
   }
+}
+
+function renderTermsPlan(t){
+  const tasks=t.tasks||[];
+  const completed=tasks.filter(task=>task.done).length;
+  const remaining=tasks.length-completed;
+  const summary=document.getElementById('termsPlanSummary');
+  if(summary)summary.textContent=completed+' of '+tasks.length+' important task'+(tasks.length===1?'':'s')+' complete';
+  const planFill=document.getElementById('termsPlanProgress');
+  if(planFill)planFill.style.width=(tasks.length?(completed/tasks.length)*100:0)+'%';
+  const active=tasks.find(task=>task.id===t.activeTaskId&&!task.done)||null;
+  const empty=document.getElementById('termsActiveEmpty');
+  const mission=document.getElementById('termsActiveMission');
+  if(empty)empty.style.display=active?'none':'block';
+  if(mission)mission.style.display=active?'block':'none';
+  if(active){
+    const activeTask=document.getElementById('termsActiveTask');if(activeTask)activeTask.textContent=active.text;
+    const activeApps=document.getElementById('termsActiveApps');if(activeApps)activeApps.textContent=(active.apps||0)+' application'+((active.apps||0)===1?'':'s')+' on this task';
+    const openTasks=tasks.filter(task=>!task.done);const position=Math.max(1,openTasks.findIndex(task=>task.id===active.id)+1);
+    const activePosition=document.getElementById('termsActivePosition');if(activePosition)activePosition.textContent='Task '+position+' of '+remaining+' remaining';
+  }else if(empty){
+    empty.textContent=tasks.length?'Today’s straight line is complete. Add another important task or carry the momentum into the rest of your day.':'Build today’s plan below. Your first important move will appear here.';
+  }
+  const list=document.getElementById('termsTaskList');
+  if(!list)return;
+  list.innerHTML='';
+  if(!tasks.length){const emptyList=document.createElement('div');emptyList.className='terms-empty';emptyList.textContent='Keep it focused: add the few things that would make today yours.';list.appendChild(emptyList);return;}
+  tasks.forEach((task,index)=>{
+    const row=document.createElement('div');row.className='terms-task'+(task.id===t.activeTaskId&&!task.done?' active':'')+(task.done?' done':'');
+    const check=document.createElement('button');check.type='button';check.className='terms-task-check';check.textContent=task.done?'✓':'○';check.setAttribute('aria-label',(task.done?'Reopen ':'Complete ')+task.text);check.onclick=()=>toggleTermsTask(task.id);
+    const main=document.createElement('button');main.type='button';main.className='terms-task-main';main.textContent=task.text;main.disabled=!!task.done;main.onclick=()=>selectTermsTask(task.id);
+    const meta=document.createElement('span');meta.className='terms-task-meta';meta.textContent=(task.apps||0)+' application'+((task.apps||0)===1?'':'s');
+    main.appendChild(meta);
+    const controls=document.createElement('div');controls.className='terms-task-controls';
+    const up=termsTaskControl('↑','Move '+task.text+' up',()=>moveTermsTask(task.id,-1),index===0);
+    const down=termsTaskControl('↓','Move '+task.text+' down',()=>moveTermsTask(task.id,1),index===tasks.length-1);
+    const remove=termsTaskControl('×','Delete '+task.text,()=>deleteTermsTask(task.id),false);
+    controls.append(up,down,remove);row.append(check,main,controls);list.appendChild(row);
+  });
+}
+
+function termsTaskControl(textValue,label,handler,disabled){
+  const button=document.createElement('button');button.type='button';button.className='terms-task-control';button.textContent=textValue;button.setAttribute('aria-label',label);button.disabled=disabled;button.onclick=handler;return button;
 }
 
 function renderSteps(){
@@ -1370,15 +1473,76 @@ function localDateStr(date=new Date()){
   return y+'-'+m+'-'+d;
 }
 
-function chooseTermsAction(action){
-  const input=document.getElementById('termsAction');if(input){input.value=action;input.focus();}
+function termsTaskId(){
+  return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
+}
+
+function addTermsTask(textValue){
+  ensureTermsState();
+  const input=document.getElementById('termsTaskInput');
+  const text=(typeof textValue==='string'?textValue:(input?input.value:'')).trim();
+  if(!text){toast('Add one important task first.');if(input)input.focus();return;}
+  const task={id:termsTaskId(),text,done:false,apps:0,createdAt:Date.now(),completedAt:null};
+  S.terms.tasks.push(task);
+  if(!S.terms.activeTaskId)S.terms.activeTaskId=task.id;
+  S.terms.updatedAt=Date.now();
+  if(input)input.value='';
+  save();render();toast('Added to today’s straight line.');
+  const start=document.getElementById('termsStartButton');if(S.terms.activeTaskId===task.id&&start)start.focus();
+}
+
+function addTermsQuickTask(text){
+  if(S.terms&&S.terms.tasks&&S.terms.tasks.some(task=>!task.done&&task.text===text)){toast('That task is already in today’s plan.');return;}
+  addTermsTask(text);
+}
+
+function selectTermsTask(id){
+  ensureTermsState();const task=S.terms.tasks.find(item=>item.id===id&&!item.done);if(!task)return;
+  S.terms.activeTaskId=id;S.terms.updatedAt=Date.now();save();render();
+  const start=document.getElementById('termsStartButton');if(start)start.focus();
+}
+
+function moveTermsTask(id,direction){
+  ensureTermsState();const index=S.terms.tasks.findIndex(task=>task.id===id);const target=index+direction;
+  if(index<0||target<0||target>=S.terms.tasks.length)return;
+  const [task]=S.terms.tasks.splice(index,1);S.terms.tasks.splice(target,0,task);
+  S.terms.updatedAt=Date.now();save();render();
+}
+
+function deleteTermsTask(id){
+  ensureTermsState();const task=S.terms.tasks.find(item=>item.id===id);if(!task)return;
+  S.terms.tasks=S.terms.tasks.filter(item=>item.id!==id);
+  if(S.terms.activeTaskId===id)S.terms.activeTaskId=null;
+  S.terms.updatedAt=Date.now();ensureTermsState();save();render();toast('Task removed.');
+}
+
+function toggleTermsTask(id){
+  ensureTermsState();const task=S.terms.tasks.find(item=>item.id===id);if(!task)return;
+  if(task.done){
+    task.done=false;task.completedAt=null;S.terms.activeTaskId=id;S.terms.updatedAt=Date.now();save();render();toast('Task reopened.');return;
+  }
+  completeTermsTask(id);
+}
+
+function getActiveTermsTask(){
+  ensureTermsState();return S.terms.tasks.find(task=>task.id===S.terms.activeTaskId&&!task.done)||null;
+}
+
+function completeTermsTask(taskId){
+  ensureTermsState();const task=S.terms.tasks.find(item=>item.id===(taskId||S.terms.activeTaskId)&&!item.done);
+  if(!task){toast('Choose an unfinished task first.');return;}
+  task.done=true;task.completedAt=Date.now();
+  const next=S.terms.tasks.find(item=>!item.done);
+  S.terms.activeTaskId=next?next.id:null;S.terms.updatedAt=Date.now();
+  addLog('completed important task: '+task.text,'win');save();render();
+  if(next){toast('Task complete. Next: '+next.text);const start=document.getElementById('termsStartButton');if(start)start.focus();}
+  else{showTermsPlanCelebration();}
 }
 
 function startTermsCountdown(){
-  const input=document.getElementById('termsAction');
-  const action=input?input.value.trim():'';
-  if(!action){toast('Name the move first.');if(input)input.focus();return;}
-  pendingTermsAction=action;
+  const task=getActiveTermsTask();
+  if(!task){toast('Add or choose an important task first.');const input=document.getElementById('termsTaskInput');if(input)input.focus();return;}
+  pendingTermsAction=task.text;pendingTermsTaskId=task.id;
   unlockTermsAudio();
   clearInterval(termsCountdownTimer);
   const overlay=document.getElementById('termsOverlay');
@@ -1387,7 +1551,7 @@ function startTermsCountdown(){
   const celebration=document.getElementById('termsCelebration');
   document.getElementById('termsCountdownView').style.display='block';
   celebration.classList.remove('show');
-  document.getElementById('termsOverlayAction').textContent=action;
+  document.getElementById('termsOverlayAction').textContent=pendingTermsAction;
   actions.classList.remove('show');
   count.className='terms-count';count.textContent='5';
   overlay.classList.add('open');document.body.style.overflow='hidden';
@@ -1436,15 +1600,17 @@ function completeTermsMove(){
   t.bestChain=Math.max(t.bestChain||0,t.currentChain);
   t.bestDay=Math.max(t.bestDay||0,t.daily[today]);
   t.updatedAt=Date.now();
-  t.history.push({id:t.updatedAt+'-'+Math.random().toString(36).slice(2,8),ts:t.updatedAt,date:today,action:pendingTermsAction,chain:t.currentChain});
+  const task=t.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);
+  if(task)task.apps=(task.apps||0)+1;
+  t.history.push({id:t.updatedAt+'-'+Math.random().toString(36).slice(2,8),ts:t.updatedAt,date:today,action:pendingTermsAction,taskId:pendingTermsTaskId,chain:t.currentChain});
   if(t.history.length>100)t.history=t.history.slice(-100);
   const unlocked=[];
   TERMS_CHAIN_MILESTONES.forEach(m=>unlockTermsMilestone('chain-'+m.count,t.currentChain>=m.count,m.name,m.count+' consecutive application'+(m.count===1?'':'s'),unlocked));
   TERMS_TOTAL_MILESTONES.forEach(n=>unlockTermsMilestone('total-'+n,t.total>=n,n+' Lifetime Moves',n+' beneficial actions chosen',unlocked));
   TERMS_DAY_MILESTONES.forEach(n=>unlockTermsMilestone('day-'+n,t.daily[today]>=n,n+' Moves Today',n+' applications in one day',unlocked));
   addLog('5-second rule: '+pendingTermsAction,'win');save();render();
-  const input=document.getElementById('termsAction');if(input)input.value='';
-  showTermsCelebration(unlocked);
+  if(unlocked.length)showTermsCelebration(unlocked);
+  else{closeTermsOverlay();toast('Chain '+t.currentChain+'. Keep it going on '+pendingTermsAction+'.');}
 }
 
 function unlockTermsMilestone(key,qualified,title,detail,unlocked){
@@ -1479,6 +1645,17 @@ function showTermsCelebration(unlocked){
   const button=celebration.querySelector('button');if(button)button.focus();
 }
 
+function showTermsPlanCelebration(){
+  const overlay=document.getElementById('termsOverlay');
+  document.getElementById('termsCountdownView').style.display='none';
+  const celebration=document.getElementById('termsCelebration');
+  document.getElementById('termsCelebrationTitle').textContent='Today’s straight line complete!';
+  document.getElementById('termsCelebrationCopy').textContent='Every important task is complete, and your 5-second chain is still alive. You pursued the day on your terms.';
+  buildTermsConfetti();celebration.classList.add('show');overlay.classList.add('open');document.body.style.overflow='hidden';
+  if(navigator.vibrate)navigator.vibrate([100,60,100,60,260]);
+  const button=celebration.querySelector('button');if(button)button.focus();
+}
+
 function buildTermsConfetti(){
   const box=document.getElementById('termsConfetti');box.innerHTML='';
   const colors=['#3ddc91','#f2b950','#e8765a','#e8efe9'];
@@ -1489,7 +1666,8 @@ function closeTermsOverlay(){
   clearInterval(termsCountdownTimer);termsCountdownTimer=null;
   document.getElementById('termsOverlay').classList.remove('open');document.body.style.overflow='';
   document.getElementById('termsCelebration').classList.remove('show');
-  const start=document.querySelector('#panel-terms .terms-start');if(start)start.focus();
+  pendingTermsTaskId=null;
+  const start=document.getElementById('termsStartButton');if(start&&start.offsetParent!==null)start.focus();
 }
 
 function setScore(n){S.score=n;updateScoreHistory(n);const leveledUp=calculateLevel();addLog('scored today: '+n+'/10',n>=8?'win':'urge');save();render();toast(leveledUp?'Level '+S.level+' unlocked.':n>=9?'A nine. The system is working.':n>=7?'Solid. Hold the line.':'Reset. You know the protocol.');}
@@ -1829,7 +2007,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v20').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v21').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
