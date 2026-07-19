@@ -309,6 +309,59 @@ textarea::placeholder{color:var(--text3);}
 .med-time.done{color:var(--gold);}
 .med-bar{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden;margin:16px 0;}
 .med-fill{height:100%;width:0;background:var(--green);border-radius:3px;transition:width 1s linear;}
+
+/* Livin' on My Terms */
+.terms-hero{background:linear-gradient(145deg,rgba(61,220,145,0.13),rgba(242,185,80,0.06));border-color:var(--green-deep);text-align:center;overflow:hidden;position:relative;}
+.terms-hero::after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(61,220,145,0.08);filter:blur(28px);right:-80px;top:-100px;pointer-events:none;}
+.terms-title{font-family:var(--serif);font-size:30px;line-height:1.2;color:var(--text);position:relative;z-index:1;}
+.terms-quote{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--green);line-height:1.55;margin:12px auto 0;max-width:560px;position:relative;z-index:1;}
+.terms-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0;}
+.terms-stat{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:16px 8px;text-align:center;}
+.terms-stat b{display:block;font-family:var(--serif);font-size:30px;color:var(--green);line-height:1;}
+.terms-stat span{display:block;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-top:8px;line-height:1.35;}
+.terms-progress-copy{display:flex;justify-content:space-between;gap:12px;color:var(--text2);font-size:12px;margin-bottom:8px;}
+.terms-progress{height:8px;border-radius:999px;background:var(--bg);overflow:hidden;border:1px solid var(--border);}
+.terms-progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--green-deep),var(--green));border-radius:999px;transition:width 0.5s ease;}
+.terms-action-label{display:block;color:var(--green);font-size:13px;font-weight:500;margin-bottom:8px;}
+.terms-action-input{width:100%;padding:15px;border-radius:13px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font:300 15px var(--sans);margin-bottom:12px;}
+.terms-action-input:focus{outline:none;border-color:var(--green);}
+.terms-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.terms-chip{border:1px solid var(--border2);background:var(--surface2);color:var(--text2);border-radius:999px;padding:8px 12px;font:400 12px var(--sans);cursor:pointer;}
+.terms-chip:hover,.terms-chip:focus{color:var(--green);border-color:var(--green-deep);outline:none;}
+.terms-start{font-size:17px;padding:17px;}
+.terms-milestones{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.terms-badge{border:1px solid var(--border);background:var(--bg2);border-radius:14px;padding:14px 10px;text-align:center;opacity:0.55;}
+.terms-badge.unlocked{opacity:1;border-color:var(--green-deep);background:var(--green-glow);}
+.terms-badge-icon{font-size:23px;line-height:1;}
+.terms-badge b{display:block;color:var(--text);font-family:var(--serif);font-size:16px;margin-top:7px;}
+.terms-badge span{display:block;color:var(--text3);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;margin-top:3px;}
+.terms-history{display:grid;gap:8px;}
+.terms-history-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);}
+.terms-history-item:last-child{border-bottom:none;}
+.terms-history-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--green-glow);color:var(--green);font-family:var(--serif);font-weight:600;}
+.terms-history-action{font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.terms-history-time{font-size:11px;color:var(--text3);white-space:nowrap;}
+.terms-empty{font-size:13px;color:var(--text3);text-align:center;padding:10px 0;}
+.terms-overlay{position:fixed;inset:0;background:rgba(4,9,7,0.96);z-index:120;display:none;align-items:center;justify-content:center;padding:22px;text-align:center;backdrop-filter:blur(16px);}
+.terms-overlay.open{display:flex;animation:termsFade 0.25s ease;}
+.terms-overlay-card{width:min(520px,100%);position:relative;}
+.terms-count{font-family:var(--serif);font-size:clamp(112px,34vw,210px);color:var(--green);line-height:0.9;text-shadow:0 0 55px rgba(61,220,145,0.3);animation:termsPop 0.55s ease;}
+.terms-count.go{font-size:clamp(72px,24vw,130px);color:var(--gold);}
+.terms-overlay-action{font-size:16px;color:var(--text2);margin:24px auto 18px;max-width:420px;}
+.terms-overlay-actions{display:none;gap:10px;}
+.terms-overlay-actions.show{display:grid;}
+.terms-celebration{display:none;}
+.terms-celebration.show{display:block;animation:termsPop 0.5s ease;}
+.terms-celebration-icon{font-size:72px;line-height:1;}
+.terms-celebration-title{font-family:var(--serif);font-size:34px;color:var(--gold);margin-top:12px;}
+.terms-celebration-copy{font-size:16px;color:var(--text2);line-height:1.65;margin:12px auto 22px;max-width:440px;}
+.terms-confetti{position:absolute;inset:-80px -20px;pointer-events:none;overflow:hidden;}
+.terms-confetti i{position:absolute;width:9px;height:16px;border-radius:3px;animation:termsFall 1.8s ease-in forwards;}
+@keyframes termsFade{from{opacity:0;}to{opacity:1;}}
+@keyframes termsPop{0%{opacity:0;transform:scale(0.75);}70%{transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
+@keyframes termsFall{0%{opacity:0;transform:translateY(-30px) rotate(0);}15%{opacity:1;}100%{opacity:0;transform:translateY(520px) rotate(540deg);}}
+@media(max-width:560px){.terms-title{font-size:26px;}.terms-stats{grid-template-columns:repeat(2,1fr);}.terms-stat b{font-size:28px;}.terms-milestones{grid-template-columns:repeat(2,1fr);}.terms-overlay-actions.show{display:block;}}
+@media(prefers-reduced-motion:reduce){.terms-count,.terms-celebration.show,.terms-overlay.open,.terms-confetti i{animation:none!important;}.terms-progress-fill{transition:none;}}
 </style>
 </head>
 <body>
@@ -347,6 +400,7 @@ textarea::placeholder{color:var(--text3);}
   <div class="card">
     <div class="section-label">Instant tools</div>
     <button class="btn btn-primary" onclick="flashQuestion()">Ask the presence question</button>
+    <button class="btn" onclick="go('terms')">5-4-3-2-1 — Move on my terms</button>
     <button class="btn" onclick="go('urge')">An urge is coming</button>
     <button class="btn" onclick="go('notepad')">My mind is full — empty it</button>
     <button class="btn" onclick="go('breaker')">Break the pattern now</button>
@@ -359,6 +413,54 @@ textarea::placeholder{color:var(--text3);}
   <div class="card">
     <div class="section-label">Today's log</div>
     <div class="log" id="log"></div>
+  </div>
+</div>
+
+<!-- ============ LIVIN' ON MY TERMS ============ -->
+<div class="panel" id="panel-terms">
+  <div class="card terms-hero">
+    <div class="section-label">The straight line is five seconds away</div>
+    <div class="terms-title">Livin' on My Terms</div>
+    <div class="terms-quote">“I do not need to feel ready. I am always five seconds away from taking the straight line and living on my terms.”</div>
+  </div>
+
+  <div class="terms-stats">
+    <div class="terms-stat"><b id="termsToday">0</b><span>Today</span></div>
+    <div class="terms-stat"><b id="termsChain">0</b><span>Current chain</span></div>
+    <div class="terms-stat"><b id="termsBestChain">0</b><span>Best chain</span></div>
+    <div class="terms-stat"><b id="termsTotal">0</b><span>Lifetime moves</span></div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Your next move</div>
+    <label class="terms-action-label" for="termsAction">What will benefit you right now?</label>
+    <input class="terms-action-input" id="termsAction" maxlength="100" placeholder="Example: open the document and write one line">
+    <div class="terms-chips" aria-label="Quick actions">
+      <button class="terms-chip" type="button" onclick="chooseTermsAction('Get out of bed')">Get up</button>
+      <button class="terms-chip" type="button" onclick="chooseTermsAction('Start the work in front of me')">Start work</button>
+      <button class="terms-chip" type="button" onclick="chooseTermsAction('Move my body')">Move</button>
+      <button class="terms-chip" type="button" onclick="chooseTermsAction('Clean one thing')">Clean one thing</button>
+      <button class="terms-chip" type="button" onclick="chooseTermsAction('Send the message')">Send it</button>
+    </div>
+    <button class="btn btn-primary terms-start" type="button" onclick="startTermsCountdown()">Start the 5-Second Rule</button>
+    <div class="mini-label">Name it. Count down. Move before your mind negotiates.</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Next record</div>
+    <div class="terms-progress-copy"><span id="termsNextLabel">First Move</span><span id="termsNextCount">0 of 1</span></div>
+    <div class="terms-progress"><div class="terms-progress-fill" id="termsProgressFill"></div></div>
+    <div class="mini-label" id="termsBestDay">Best day: 0 applications</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Consecutive milestones</div>
+    <div class="terms-milestones" id="termsMilestones"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Recent moves</div>
+    <div class="terms-history" id="termsHistory"></div>
   </div>
 </div>
 
@@ -621,6 +723,7 @@ textarea::placeholder{color:var(--text3);}
   <div class="section-label">Menu</div>
   <nav id="nav" class="drawer-nav">
     <button class="nav-btn active" data-p="home">Today</button>
+    <button class="nav-btn" data-p="terms">Livin' on My Terms</button>
     <button class="nav-btn" data-p="morning">Morning</button>
     <button class="nav-btn" data-p="urge">Urge</button>
     <button class="nav-btn" data-p="notepad">Notepad</button>
@@ -632,12 +735,32 @@ textarea::placeholder{color:var(--text3);}
 </aside>
 
 <div class="toast" id="toast"></div>
+<div class="terms-overlay" id="termsOverlay" role="dialog" aria-modal="true" aria-labelledby="termsOverlayTitle">
+  <div class="terms-overlay-card">
+    <div id="termsCountdownView">
+      <div class="section-label" id="termsOverlayTitle">No negotiation. Just the next move.</div>
+      <div class="terms-count" id="termsCount" aria-live="assertive">5</div>
+      <div class="terms-overlay-action" id="termsOverlayAction"></div>
+      <div class="terms-overlay-actions" id="termsOverlayActions">
+        <button class="btn btn-primary" type="button" onclick="completeTermsMove()">I'm moving — living on my terms</button>
+        <button class="btn btn-ghost" type="button" onclick="missTermsMove()">Not this time</button>
+      </div>
+    </div>
+    <div class="terms-celebration" id="termsCelebration">
+      <div class="terms-confetti" id="termsConfetti"></div>
+      <div class="terms-celebration-icon">⚡</div>
+      <div class="terms-celebration-title" id="termsCelebrationTitle">You moved.</div>
+      <div class="terms-celebration-copy" id="termsCelebrationCopy"></div>
+      <button class="btn btn-primary" type="button" onclick="closeTermsOverlay()">Keep living on my terms</button>
+    </div>
+  </div>
+</div>
 
-<script src="firebase-config.js?v=presence-v18"></script>
+<script src="firebase-config.js?v=presence-v20"></script>
 <script>
 // ---------- State ----------
 // Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
-const APP_BUILD={version:'v19',date:'Jun 27, 2026',time:'4:35 PM'};
+const APP_BUILD={version:'v20',date:'Jul 19, 2026',time:'12:51 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -669,6 +792,30 @@ const FIREBASE_SDK_VERSION='12.13.0';
 let FB={configured:false,ready:false,user:null,app:null,auth:null,db:null,mods:null,saveTimer:null,syncing:false,syncError:false,syncErrorText:'',cloudLoaded:false,lastSyncAt:parseInt(localStorage.getItem('presence_last_sync_at')||'0')||null};
 let selectedHistoryDate=null;
 let notificationTimers=[];
+const TERMS_CHAIN_MILESTONES=[
+  {count:1,name:'First Move',icon:'⚡'},
+  {count:3,name:'Momentum',icon:'↗'},
+  {count:5,name:'Straight Line',icon:'━'},
+  {count:10,name:'Living on My Terms',icon:'★'},
+  {count:20,name:'Self-Directed',icon:'◆'},
+  {count:50,name:'Unstoppable',icon:'♛'}
+];
+const TERMS_TOTAL_MILESTONES=[10,25,50,100,250,500,1000];
+const TERMS_DAY_MILESTONES=[5,10,20,30];
+let termsCountdownTimer=null;
+let pendingTermsAction='';
+let termsAudioCtx=null;
+
+function termsDefaults(){
+  return {total:0,currentChain:0,bestChain:0,bestDay:0,daily:{},history:[],unlocked:[],updatedAt:0};
+}
+
+function ensureTermsState(){
+  S.terms=Object.assign(termsDefaults(),S.terms||{});
+  if(!S.terms.daily||typeof S.terms.daily!=='object')S.terms.daily={};
+  if(!Array.isArray(S.terms.history))S.terms.history=[];
+  if(!Array.isArray(S.terms.unlocked))S.terms.unlocked=[];
+}
 
 function firebaseConfig(){
   return window.PRESENCE_FIREBASE_CONFIG||null;
@@ -774,7 +921,8 @@ function stateHasUserData(state){
     state.score!==null&&state.score!==undefined ||
     (state.level&&state.level>1) ||
     (state.affCount&&state.affCount>0) ||
-    state.morningDone
+    state.morningDone ||
+    (state.terms&&state.terms.total>0)
   );
 }
 
@@ -804,7 +952,25 @@ function mergeStates(localState,cloudState){
   merged.level=Math.max(local.level||1,cloud.level||1);
   merged.notes=mergeByKey(local.notes,cloud.notes,item=>(item&&item.d?item.d:'')+'|'+(item&&item.txt?item.txt:''),50);
   merged.log=mergeByKey(local.log,cloud.log,item=>(item&&item.t?item.t:'')+'|'+(item&&item.m?item.m:''),40);
+  merged.terms=mergeTermsState(local.terms,cloud.terms);
   return Object.assign({streak:0,lastDay:null,score:null,scoreHistory:[],lives:3,livesWeek:null,affCount:0,level:1,log:[],notes:[],steps:{},morningDone:null,notifications:{enabled:false,morningTime:'07:00',scoreTime:'21:00'}},merged);
+}
+
+function mergeTermsState(localTerms,cloudTerms){
+  const local=Object.assign(termsDefaults(),copyState(localTerms));
+  const cloud=Object.assign(termsDefaults(),copyState(cloudTerms));
+  const latest=(local.updatedAt||0)>=(cloud.updatedAt||0)?local:cloud;
+  const history=mergeByKey(local.history,cloud.history,item=>item&&item.id?item.id:(item.ts+'|'+item.action),100);
+  const daily=Object.assign({},cloud.daily||{});
+  Object.entries(local.daily||{}).forEach(([date,count])=>{daily[date]=Math.max(daily[date]||0,count||0);});
+  return Object.assign({},latest,{
+    total:Math.max(local.total||0,cloud.total||0,history.length),
+    bestChain:Math.max(local.bestChain||0,cloud.bestChain||0),
+    bestDay:Math.max(local.bestDay||0,cloud.bestDay||0),
+    daily,
+    history,
+    unlocked:Array.from(new Set([...(local.unlocked||[]),...(cloud.unlocked||[])]))
+  });
 }
 
 async function loadCloudState(){
@@ -903,6 +1069,7 @@ async function syncNow(){
 async function loadState(){
   try{const r=await store.get(KEY);if(r&&r.value){S=Object.assign(S,JSON.parse(r.value));}}catch(e){}
   ensureNotificationState();
+  ensureTermsState();
   let dirty=normalizeScoreHistory();
   rolloverDay();
   dirty=calculateLevel()||dirty;
@@ -1019,6 +1186,7 @@ function rolloverDay(){
 
 // ---------- Render ----------
 function render(){
+  ensureTermsState();
   document.getElementById('dateLine').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   document.getElementById('streakVal').textContent=consecutiveScoreStreak({minScore:1});
   document.getElementById('scoreVal').textContent=S.score!==null?S.score+'/10':'—';
@@ -1042,7 +1210,57 @@ function render(){
   document.querySelectorAll('.step').forEach(st=>{});
   for(const k in S.steps){const el=document.querySelector('.step[data-skey="'+k+'"]');}
   renderLog();renderNotes();renderLevels();renderScoreChart();renderSteps();renderNotifications();renderBuild();
-  renderScoreHistory();
+  renderScoreHistory();renderTerms();
+}
+
+function renderTerms(){
+  ensureTermsState();
+  const t=S.terms;const today=localDateStr();const todayCount=t.daily[today]||0;
+  const values={termsToday:todayCount,termsChain:t.currentChain,termsBestChain:t.bestChain,termsTotal:t.total};
+  Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value;});
+  const next=TERMS_CHAIN_MILESTONES.find(m=>t.currentChain<m.count);
+  const nextLabel=document.getElementById('termsNextLabel');
+  const nextCount=document.getElementById('termsNextCount');
+  const fill=document.getElementById('termsProgressFill');
+  if(next){
+    const previous=[...TERMS_CHAIN_MILESTONES].reverse().find(m=>m.count<=t.currentChain);
+    const base=previous?previous.count:0;
+    const pct=Math.max(0,Math.min(100,((t.currentChain-base)/(next.count-base))*100));
+    if(nextLabel)nextLabel.textContent=next.name+' at '+next.count+' consecutive moves';
+    if(nextCount)nextCount.textContent=t.currentChain+' of '+next.count;
+    if(fill)fill.style.width=pct+'%';
+  }else{
+    if(nextLabel)nextLabel.textContent='All consecutive milestones unlocked';
+    if(nextCount)nextCount.textContent=t.currentChain+' chain';
+    if(fill)fill.style.width='100%';
+  }
+  const bestDay=document.getElementById('termsBestDay');
+  if(bestDay)bestDay.textContent='Best day: '+t.bestDay+' application'+(t.bestDay===1?'':'s');
+  const milestones=document.getElementById('termsMilestones');
+  if(milestones){
+    milestones.innerHTML='';
+    TERMS_CHAIN_MILESTONES.forEach(m=>{
+      const unlocked=t.unlocked.includes('chain-'+m.count)||t.bestChain>=m.count;
+      const item=document.createElement('div');item.className='terms-badge'+(unlocked?' unlocked':'');
+      const icon=document.createElement('div');icon.className='terms-badge-icon';icon.textContent=unlocked?m.icon:'○';
+      const name=document.createElement('b');name.textContent=m.name;
+      const requirement=document.createElement('span');requirement.textContent=m.count+' consecutive';
+      item.append(icon,name,requirement);milestones.appendChild(item);
+    });
+  }
+  const history=document.getElementById('termsHistory');
+  if(history){
+    history.innerHTML='';
+    const recent=t.history.slice().sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);
+    if(!recent.length){const empty=document.createElement('div');empty.className='terms-empty';empty.textContent='Your first move is five seconds away.';history.appendChild(empty);}
+    recent.forEach(entry=>{
+      const row=document.createElement('div');row.className='terms-history-item';
+      const num=document.createElement('div');num.className='terms-history-num';num.textContent=entry.chain||1;
+      const action=document.createElement('div');action.className='terms-history-action';action.textContent=entry.action;
+      const time=document.createElement('div');time.className='terms-history-time';time.textContent=new Date(entry.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      row.append(num,action,time);history.appendChild(row);
+    });
+  }
 }
 
 function renderSteps(){
@@ -1146,6 +1364,133 @@ function nowT(){return new Date().toLocaleTimeString('en-US',{hour:'2-digit',min
 function addLog(m,k){S.log.push({t:nowT(),m,k});if(S.log.length>40)S.log.shift();save();renderLog();}
 
 function flashQuestion(){const q=document.getElementById('qText');q.style.transition='none';q.style.opacity='0.2';setTimeout(()=>{q.style.transition='opacity 0.6s';q.style.opacity='1';},80);addLog('asked the presence question','win');toast('Three breaths. Stay here.');}
+
+function localDateStr(date=new Date()){
+  const y=date.getFullYear();const m=String(date.getMonth()+1).padStart(2,'0');const d=String(date.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+d;
+}
+
+function chooseTermsAction(action){
+  const input=document.getElementById('termsAction');if(input){input.value=action;input.focus();}
+}
+
+function startTermsCountdown(){
+  const input=document.getElementById('termsAction');
+  const action=input?input.value.trim():'';
+  if(!action){toast('Name the move first.');if(input)input.focus();return;}
+  pendingTermsAction=action;
+  unlockTermsAudio();
+  clearInterval(termsCountdownTimer);
+  const overlay=document.getElementById('termsOverlay');
+  const count=document.getElementById('termsCount');
+  const actions=document.getElementById('termsOverlayActions');
+  const celebration=document.getElementById('termsCelebration');
+  document.getElementById('termsCountdownView').style.display='block';
+  celebration.classList.remove('show');
+  document.getElementById('termsOverlayAction').textContent=action;
+  actions.classList.remove('show');
+  count.className='terms-count';count.textContent='5';
+  overlay.classList.add('open');document.body.style.overflow='hidden';
+  let n=5;
+  termsCountdownTimer=setInterval(()=>{
+    n--;
+    count.style.animation='none';void count.offsetWidth;count.style.animation='';
+    if(n>0){count.textContent=n;termsTick();}
+    else{
+      clearInterval(termsCountdownTimer);termsCountdownTimer=null;
+      count.textContent='GO';count.classList.add('go');actions.classList.add('show');
+      termsGoTone();if(navigator.vibrate)navigator.vibrate([120,60,220]);
+      const primary=actions.querySelector('.btn-primary');if(primary)primary.focus();
+    }
+  },1000);
+}
+
+function unlockTermsAudio(){
+  try{
+    const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+    if(!termsAudioCtx)termsAudioCtx=new Ctx();
+    if(termsAudioCtx.state==='suspended')termsAudioCtx.resume();
+  }catch(e){}
+}
+
+function termsTick(){
+  try{
+    const ctx=termsAudioCtx;if(!ctx)return;
+    const o=ctx.createOscillator();const g=ctx.createGain();
+    o.frequency.value=260;o.connect(g);g.connect(ctx.destination);g.gain.setValueAtTime(0.08,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.12);o.start();o.stop(ctx.currentTime+0.13);
+  }catch(e){}
+}
+
+function termsGoTone(){
+  try{
+    const ctx=termsAudioCtx;if(!ctx)return;
+    [392,523.25,659.25].forEach((f,i)=>{const o=ctx.createOscillator();const g=ctx.createGain();o.frequency.value=f;o.connect(g);g.connect(ctx.destination);const start=ctx.currentTime+i*0.08;g.gain.setValueAtTime(0.0001,start);g.gain.exponentialRampToValueAtTime(0.12,start+0.02);g.gain.exponentialRampToValueAtTime(0.0001,start+0.45);o.start(start);o.stop(start+0.5);});
+  }catch(e){}
+}
+
+function completeTermsMove(){
+  ensureTermsState();
+  const t=S.terms;const today=localDateStr();const previousChain=t.currentChain||0;
+  t.currentChain=previousChain+1;t.total=(t.total||0)+1;
+  t.daily[today]=(t.daily[today]||0)+1;
+  t.bestChain=Math.max(t.bestChain||0,t.currentChain);
+  t.bestDay=Math.max(t.bestDay||0,t.daily[today]);
+  t.updatedAt=Date.now();
+  t.history.push({id:t.updatedAt+'-'+Math.random().toString(36).slice(2,8),ts:t.updatedAt,date:today,action:pendingTermsAction,chain:t.currentChain});
+  if(t.history.length>100)t.history=t.history.slice(-100);
+  const unlocked=[];
+  TERMS_CHAIN_MILESTONES.forEach(m=>unlockTermsMilestone('chain-'+m.count,t.currentChain>=m.count,m.name,m.count+' consecutive application'+(m.count===1?'':'s'),unlocked));
+  TERMS_TOTAL_MILESTONES.forEach(n=>unlockTermsMilestone('total-'+n,t.total>=n,n+' Lifetime Moves',n+' beneficial actions chosen',unlocked));
+  TERMS_DAY_MILESTONES.forEach(n=>unlockTermsMilestone('day-'+n,t.daily[today]>=n,n+' Moves Today',n+' applications in one day',unlocked));
+  addLog('5-second rule: '+pendingTermsAction,'win');save();render();
+  const input=document.getElementById('termsAction');if(input)input.value='';
+  showTermsCelebration(unlocked);
+}
+
+function unlockTermsMilestone(key,qualified,title,detail,unlocked){
+  if(!qualified||S.terms.unlocked.includes(key))return;
+  S.terms.unlocked.push(key);unlocked.push({title,detail});
+}
+
+function missTermsMove(){
+  ensureTermsState();const broken=S.terms.currentChain;
+  S.terms.currentChain=0;S.terms.updatedAt=Date.now();save();render();
+  closeTermsOverlay();
+  toast(broken?'The chain resets. The straight line is still five seconds away.':'No shame. Start again when you are ready to move.');
+}
+
+function showTermsCelebration(unlocked){
+  document.getElementById('termsCountdownView').style.display='none';
+  const celebration=document.getElementById('termsCelebration');
+  const title=document.getElementById('termsCelebrationTitle');
+  const copy=document.getElementById('termsCelebrationCopy');
+  if(unlocked.length){
+    const milestone=unlocked[unlocked.length-1];
+    title.textContent=milestone.title+' unlocked!';
+    copy.textContent=milestone.detail+'. You did not wait to feel ready. You chose the straight line and lived on your terms.';
+    buildTermsConfetti();
+  }else{
+    title.textContent='You moved.';
+    copy.textContent='Application '+S.terms.total+'. Current chain: '+S.terms.currentChain+'. Every decisive move makes the straight line easier to choose.';
+    document.getElementById('termsConfetti').innerHTML='';
+  }
+  celebration.classList.add('show');
+  if(navigator.vibrate)navigator.vibrate(unlocked.length?[100,60,100,60,240]:80);
+  const button=celebration.querySelector('button');if(button)button.focus();
+}
+
+function buildTermsConfetti(){
+  const box=document.getElementById('termsConfetti');box.innerHTML='';
+  const colors=['#3ddc91','#f2b950','#e8765a','#e8efe9'];
+  for(let i=0;i<28;i++){const piece=document.createElement('i');piece.style.left=(Math.random()*100)+'%';piece.style.top=(-20-Math.random()*90)+'px';piece.style.background=colors[i%colors.length];piece.style.animationDelay=(Math.random()*0.45)+'s';box.appendChild(piece);}
+}
+
+function closeTermsOverlay(){
+  clearInterval(termsCountdownTimer);termsCountdownTimer=null;
+  document.getElementById('termsOverlay').classList.remove('open');document.body.style.overflow='';
+  document.getElementById('termsCelebration').classList.remove('show');
+  const start=document.querySelector('#panel-terms .terms-start');if(start)start.focus();
+}
 
 function setScore(n){S.score=n;updateScoreHistory(n);const leveledUp=calculateLevel();addLog('scored today: '+n+'/10',n>=8?'win':'urge');save();render();toast(leveledUp?'Level '+S.level+' unlocked.':n>=9?'A nine. The system is working.':n>=7?'Solid. Hold the line.':'Reset. You know the protocol.');}
 
@@ -1484,7 +1829,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v19').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v20').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
