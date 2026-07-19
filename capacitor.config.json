@@ -3,6 +3,10 @@
   "appName": "Presence",
   "webDir": "dist",
   "plugins": {
+    "FirebaseAuthentication": {
+      "providers": ["google.com"],
+      "skipNativeAuth": false
+    },
     "LocalNotifications": {
       "smallIcon": "ic_stat_presence",
       "iconColor": "#3DDC91"

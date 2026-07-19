@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "470449013799",
+    "project_id": "presence-app-b9717",
+    "storage_bucket": "presence-app-b9717.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470449013799:android:30768e93c14388c829fa02",
+        "android_client_info": {
+          "package_name": "com.mounacademy.presence"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470449013799-q4e82nbrrf95sbgkiollgl8u90ll2ccl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mounacademy.presence",
+            "certificate_hash": "ea0efb5bcf2b0fd86e31ac7c8b7f5c6bff04b63c"
+          }
+        },
+        {
+          "client_id": "470449013799-tbct0tvobtojm4rmegi8uca2g4ganalu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcdSS1P_YJF85Q7ZwULc8P6b0ds2YbwqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470449013799-tbct0tvobtojm4rmegi8uca2g4ganalu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

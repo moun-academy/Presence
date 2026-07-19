@@ -956,6 +956,15 @@ function firebaseConfig(){
   return window.PRESENCE_FIREBASE_CONFIG||null;
 }
 
+function isNativePlatform(){
+  return !!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());
+}
+
+function getNativeFirebaseAuthentication(){
+  if(!isNativePlatform())return null;
+  return window.Capacitor.Plugins&&window.Capacitor.Plugins.FirebaseAuthentication||null;
+}
+
 function hasFirebaseConfig(){
   const cfg=firebaseConfig();
   return !!(cfg&&cfg.apiKey&&cfg.authDomain&&cfg.projectId&&cfg.appId);
@@ -997,6 +1006,19 @@ function firebaseErrorText(e){
   return code+(e&&e.message?': '+e.message:'');
 }
 
+function firebaseAuthErrorText(e){
+  const code=e&&e.code?String(e.code):'';
+  if(code==='auth/invalid-credential'||code==='auth/wrong-password'||code==='auth/user-not-found')return 'Wrong email or password.';
+  if(code==='auth/invalid-email')return 'Enter a valid email address.';
+  if(code==='auth/email-already-in-use')return 'Account already exists.';
+  if(code==='auth/weak-password')return 'Use a password with at least 6 characters.';
+  if(code==='auth/network-request-failed')return 'Could not reach Firebase. Check your connection.';
+  if(code==='auth/operation-not-allowed')return 'This sign-in method is not enabled in Firebase.';
+  if(code==='auth/unauthorized-domain')return 'This app is not authorized in Firebase yet.';
+  if(code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request'||code==='12501')return 'Sign-in was cancelled.';
+  return e&&e.message?'Sign-in failed: '+e.message:'Sign-in failed. Please try again.';
+}
+
 function setFirebaseError(e){
   FB.syncError=true;
   FB.syncErrorText=firebaseErrorText(e);
@@ -1021,7 +1043,15 @@ async function initFirebase(){
     ]);
     FB.mods={...appMod,...authMod,...firestoreMod};
     FB.app=appMod.initializeApp(firebaseConfig());
-    FB.auth=authMod.getAuth(FB.app);
+    if(isNativePlatform()){
+      try{
+        FB.auth=authMod.initializeAuth(FB.app,{persistence:authMod.indexedDBLocalPersistence});
+      }catch(e){
+        FB.auth=authMod.getAuth(FB.app);
+      }
+    }else{
+      FB.auth=authMod.getAuth(FB.app);
+    }
     FB.db=firestoreMod.getFirestore(FB.app);
     FB.ready=true;
     authMod.onAuthStateChanged(FB.auth,async user=>{
@@ -1158,7 +1188,7 @@ async function signIn(){
   const password=document.getElementById('authPassword').value;
   if(!email||!password){toast('Enter email and password.');return;}
   try{await FB.mods.signInWithEmailAndPassword(FB.auth,email,password);toast('Signed in.');}
-  catch(e){toast(e.code==='auth/invalid-credential'?'Wrong email or password.':'Sign in failed.');}
+  catch(e){console.error('Presence email sign-in error',e);toast(firebaseAuthErrorText(e));}
 }
 
 async function createAccount(){
@@ -1167,20 +1197,28 @@ async function createAccount(){
   const password=document.getElementById('authPassword').value;
   if(!email||!password){toast('Enter email and password.');return;}
   try{await FB.mods.createUserWithEmailAndPassword(FB.auth,email,password);toast('Account created.');}
-  catch(e){toast(e.code==='auth/email-already-in-use'?'Account already exists.':'Could not create account.');}
+  catch(e){console.error('Presence account creation error',e);toast(firebaseAuthErrorText(e));}
 }
 
 async function signInWithGoogle(){
   if(!FB.ready){toast('Add Firebase config first.');return;}
-  const provider=new FB.mods.GoogleAuthProvider();
-  provider.setCustomParameters({prompt:'select_account'});
   try{
-    await FB.mods.signInWithPopup(FB.auth,provider);
+    const nativeAuth=getNativeFirebaseAuthentication();
+    if(nativeAuth){
+      const result=await nativeAuth.signInWithGoogle();
+      const idToken=result&&result.credential&&result.credential.idToken;
+      if(!idToken)throw new Error('Google did not return an ID token.');
+      const credential=FB.mods.GoogleAuthProvider.credential(idToken);
+      await FB.mods.signInWithCredential(FB.auth,credential);
+    }else{
+      const provider=new FB.mods.GoogleAuthProvider();
+      provider.setCustomParameters({prompt:'select_account'});
+      await FB.mods.signInWithPopup(FB.auth,provider);
+    }
     toast('Signed in with Google.');
   }catch(e){
-    if(e.code==='auth/operation-not-allowed'){toast('Enable Google sign-in in Firebase.');}
-    else if(e.code==='auth/unauthorized-domain'){toast('Add this domain in Firebase Auth settings.');}
-    else if(e.code!=='auth/popup-closed-by-user'){toast('Google sign-in failed.');}
+    console.error('Presence Google sign-in error',e);
+    toast(firebaseAuthErrorText(e));
   }
 }
 
@@ -1192,6 +1230,8 @@ async function signOutUser(){
   const saved=await writeCloudState();
   FB.syncing=false;renderAuth();
   if(!saved){toast('Sync failed. Still signed in so your cloud data is safe.');return;}
+  const nativeAuth=getNativeFirebaseAuthentication();
+  if(nativeAuth){try{await nativeAuth.signOut();}catch(e){console.warn('Native Firebase sign-out failed',e);}}
   await FB.mods.signOut(FB.auth);
   FB.user=null;renderAuth();toast('Signed out. Cloud data is saved.');
 }
