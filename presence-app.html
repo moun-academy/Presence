@@ -364,6 +364,29 @@ textarea::placeholder{color:var(--text3);}
 .terms-chip:hover,.terms-chip:focus{color:var(--green);border-color:var(--green-deep);outline:none;}
 .terms-start{font-size:17px;padding:17px;animation:termsPulse 2.6s ease-in-out infinite;}
 @keyframes termsPulse{0%,100%{box-shadow:0 0 0 0 rgba(61,220,145,0);}50%{box-shadow:0 0 24px 2px rgba(61,220,145,0.28);}}
+.terms-hud{border:1px solid var(--border);background:rgba(4,9,7,0.45);border-radius:14px;padding:14px 16px 12px;margin-bottom:14px;transition:border-color 0.3s,background 0.3s;}
+.terms-hud-scores{display:flex;align-items:center;justify-content:center;gap:20px;}
+.terms-hud-score{text-align:center;min-width:64px;}
+.terms-hud-score span{display:block;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
+.terms-hud-score b{font-family:var(--serif);font-size:36px;line-height:1;color:var(--green);font-weight:600;}
+.terms-hud-score.best b{color:var(--gold);}
+.terms-hud-vs{font-family:var(--serif);font-style:italic;color:var(--text3);font-size:13px;}
+.terms-hud-track{position:relative;height:8px;border-radius:999px;background:var(--bg);border:1px solid var(--border);margin:13px 0 9px;}
+.terms-hud-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--green-deep),var(--green));transition:width 0.4s ease;}
+.terms-hud-marker{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--gold);border-radius:2px;box-shadow:0 0 6px rgba(242,185,80,0.6);}
+.terms-hud-delta{font-size:12px;color:var(--text2);text-align:center;line-height:1.5;}
+.terms-hud.record{border-color:rgba(242,185,80,0.55);background:rgba(242,185,80,0.07);}
+.terms-hud.record .terms-hud-fill{background:linear-gradient(90deg,var(--green),var(--gold));}
+.terms-hud.record .terms-hud-delta{color:var(--gold);}
+.terms-drift{display:block;width:100%;margin-top:4px;background:none;border:none;color:var(--coral);opacity:0.8;font:400 13px var(--sans);cursor:pointer;padding:10px;text-decoration:underline;text-underline-offset:3px;}
+.terms-drift:hover,.terms-drift:focus{opacity:1;outline:none;}
+.terms-reset{display:none;}
+.terms-reset.show{display:block;animation:termsPop 0.5s ease;}
+.terms-reset-num{font-family:var(--serif);font-size:clamp(90px,26vw,150px);color:var(--coral);line-height:1;text-shadow:0 0 45px rgba(232,118,90,0.25);}
+.terms-reset-title{font-family:var(--serif);font-size:30px;color:var(--text);margin-top:10px;}
+.terms-reset-copy{font-size:15px;color:var(--text2);line-height:1.65;margin:12px auto 22px;max-width:420px;}
+.terms-reset-actions{display:grid;gap:10px;}
+.terms-reset-actions .btn{margin-bottom:0;}
 .terms-links{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px;}
 .terms-link{width:14px;height:14px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);transition:all 0.3s ease;}
 .terms-link.filled{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(61,220,145,0.4);}
@@ -395,7 +418,6 @@ textarea::placeholder{color:var(--text3);}
 .terms-go-chips{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:2px 0 14px;}
 .terms-go-chip{border:1px solid var(--border2);background:rgba(19,26,22,0.9);color:var(--text3);border-radius:999px;padding:6px 12px;font-size:12px;}
 .terms-go-chip b{color:var(--green);font-weight:600;}
-.terms-go-record{display:inline-block;border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:5px 13px;font-size:12px;letter-spacing:0.08em;margin-bottom:12px;animation:termsPop 0.5s ease;}
 .terms-go-next{font-size:13px;color:var(--text2);margin-bottom:8px;}
 .terms-go-next b{color:var(--gold);font-weight:600;}
 .terms-motion{font-size:11px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;}
@@ -418,7 +440,7 @@ textarea::placeholder{color:var(--text3);}
 @keyframes termsPop{0%{opacity:0;transform:scale(0.75);}70%{transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
 @keyframes termsFall{0%{opacity:0;transform:translateY(-30px) rotate(0);}15%{opacity:1;}100%{opacity:0;transform:translateY(520px) rotate(540deg);}}
 @media(max-width:560px){.terms-title{font-size:26px;}.terms-stats{grid-template-columns:repeat(3,1fr);gap:6px;}.terms-stat b{font-size:23px;}.terms-milestones{grid-template-columns:repeat(2,1fr);}.terms-plan-add{grid-template-columns:1fr;}.terms-plan-add .btn{width:100%;}.terms-task{grid-template-columns:auto minmax(0,1fr);}.terms-task-controls{grid-column:2;justify-content:flex-end;}.terms-active-task{font-size:23px;}}
-@media(prefers-reduced-motion:reduce){.terms-count,.terms-celebration.show,.terms-overlay.open,.terms-confetti i,.terms-start,.terms-go-record{animation:none!important;}.terms-progress-fill,.terms-rank-fill,.terms-plan-seg,.terms-link{transition:none;}}
+@media(prefers-reduced-motion:reduce){.terms-count,.terms-celebration.show,.terms-overlay.open,.terms-confetti i,.terms-start,.terms-reset.show{animation:none!important;}.terms-progress-fill,.terms-rank-fill,.terms-plan-seg,.terms-link,.terms-hud-fill{transition:none;}}
 </style>
 </head>
 <body>
@@ -486,8 +508,8 @@ textarea::placeholder{color:var(--text3);}
 
   <div class="terms-stats">
     <div class="terms-stat"><b id="termsToday">0</b><span>Moves today</span></div>
-    <div class="terms-stat"><b id="termsChain">0</b><span>Chain</span></div>
-    <div class="terms-stat"><b id="termsBestChain">0</b><span>Best chain</span></div>
+    <div class="terms-stat"><b id="termsChain">0</b><span>Current run</span></div>
+    <div class="terms-stat gold"><b id="termsBestChain">0</b><span>Record</span></div>
     <div class="terms-stat"><b id="termsDayStreak">0</b><span>Day streak</span></div>
     <div class="terms-stat gold"><b id="termsDaysWon">0</b><span>Days won</span></div>
     <div class="terms-stat"><b id="termsTotal">0</b><span>Lifetime</span></div>
@@ -504,9 +526,11 @@ textarea::placeholder{color:var(--text3);}
         <span id="termsActiveApps">0 applications on this task</span>
         <span id="termsActivePosition">Task 1 of 1</span>
       </div>
+      <div class="terms-hud" id="termsHudMain"></div>
       <button class="btn btn-primary terms-start" id="termsStartButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Start now</button>
       <button class="btn btn-ghost" id="termsCompleteButton" type="button" onclick="completeTermsTask()">Task done — next</button>
-      <div class="mini-label">Every 5-4-3-2-1 starts or continues the task. Only “Task done” completes it.</div>
+      <button class="terms-drift" id="termsDriftMain" type="button" onclick="breakTermsStreak()" style="display:none;">A distraction got in — streak over</button>
+      <div class="mini-label">Only fully present moves count. If a daydream slips in, end the streak and start again. Only “Task done” completes the task.</div>
     </div>
   </div>
 
@@ -831,8 +855,8 @@ textarea::placeholder{color:var(--text3);}
       <div class="terms-count" id="termsCount" aria-live="assertive">5</div>
       <div class="terms-overlay-action" id="termsOverlayAction"></div>
       <div class="terms-go-panel" id="termsGoPanel">
+        <div class="terms-hud" id="termsHudGo"></div>
         <div class="terms-go-chips" id="termsGoChips"></div>
-        <div class="terms-go-record" id="termsGoRecord" style="display:none;">★ New personal-best chain</div>
         <div class="terms-go-next" id="termsGoNext"></div>
         <div class="terms-motion">In motion · <b id="termsMotionClock">0:00</b></div>
         <div class="terms-go-coach" id="termsGoCoach"></div>
@@ -842,7 +866,18 @@ textarea::placeholder{color:var(--text3);}
             <button class="btn btn-ghost" type="button" onclick="completeTermsTaskFromOverlay()">Task done — next</button>
             <button class="btn btn-ghost" type="button" onclick="closeTermsOverlay()">Back to plan</button>
           </div>
+          <button class="terms-drift" type="button" onclick="breakTermsStreak()">A distraction got in — streak over</button>
         </div>
+      </div>
+    </div>
+    <div class="terms-reset" id="termsResetView">
+      <div class="section-label">Honesty keeps the game real</div>
+      <div class="terms-reset-num">0</div>
+      <div class="terms-reset-title" id="termsResetTitle">Streak over.</div>
+      <div class="terms-reset-copy" id="termsResetCopy"></div>
+      <div class="terms-reset-actions">
+        <button class="btn btn-primary terms-start" id="termsResetRestart" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Start the comeback</button>
+        <button class="btn btn-ghost" id="termsResetBack" type="button" onclick="closeTermsOverlay()">Back to plan</button>
       </div>
     </div>
     <div class="terms-celebration" id="termsCelebration">
@@ -860,11 +895,11 @@ textarea::placeholder{color:var(--text3);}
   </div>
 </div>
 
-<script src="firebase-config.js?v=presence-v25"></script>
+<script src="firebase-config.js?v=presence-v26"></script>
 <script>
 // ---------- State ----------
 // Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
-const APP_BUILD={version:'v25',date:'Jul 19, 2026',time:'2:14 PM'};
+const APP_BUILD={version:'v26',date:'Jul 19, 2026',time:'3:10 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -921,7 +956,6 @@ let termsMotionTimer=null;
 let termsMotionSince=null;
 let pendingTermsAction='';
 let pendingTermsTaskId=null;
-let termsNewBestChain=false;
 let termsAudioCtx=null;
 
 function termsDefaults(){
@@ -1405,12 +1439,67 @@ function termsNextChainMilestone(t){
   return TERMS_CHAIN_MILESTONES.find(m=>t.currentChain<m.count)||null;
 }
 
+function renderTermsHud(container){
+  if(!container)return;
+  const t=S.terms;const run=t.currentChain||0;const best=t.bestChain||0;
+  const scale=Math.max(best,run,1);
+  const runPct=Math.min(100,(run/scale)*100);
+  const markerPct=Math.min(100,(best/scale)*100);
+  const record=best>0&&run>=best;
+  let delta;
+  if(best===0)delta='No record yet. Set the first one right now.';
+  else if(record)delta='All-time high: '+run+'. Every present move sets a new record.';
+  else if(run===0)delta='Record to beat: '+best+'. The run starts with one move.';
+  else delta=(best-run)+' more to beat your record of '+best+'.';
+  container.innerHTML='';
+  container.classList.toggle('record',record);
+  const scores=document.createElement('div');scores.className='terms-hud-scores';
+  const mk=(label,value,cls)=>{const box=document.createElement('div');box.className='terms-hud-score'+(cls?' '+cls:'');const l=document.createElement('span');l.textContent=label;const v=document.createElement('b');v.textContent=value;box.append(l,v);return box;};
+  const vs=document.createElement('div');vs.className='terms-hud-vs';vs.textContent='vs';
+  scores.append(mk('Run',run),vs,mk('Record',best,'best'));
+  const track=document.createElement('div');track.className='terms-hud-track';
+  const fill=document.createElement('div');fill.className='terms-hud-fill';fill.style.width=runPct+'%';
+  track.appendChild(fill);
+  if(best>0){const marker=document.createElement('div');marker.className='terms-hud-marker';marker.style.left='calc('+markerPct+'% - 1px)';track.appendChild(marker);}
+  const deltaEl=document.createElement('div');deltaEl.className='terms-hud-delta';deltaEl.textContent=delta;
+  container.append(scores,track,deltaEl);
+}
+
+function breakTermsStreak(){
+  ensureTermsState();
+  const t=S.terms;const ended=t.currentChain||0;
+  if(!ended){toast('No live streak to break. Five seconds starts one.');return;}
+  const best=t.bestChain||0;
+  t.currentChain=0;t.updatedAt=Date.now();
+  addLog('streak ended at '+ended+' — honest reset','urge');
+  save();render();
+  clearInterval(termsCountdownTimer);termsCountdownTimer=null;
+  stopTermsMotionClock();
+  document.getElementById('termsCountdownView').style.display='none';
+  document.getElementById('termsCelebration').classList.remove('show');
+  document.getElementById('termsGoPanel').classList.remove('show');
+  document.getElementById('termsResetTitle').textContent='Streak over at '+ended+'.';
+  document.getElementById('termsResetCopy').textContent=(ended>=best?'That run is your all-time best: '+best+'. ':'Your record of '+best+' still stands. ')+'You caught the drift yourself — that is presence working. The comeback starts five seconds from now.';
+  const restart=document.getElementById('termsResetRestart');
+  const hasTask=!!getActiveTermsTask();
+  restart.style.display=hasTask?'':'none';
+  document.getElementById('termsResetView').classList.add('show');
+  document.getElementById('termsOverlay').classList.add('open');document.body.style.overflow='hidden';
+  updateTermsSticky();
+  if(navigator.vibrate)navigator.vibrate(220);
+  const target=hasTask?restart:document.getElementById('termsResetBack');
+  if(target)target.focus();
+}
+
 function termsCoachLine(){
   const t=S.terms;const today=localDateStr();const todayCount=t.daily[today]||0;
   const tasks=t.tasks||[];const open=tasks.filter(task=>!task.done);
   const next=termsNextChainMilestone(t);
   if(!tasks.length)return 'Name the mission. One important task is enough to start.';
   if(!open.length)return 'Day won. Anything you add now is bonus territory.';
+  const best=t.bestChain||0;
+  if(t.currentChain>0&&best>0&&t.currentChain>=best)return 'Record territory. Every present move is a new all-time high.';
+  if(t.currentChain>0&&best>t.currentChain&&best-t.currentChain<=3)return (best-t.currentChain)+' from your record. Stay locked in.';
   if(next&&t.currentChain>0&&next.count-t.currentChain===1)return 'One more move and '+next.name+' is yours.';
   if(next&&t.currentChain>0&&next.count-t.currentChain===2)return 'Two moves from '+next.name+'. Stay on the line.';
   if(todayCount===0)return 'You do not need to feel ready. Five seconds from now, you are moving.';
@@ -1534,6 +1623,9 @@ function renderTermsPlan(t){
     const activePosition=document.getElementById('termsActivePosition');if(activePosition)activePosition.textContent='Task '+position+' of '+remaining+' remaining';
     const startButton=document.getElementById('termsStartButton');
     if(startButton)startButton.textContent=(active.apps||0)>0?'5-4-3-2-1 — Keep going':'5-4-3-2-1 — Start now';
+    renderTermsHud(document.getElementById('termsHudMain'));
+    const drift=document.getElementById('termsDriftMain');
+    if(drift)drift.style.display=(t.currentChain||0)>0?'block':'none';
   }else if(empty){
     empty.textContent=tasks.length?'Mission complete. Add a bonus task, or carry the momentum into the rest of your day.':'Name today’s mission below. Your first move will appear here.';
   }
@@ -1768,6 +1860,7 @@ function startTermsCountdown(){
   const celebration=document.getElementById('termsCelebration');
   document.getElementById('termsCountdownView').style.display='block';
   celebration.classList.remove('show');
+  document.getElementById('termsResetView').classList.remove('show');
   document.getElementById('termsOverlayTitle').textContent='No negotiation. Just move.';
   document.getElementById('termsOverlayAction').textContent=pendingTermsAction;
   document.getElementById('termsGoPanel').classList.remove('show');
@@ -1850,12 +1943,11 @@ function showTermsMomentumReady(){
   const count=document.getElementById('termsCount');count.textContent='GO';count.className='terms-count go';
   document.getElementById('termsOverlayTitle').textContent='You are in motion';
   document.getElementById('termsOverlayAction').textContent=task.text;
+  renderTermsHud(document.getElementById('termsHudGo'));
   const chips=document.getElementById('termsGoChips');
   chips.innerHTML='';
-  termsGoChip(chips,t.currentChain,'chain');
   termsGoChip(chips,t.daily[localDateStr()]||0,'today');
   termsGoChip(chips,task.apps||0,'on this task');
-  document.getElementById('termsGoRecord').style.display=termsNewBestChain?'inline-block':'none';
   const next=termsNextChainMilestone(t);
   const goNext=document.getElementById('termsGoNext');
   if(next){
@@ -1940,6 +2032,7 @@ function showTermsCelebration(unlocked){
 function showTermsPlanCelebration(){
   const overlay=document.getElementById('termsOverlay');
   document.getElementById('termsCountdownView').style.display='none';
+  document.getElementById('termsResetView').classList.remove('show');
   stopTermsMotionClock();
   const t=S.terms;const today=localDateStr();
   const doneCount=t.tasks.filter(task=>task.done).length;
@@ -1970,6 +2063,7 @@ function closeTermsOverlay(){
   document.getElementById('termsOverlay').classList.remove('open');document.body.style.overflow='';
   document.getElementById('termsCelebration').classList.remove('show');
   document.getElementById('termsGoPanel').classList.remove('show');
+  document.getElementById('termsResetView').classList.remove('show');
   pendingTermsTaskId=null;
   updateTermsSticky();
   const start=document.getElementById('termsStartButton');if(start&&start.offsetParent!==null)start.focus();
@@ -2380,7 +2474,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v25').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v26').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
