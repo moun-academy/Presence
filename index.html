@@ -333,9 +333,11 @@ textarea::placeholder{color:var(--text3);}
 .terms-action-label{display:block;color:var(--green);font-size:13px;font-weight:500;margin-bottom:8px;}
 .terms-action-input{width:100%;padding:15px;border-radius:13px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font:300 15px var(--sans);margin-bottom:12px;}
 .terms-action-input:focus{outline:none;border-color:var(--green);}
-.terms-plan-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:start;}
+.terms-plan-add{display:grid;grid-template-columns:minmax(0,1fr) 104px auto;gap:9px;align-items:start;}
 .terms-plan-add .terms-action-input{margin-bottom:0;}
 .terms-plan-add .btn{width:auto;margin:0;padding:14px 20px;}
+.terms-time-select{width:100%;padding:15px 10px;border-radius:13px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font:400 14px var(--sans);cursor:pointer;}
+.terms-time-select:focus{outline:none;border-color:var(--green);}
 .terms-plan-summary{font-size:12px;color:var(--text3);margin:-6px 0 14px;}
 .terms-task-list{display:grid;gap:8px;margin-top:14px;}
 .terms-task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--border);background:var(--bg2);border-radius:13px;padding:10px;transition:all 0.2s;}
@@ -348,6 +350,7 @@ textarea::placeholder{color:var(--text3);}
 .terms-task-meta{display:block;font-size:10px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-top:3px;}
 .terms-task-controls{display:flex;gap:4px;}
 .terms-task-control{width:27px;height:27px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text3);font:500 12px var(--sans);cursor:pointer;}
+.terms-task-control.time{width:auto;min-width:42px;padding:0 7px;color:var(--gold);font-variant-numeric:tabular-nums;}
 .terms-task-control:hover,.terms-task-control:focus{color:var(--green);border-color:var(--green-deep);outline:none;}
 .terms-momentum{border-color:var(--green-deep);background:linear-gradient(155deg,rgba(61,220,145,0.09),rgba(19,26,22,0.96));}
 .terms-active-label{font-size:11px;color:var(--green);letter-spacing:0.16em;text-transform:uppercase;text-align:center;}
@@ -387,6 +390,17 @@ textarea::placeholder{color:var(--text3);}
 .terms-reset-copy{font-size:15px;color:var(--text2);line-height:1.65;margin:12px auto 22px;max-width:420px;}
 .terms-reset-actions{display:grid;gap:10px;}
 .terms-reset-actions .btn{margin-bottom:0;}
+.terms-expired{display:none;}
+.terms-expired.show{display:block;animation:termsPop 0.35s ease;}
+.terms-alarm-icon{font-size:76px;line-height:1;animation:termsAlarmShake 0.58s ease-in-out infinite;}
+.terms-expired.stopped .terms-alarm-icon{animation:none;}
+.terms-expired-title{font-family:var(--serif);font-size:34px;color:var(--gold);margin-top:14px;}
+.terms-expired-task{font-family:var(--serif);font-size:21px;color:var(--text);line-height:1.35;margin:10px auto 6px;max-width:430px;}
+.terms-expired-copy{font-size:14px;color:var(--text2);line-height:1.6;margin:8px auto 20px;max-width:430px;}
+.terms-expired-decisions{display:none;gap:10px;}
+.terms-expired-decisions.show{display:grid;}
+.terms-expired-decisions .btn{margin:0;}
+@keyframes termsAlarmShake{0%,100%{transform:rotate(-7deg);}50%{transform:rotate(7deg);}}
 .terms-links{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px;}
 .terms-link{width:14px;height:14px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);transition:all 0.3s ease;}
 .terms-link.filled{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(61,220,145,0.4);}
@@ -422,6 +436,8 @@ textarea::placeholder{color:var(--text3);}
 .terms-go-next b{color:var(--gold);font-weight:600;}
 .terms-motion{font-size:11px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;}
 .terms-motion b{color:var(--green);font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:0.05em;}
+.terms-motion.urgent b{color:var(--coral);animation:termsTimerPulse 1s ease-in-out infinite;}
+@keyframes termsTimerPulse{0%,100%{opacity:1;}50%{opacity:0.48;}}
 .terms-go-coach{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--text2);margin:0 auto 18px;max-width:400px;line-height:1.55;}
 .terms-overlay-actions{display:grid;gap:10px;}
 .terms-overlay-actions .btn{margin-bottom:0;}
@@ -439,8 +455,8 @@ textarea::placeholder{color:var(--text3);}
 @keyframes termsFade{from{opacity:0;}to{opacity:1;}}
 @keyframes termsPop{0%{opacity:0;transform:scale(0.75);}70%{transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
 @keyframes termsFall{0%{opacity:0;transform:translateY(-30px) rotate(0);}15%{opacity:1;}100%{opacity:0;transform:translateY(520px) rotate(540deg);}}
-@media(max-width:560px){.terms-title{font-size:26px;}.terms-stats{grid-template-columns:repeat(3,1fr);gap:6px;}.terms-stat b{font-size:23px;}.terms-milestones{grid-template-columns:repeat(2,1fr);}.terms-plan-add{grid-template-columns:1fr;}.terms-plan-add .btn{width:100%;}.terms-task{grid-template-columns:auto minmax(0,1fr);}.terms-task-controls{grid-column:2;justify-content:flex-end;}.terms-active-task{font-size:23px;}}
-@media(prefers-reduced-motion:reduce){.terms-count,.terms-celebration.show,.terms-overlay.open,.terms-confetti i,.terms-start,.terms-reset.show{animation:none!important;}.terms-progress-fill,.terms-rank-fill,.terms-plan-seg,.terms-link,.terms-hud-fill{transition:none;}}
+@media(max-width:560px){.terms-title{font-size:26px;}.terms-stats{grid-template-columns:repeat(3,1fr);gap:6px;}.terms-stat b{font-size:23px;}.terms-milestones{grid-template-columns:repeat(2,1fr);}.terms-plan-add{grid-template-columns:minmax(0,1fr) 96px;}.terms-plan-add .btn{width:100%;grid-column:1/-1;}.terms-task{grid-template-columns:auto minmax(0,1fr);}.terms-task-controls{grid-column:2;justify-content:flex-end;}.terms-active-task{font-size:23px;}}
+@media(prefers-reduced-motion:reduce){.terms-count,.terms-celebration.show,.terms-overlay.open,.terms-confetti i,.terms-start,.terms-reset.show,.terms-expired.show,.terms-alarm-icon,.terms-motion.urgent b{animation:none!important;}.terms-progress-fill,.terms-rank-fill,.terms-plan-seg,.terms-link,.terms-hud-fill{transition:none;}}
 </style>
 </head>
 <body>
@@ -541,8 +557,19 @@ textarea::placeholder{color:var(--text3);}
     <div class="terms-plan-progress" id="termsPlanProgress" style="display:none;"></div>
     <div class="terms-plan-add">
       <input class="terms-action-input" id="termsTaskInput" maxlength="100" placeholder="What must happen today?" onkeydown="if(event.key==='Enter'){event.preventDefault();addTermsTask();}">
+      <select class="terms-time-select" id="termsTaskMinutes" aria-label="Allocated task time">
+        <option value="5">5 min</option>
+        <option value="10">10 min</option>
+        <option value="15">15 min</option>
+        <option value="25" selected>25 min</option>
+        <option value="30">30 min</option>
+        <option value="45">45 min</option>
+        <option value="60">60 min</option>
+        <option value="90">90 min</option>
+      </select>
       <button class="btn" type="button" onclick="addTermsTask()">Add</button>
     </div>
+    <div class="mini-label" style="margin-top:9px;">Every task gets one focused timer and one optional +10 minute extension.</div>
     <div class="terms-chips" aria-label="Quick task ideas" style="margin-top:12px;">
       <button class="terms-chip" type="button" onclick="addTermsQuickTask('Get out of bed')">Get up</button>
       <button class="terms-chip" type="button" onclick="addTermsQuickTask('Start the work in front of me')">Start work</button>
@@ -858,13 +885,13 @@ textarea::placeholder{color:var(--text3);}
         <div class="terms-hud" id="termsHudGo"></div>
         <div class="terms-go-chips" id="termsGoChips"></div>
         <div class="terms-go-next" id="termsGoNext"></div>
-        <div class="terms-motion">In motion · <b id="termsMotionClock">0:00</b></div>
+        <div class="terms-motion" id="termsMotionStatus"><span id="termsMotionLabel">Time left</span> · <b id="termsMotionClock">25:00</b></div>
         <div class="terms-go-coach" id="termsGoCoach"></div>
         <div class="terms-overlay-actions">
           <button class="btn btn-primary terms-start" id="termsContinueButton" type="button" onclick="startTermsCountdown()">5-4-3-2-1 — Keep going</button>
           <div class="terms-overlay-secondary">
             <button class="btn btn-ghost" type="button" onclick="completeTermsTaskFromOverlay()">Task done — next</button>
-            <button class="btn btn-ghost" type="button" onclick="closeTermsOverlay()">Back to plan</button>
+            <button class="btn btn-ghost" type="button" onclick="leaveTermsMotionToPlan()">Back to plan · lose streak</button>
           </div>
           <button class="terms-drift" type="button" onclick="breakTermsStreak()">A distraction got in — streak over</button>
         </div>
@@ -880,6 +907,19 @@ textarea::placeholder{color:var(--text3);}
         <button class="btn btn-ghost" id="termsResetBack" type="button" onclick="closeTermsOverlay()">Back to plan</button>
       </div>
     </div>
+    <div class="terms-expired" id="termsExpiredView">
+      <div class="section-label" id="termsExpiredLabel">Timebox complete</div>
+      <div class="terms-alarm-icon" aria-hidden="true">⏰</div>
+      <div class="terms-expired-title" id="termsExpiredTitle">Time is up.</div>
+      <div class="terms-expired-task" id="termsExpiredTask"></div>
+      <div class="terms-expired-copy" id="termsExpiredCopy">Stop the alarm, then make the honest call immediately.</div>
+      <button class="btn btn-primary terms-start" id="termsStopAlarmButton" type="button" onclick="stopTermsAlarmAndDecide()">Stop alarm</button>
+      <div class="terms-expired-decisions" id="termsExpiredDecisions">
+        <button class="btn btn-primary" id="termsTimerDoneButton" type="button" onclick="completeTermsTaskFromTimer()">Task done · next</button>
+        <button class="btn" id="termsExtensionButton" type="button" onclick="useTermsExtension()">Keep going · +10 min</button>
+        <button class="btn btn-ghost" id="termsMoveNextButton" type="button" onclick="moveTermsToNextTask()">Move to next task</button>
+      </div>
+    </div>
     <div class="terms-celebration" id="termsCelebration">
       <div class="terms-confetti" id="termsConfetti"></div>
       <div class="terms-celebration-icon" id="termsCelebrationIcon">⚡</div>
@@ -889,17 +929,17 @@ textarea::placeholder{color:var(--text3);}
       <div class="terms-celebration-actions">
         <button class="btn btn-primary terms-start" id="termsCelebrationContinue" type="button" onclick="continueTermsFromCelebration()">5-4-3-2-1 — Keep going</button>
         <button class="btn btn-ghost" id="termsCelebrationComplete" type="button" onclick="completeTermsTaskFromCelebration()">Task done — next</button>
-        <button class="btn btn-ghost" id="termsCelebrationBack" type="button" onclick="closeTermsOverlay()">Back to plan</button>
+        <button class="btn btn-ghost" id="termsCelebrationBack" type="button" onclick="leaveTermsMotionToPlan()">Back to plan · lose streak</button>
       </div>
     </div>
   </div>
 </div>
 
-<script src="firebase-config.js?v=presence-v26"></script>
+<script src="firebase-config.js?v=presence-v27"></script>
 <script>
 // ---------- State ----------
 // Bump APP_BUILD on every deploy so users can confirm they're on the latest update.
-const APP_BUILD={version:'v26',date:'Jul 19, 2026',time:'3:10 PM'};
+const APP_BUILD={version:'v27',date:'Jul 22, 2026',time:'1:38 PM'};
 const KEY='presence_state_v1';
 const SCORE_VALUES=[0,5,6,7,8,9,10];
 const SCORE_DESC={
@@ -953,13 +993,18 @@ const TERMS_RANKS=[
 ];
 let termsCountdownTimer=null;
 let termsMotionTimer=null;
-let termsMotionSince=null;
 let pendingTermsAction='';
 let pendingTermsTaskId=null;
 let termsAudioCtx=null;
+let termsAlarmSoundTimer=null;
+let termsAlarmTaskId=null;
+let termsAlarmStopped=false;
+const TERMS_DEFAULT_MINUTES=25;
+const TERMS_EXTENSION_MINUTES=10;
+const TERMS_TASK_NOTIFICATION_BASE=20000;
 
 function termsDefaults(){
-  return {total:0,currentChain:0,bestChain:0,bestDay:0,daily:{},history:[],unlocked:[],updatedAt:0,planDate:'',tasks:[],activeTaskId:null,wonDays:[]};
+  return {total:0,currentChain:0,bestChain:0,bestDay:0,daily:{},history:[],unlocked:[],updatedAt:0,planDate:'',tasks:[],activeTaskId:null,wonDays:[],sessionActive:false};
 }
 
 function ensureTermsState(){
@@ -970,12 +1015,24 @@ function ensureTermsState(){
   if(!Array.isArray(S.terms.unlocked)){S.terms.unlocked=[];changed=true;}
   if(!Array.isArray(S.terms.tasks)){S.terms.tasks=[];changed=true;}
   if(!Array.isArray(S.terms.wonDays)){S.terms.wonDays=[];changed=true;}
+  if(typeof S.terms.sessionActive!=='boolean'){S.terms.sessionActive=false;changed=true;}
+  S.terms.tasks.forEach(task=>{
+    const minutes=parseInt(task.durationMinutes,10);
+    const normalized=Number.isFinite(minutes)?Math.min(180,Math.max(1,minutes)):TERMS_DEFAULT_MINUTES;
+    if(task.durationMinutes!==normalized){task.durationMinutes=normalized;changed=true;}
+    if(typeof task.extensionUsed!=='boolean'){task.extensionUsed=false;changed=true;}
+    if(task.timerStartedAt===undefined){task.timerStartedAt=null;changed=true;}
+    if(task.timerDeadline===undefined){task.timerDeadline=null;changed=true;}
+    if(task.timerPhase===undefined){task.timerPhase=null;changed=true;}
+    if(task.done&&(task.timerStartedAt||task.timerDeadline||task.timerPhase)){task.timerStartedAt=null;task.timerDeadline=null;task.timerPhase=null;changed=true;}
+  });
   const today=localDateStr();
   if(!S.terms.planDate){S.terms.planDate=today;changed=true;}
   else if(S.terms.planDate!==today){
-    S.terms.tasks=S.terms.tasks.filter(task=>!task.done).map(task=>Object.assign({},task,{done:false,apps:0,completedAt:null}));
-    S.terms.planDate=today;S.terms.activeTaskId=null;changed=true;
+    S.terms.tasks=S.terms.tasks.filter(task=>!task.done).map(task=>Object.assign({},task,{done:false,apps:0,completedAt:null,extensionUsed:false,timerStartedAt:null,timerDeadline:null,timerPhase:null}));
+    S.terms.planDate=today;S.terms.activeTaskId=null;S.terms.currentChain=0;S.terms.sessionActive=false;changed=true;
   }
+  if(!S.terms.sessionActive&&S.terms.currentChain){S.terms.currentChain=0;changed=true;}
   const active=S.terms.tasks.find(task=>task.id===S.terms.activeTaskId&&!task.done);
   if(!active){
     const next=S.terms.tasks.find(task=>!task.done);
@@ -1283,9 +1340,31 @@ async function loadState(){
   rolloverDay();
   dirty=calculateLevel()||dirty;
   if(dirty){await save();}
-  render();scheduleNotifications();
+  render();scheduleNotifications();setTimeout(restoreTermsMotionSession,0);
 }
 async function save(){try{await store.set(KEY,JSON.stringify(S));queueCloudSave();}catch(e){}}
+
+function restoreTermsMotionSession(){
+  ensureTermsState();if(!S.terms.sessionActive)return;
+  const task=getActiveTermsTask();
+  if(!task){S.terms.sessionActive=false;S.terms.currentChain=0;save();render();return;}
+  pendingTermsTaskId=task.id;pendingTermsAction=task.text;
+  if(task.timerDeadline&&Date.now()>=task.timerDeadline){showTermsTimerExpired(task);return;}
+  if(task.timerDeadline)scheduleTermsTaskNotification(task);
+  const overlay=document.getElementById('termsOverlay');overlay.classList.add('open');document.body.style.overflow='hidden';
+  showTermsMomentumReady();
+}
+
+function checkTermsMotionDeadline(){
+  if(!S.terms||!S.terms.sessionActive)return;
+  const task=getActiveTermsTask();if(!task)return;
+  pendingTermsTaskId=task.id;pendingTermsAction=task.text;
+  if(task.timerDeadline&&Date.now()>=task.timerDeadline)showTermsTimerExpired(task);
+  else if(!document.getElementById('termsOverlay').classList.contains('open'))restoreTermsMotionSession();
+}
+
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkTermsMotionDeadline();});
+window.addEventListener('focus',checkTermsMotionDeadline);
 
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function weekStr(){const d=new Date();const o=new Date(d);o.setDate(d.getDate()-d.getDay());return o.toISOString().slice(0,10);}
@@ -1467,10 +1546,13 @@ function renderTermsHud(container){
 
 function breakTermsStreak(){
   ensureTermsState();
+  const task=getActiveTermsTask();
   const t=S.terms;const ended=t.currentChain||0;
   if(!ended){toast('No live streak to break. Five seconds starts one.');return;}
   const best=t.bestChain||0;
-  t.currentChain=0;t.updatedAt=Date.now();
+  if(task)resetTermsTaskTimer(task);
+  stopTermsAlarmSound();termsAlarmTaskId=null;termsAlarmStopped=false;
+  t.currentChain=0;t.sessionActive=false;t.updatedAt=Date.now();
   addLog('streak ended at '+ended+' — honest reset','urge');
   save();render();
   clearInterval(termsCountdownTimer);termsCountdownTimer=null;
@@ -1478,6 +1560,7 @@ function breakTermsStreak(){
   document.getElementById('termsCountdownView').style.display='none';
   document.getElementById('termsCelebration').classList.remove('show');
   document.getElementById('termsGoPanel').classList.remove('show');
+  document.getElementById('termsExpiredView').classList.remove('show','stopped');
   document.getElementById('termsResetTitle').textContent='Streak over at '+ended+'.';
   document.getElementById('termsResetCopy').textContent=(ended>=best?'That run is your all-time best: '+best+'. ':'Your record of '+best+' still stands. ')+'You caught the drift yourself — that is presence working. The comeback starts five seconds from now.';
   const restart=document.getElementById('termsResetRestart');
@@ -1592,6 +1675,20 @@ function renderTerms(){
   updateTermsSticky();
 }
 
+function formatTermsClock(milliseconds){
+  const seconds=Math.max(0,Math.ceil(milliseconds/1000));
+  return Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
+}
+
+function termsTaskTimerMeta(task){
+  const moves=(task.apps||0)+' move'+((task.apps||0)===1?'':'s');
+  if(task.timerDeadline){
+    const remaining=formatTermsClock(task.timerDeadline-Date.now());
+    return moves+' · '+remaining+' left'+(task.timerPhase==='extension'?' · extension':'');
+  }
+  return moves+' · '+(task.durationMinutes||TERMS_DEFAULT_MINUTES)+' min'+(task.extensionUsed?' · extension used':' · +10 min available');
+}
+
 function renderTermsPlan(t){
   const tasks=t.tasks||[];
   const completed=tasks.filter(task=>task.done).length;
@@ -1618,7 +1715,7 @@ function renderTermsPlan(t){
   if(mission)mission.style.display=active?'block':'none';
   if(active){
     const activeTask=document.getElementById('termsActiveTask');if(activeTask)activeTask.textContent=active.text;
-    const activeApps=document.getElementById('termsActiveApps');if(activeApps)activeApps.textContent=(active.apps||0)+' application'+((active.apps||0)===1?'':'s')+' on this task';
+    const activeApps=document.getElementById('termsActiveApps');if(activeApps)activeApps.textContent=termsTaskTimerMeta(active);
     const openTasks=tasks.filter(task=>!task.done);const position=Math.max(1,openTasks.findIndex(task=>task.id===active.id)+1);
     const activePosition=document.getElementById('termsActivePosition');if(activePosition)activePosition.textContent='Task '+position+' of '+remaining+' remaining';
     const startButton=document.getElementById('termsStartButton');
@@ -1637,13 +1734,14 @@ function renderTermsPlan(t){
     const row=document.createElement('div');row.className='terms-task'+(task.id===t.activeTaskId&&!task.done?' active':'')+(task.done?' done':'');
     const check=document.createElement('button');check.type='button';check.className='terms-task-check';check.textContent=task.done?'✓':'○';check.setAttribute('aria-label',(task.done?'Reopen ':'Complete ')+task.text);check.onclick=()=>toggleTermsTask(task.id);
     const main=document.createElement('button');main.type='button';main.className='terms-task-main';main.textContent=task.text;main.disabled=!!task.done;main.onclick=()=>selectTermsTask(task.id);
-    const meta=document.createElement('span');meta.className='terms-task-meta';meta.textContent=(task.apps||0)+' application'+((task.apps||0)===1?'':'s');
+    const meta=document.createElement('span');meta.className='terms-task-meta';meta.textContent=termsTaskTimerMeta(task);
     main.appendChild(meta);
     const controls=document.createElement('div');controls.className='terms-task-controls';
+    const time=termsTaskControl((task.durationMinutes||TERMS_DEFAULT_MINUTES)+'m','Change timer for '+task.text,()=>editTermsTaskMinutes(task.id),false);time.classList.add('time');
     const up=termsTaskControl('↑','Move '+task.text+' up',()=>moveTermsTask(task.id,-1),index===0);
     const down=termsTaskControl('↓','Move '+task.text+' down',()=>moveTermsTask(task.id,1),index===tasks.length-1);
     const remove=termsTaskControl('×','Delete '+task.text,()=>deleteTermsTask(task.id),false);
-    controls.append(up,down,remove);row.append(check,main,controls);list.appendChild(row);
+    controls.append(time,up,down,remove);row.append(check,main,controls);list.appendChild(row);
   });
 }
 
@@ -1763,7 +1861,12 @@ function setHistoryScore(date,score){
 function openMenu(){document.body.classList.add('menu-open');const drawer=document.getElementById('drawer');const overlay=document.querySelector('.menu-overlay');if(drawer){drawer.classList.add('open');drawer.style.transform='translateX(0)';}if(overlay){overlay.classList.add('open');overlay.style.opacity='1';overlay.style.pointerEvents='auto';}const btn=document.getElementById('hamburgerBtn');if(btn)btn.setAttribute('aria-expanded','true');}
 function closeMenu(){document.body.classList.remove('menu-open');const drawer=document.getElementById('drawer');const overlay=document.querySelector('.menu-overlay');if(drawer){drawer.classList.remove('open');drawer.style.transform='translateX(100%)';}if(overlay){overlay.classList.remove('open');overlay.style.opacity='';overlay.style.pointerEvents='';}const btn=document.getElementById('hamburgerBtn');if(btn)btn.setAttribute('aria-expanded','false');}
 function toggleMenu(){document.body.classList.contains('menu-open')?closeMenu():openMenu();}
-function go(p){closeMenu();document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.p===p));const gear=document.getElementById('settingsGear');if(gear)gear.classList.toggle('active',p==='settings');document.querySelectorAll('.panel').forEach(pn=>pn.classList.toggle('active',pn.id==='panel-'+p));window.scrollTo({top:0,behavior:'smooth'});}
+function go(p){
+  if(p!=='terms'&&S.terms&&S.terms.sessionActive)leaveTermsMotionToPlan();
+  closeMenu();document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.p===p));
+  const gear=document.getElementById('settingsGear');if(gear)gear.classList.toggle('active',p==='settings');
+  document.querySelectorAll('.panel').forEach(pn=>pn.classList.toggle('active',pn.id==='panel-'+p));window.scrollTo({top:0,behavior:'smooth'});
+}
 document.getElementById('nav').addEventListener('click',e=>{if(e.target.dataset.p)go(e.target.dataset.p);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 
@@ -1786,7 +1889,9 @@ function addTermsTask(textValue){
   const input=document.getElementById('termsTaskInput');
   const text=(typeof textValue==='string'?textValue:(input?input.value:'')).trim();
   if(!text){toast('Add one important task first.');if(input)input.focus();return;}
-  const task={id:termsTaskId(),text,done:false,apps:0,createdAt:Date.now(),completedAt:null};
+  const minutesSelect=document.getElementById('termsTaskMinutes');
+  const durationMinutes=Math.min(180,Math.max(1,parseInt(minutesSelect&&minutesSelect.value,10)||TERMS_DEFAULT_MINUTES));
+  const task={id:termsTaskId(),text,done:false,apps:0,createdAt:Date.now(),completedAt:null,durationMinutes,extensionUsed:false,timerStartedAt:null,timerDeadline:null,timerPhase:null};
   S.terms.tasks.push(task);
   if(!S.terms.activeTaskId)S.terms.activeTaskId=task.id;
   S.terms.updatedAt=Date.now();
@@ -1798,6 +1903,16 @@ function addTermsTask(textValue){
 function addTermsQuickTask(text){
   if(S.terms&&S.terms.tasks&&S.terms.tasks.some(task=>!task.done&&task.text===text)){toast('That task is already in today’s plan.');return;}
   addTermsTask(text);
+}
+
+function editTermsTaskMinutes(id){
+  ensureTermsState();const task=S.terms.tasks.find(item=>item.id===id);if(!task)return;
+  if(task.timerDeadline){toast('The timer is already running. Finish or leave Motion Mode first.');return;}
+  const answer=prompt('Minutes allocated to “'+task.text+'” (1–180):',String(task.durationMinutes||TERMS_DEFAULT_MINUTES));
+  if(answer===null)return;
+  const minutes=parseInt(answer,10);
+  if(!Number.isFinite(minutes)||minutes<1||minutes>180){toast('Choose a timer between 1 and 180 minutes.');return;}
+  task.durationMinutes=minutes;task.extensionUsed=false;task.updatedAt=Date.now();S.terms.updatedAt=Date.now();save();render();toast('Timer set to '+minutes+' minutes.');
 }
 
 function selectTermsTask(id){
@@ -1813,8 +1928,41 @@ function moveTermsTask(id,direction){
   S.terms.updatedAt=Date.now();save();render();
 }
 
+function termsTaskNotificationId(taskId){
+  let hash=0;String(taskId||'').split('').forEach(char=>{hash=((hash*31)+char.charCodeAt(0))&0x7fffffff;});
+  return TERMS_TASK_NOTIFICATION_BASE+(hash%100000);
+}
+
+async function cancelTermsTaskNotification(task){
+  const native=getNativeLocalNotifications();if(!native||!task)return;
+  try{await native.cancel({notifications:[{id:termsTaskNotificationId(task.id)}]});}catch(e){console.warn('Could not cancel task timer notification',e);}
+}
+
+async function scheduleTermsTaskNotification(task){
+  const native=getNativeLocalNotifications();if(!native||!task||!task.timerDeadline)return false;
+  try{
+    let permission=await native.checkPermissions();
+    if(permission.display!=='granted')permission=await native.requestPermissions();
+    if(permission.display!=='granted')return false;
+    await native.createChannel({id:'presence-task-timers',name:'Task timers',description:'Alarms for Livin’ on My Terms task timeboxes',importance:5,visibility:1,vibration:true});
+    const id=termsTaskNotificationId(task.id);
+    await native.cancel({notifications:[{id}]});
+    await native.schedule({notifications:[{id,title:'Time is up — make the call',body:task.text,channelId:'presence-task-timers',schedule:{at:new Date(Math.max(Date.now()+500,task.timerDeadline)),allowWhileIdle:true},extra:{panel:'terms',taskId:task.id,type:'terms-timer'}}]});
+    return true;
+  }catch(e){console.error('Presence task timer notification error',e);return false;}
+}
+
+function resetTermsTaskTimer(task,{resetExtension=true}={}){
+  if(!task)return;
+  cancelTermsTaskNotification(task);
+  task.timerStartedAt=null;task.timerDeadline=null;task.timerPhase=null;
+  if(resetExtension)task.extensionUsed=false;
+  if(termsAlarmTaskId===task.id)stopTermsAlarmSound();
+}
+
 function deleteTermsTask(id){
   ensureTermsState();const task=S.terms.tasks.find(item=>item.id===id);if(!task)return;
+  resetTermsTaskTimer(task);
   S.terms.tasks=S.terms.tasks.filter(item=>item.id!==id);
   if(S.terms.activeTaskId===id)S.terms.activeTaskId=null;
   S.terms.updatedAt=Date.now();ensureTermsState();save();render();toast('Task removed.');
@@ -1835,6 +1983,7 @@ function getActiveTermsTask(){
 function completeTermsTask(taskId){
   ensureTermsState();const task=S.terms.tasks.find(item=>item.id===(taskId||S.terms.activeTaskId)&&!item.done);
   if(!task){toast('Choose an unfinished task first.');return;}
+  resetTermsTaskTimer(task);
   task.done=true;task.completedAt=Date.now();
   const next=S.terms.tasks.find(item=>!item.done);
   S.terms.activeTaskId=next?next.id:null;S.terms.updatedAt=Date.now();
@@ -1851,6 +2000,8 @@ function completeTermsTask(taskId){
 function startTermsCountdown(){
   const task=getActiveTermsTask();
   if(!task){toast('Add or choose an important task first.');const input=document.getElementById('termsTaskInput');if(input)input.focus();return;}
+  if(task.timerDeadline&&Date.now()>=task.timerDeadline){showTermsTimerExpired(task);return;}
+  S.terms.sessionActive=true;S.terms.updatedAt=Date.now();save();
   pendingTermsAction=task.text;pendingTermsTaskId=task.id;
   unlockTermsAudio();
   clearInterval(termsCountdownTimer);
@@ -1861,6 +2012,7 @@ function startTermsCountdown(){
   document.getElementById('termsCountdownView').style.display='block';
   celebration.classList.remove('show');
   document.getElementById('termsResetView').classList.remove('show');
+  document.getElementById('termsExpiredView').classList.remove('show','stopped');
   document.getElementById('termsOverlayTitle').textContent='No negotiation. Just move.';
   document.getElementById('termsOverlayAction').textContent=pendingTermsAction;
   document.getElementById('termsGoPanel').classList.remove('show');
@@ -1904,18 +2056,28 @@ function termsGoTone(){
   }catch(e){}
 }
 
+function startTermsTaskTimer(task){
+  if(!task||task.timerDeadline)return;
+  const now=Date.now();
+  task.timerStartedAt=now;
+  task.timerDeadline=now+(task.durationMinutes||TERMS_DEFAULT_MINUTES)*60000;
+  task.timerPhase='main';
+  task.extensionUsed=false;
+  scheduleTermsTaskNotification(task);
+}
+
 function completeTermsMove(){
   ensureTermsState();
   const t=S.terms;const today=localDateStr();const previousChain=t.currentChain||0;
   const previousBest=t.bestChain||0;
   t.currentChain=previousChain+1;t.total=(t.total||0)+1;
   t.daily[today]=(t.daily[today]||0)+1;
-  termsNewBestChain=t.currentChain>previousBest&&previousBest>=3;
   t.bestChain=Math.max(previousBest,t.currentChain);
   t.bestDay=Math.max(t.bestDay||0,t.daily[today]);
   t.updatedAt=Date.now();
   const task=t.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);
-  if(task)task.apps=(task.apps||0)+1;
+  if(task){task.apps=(task.apps||0)+1;startTermsTaskTimer(task);}
+  t.sessionActive=true;
   t.history.push({id:t.updatedAt+'-'+Math.random().toString(36).slice(2,8),ts:t.updatedAt,date:today,action:pendingTermsAction,taskId:pendingTermsTaskId,chain:t.currentChain});
   if(t.history.length>100)t.history=t.history.slice(-100);
   const unlocked=[];
@@ -1940,6 +2102,8 @@ function showTermsMomentumReady(){
   if(!task){closeTermsOverlay();return;}
   document.getElementById('termsCountdownView').style.display='block';
   document.getElementById('termsCelebration').classList.remove('show');
+  document.getElementById('termsResetView').classList.remove('show');
+  document.getElementById('termsExpiredView').classList.remove('show','stopped');
   const count=document.getElementById('termsCount');count.textContent='GO';count.className='terms-count go';
   document.getElementById('termsOverlayTitle').textContent='You are in motion';
   document.getElementById('termsOverlayAction').textContent=task.text;
@@ -1948,6 +2112,7 @@ function showTermsMomentumReady(){
   chips.innerHTML='';
   termsGoChip(chips,t.daily[localDateStr()]||0,'today');
   termsGoChip(chips,task.apps||0,'on this task');
+  termsGoChip(chips,task.durationMinutes||TERMS_DEFAULT_MINUTES,'minutes allocated');
   const next=termsNextChainMilestone(t);
   const goNext=document.getElementById('termsGoNext');
   if(next){
@@ -1959,23 +2124,124 @@ function showTermsMomentumReady(){
   document.getElementById('termsGoCoach').textContent=termsCoachLine();
   document.getElementById('termsGoPanel').classList.add('show');
   startTermsMotionClock();
-  const button=document.getElementById('termsContinueButton');if(button)button.focus();
+  const button=document.getElementById('termsContinueButton');
+  if(button){button.textContent=task.timerDeadline?'5-4-3-2-1 — Keep going':'5-4-3-2-1 — Start this task';button.focus();}
 }
 
 function startTermsMotionClock(){
   stopTermsMotionClock();
-  termsMotionSince=Date.now();
-  const clock=document.getElementById('termsMotionClock');
-  if(clock)clock.textContent='0:00';
-  termsMotionTimer=setInterval(()=>{
-    const el=document.getElementById('termsMotionClock');if(!el)return;
-    const seconds=Math.floor((Date.now()-termsMotionSince)/1000);
-    el.textContent=Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
-  },1000);
+  const task=S.terms.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);
+  if(!task)return;
+  const renderClock=()=>{
+    const clock=document.getElementById('termsMotionClock');const label=document.getElementById('termsMotionLabel');const status=document.getElementById('termsMotionStatus');
+    if(!clock||!label||!status)return;
+    if(!task.timerDeadline){label.textContent='Allocated';clock.textContent=(task.durationMinutes||TERMS_DEFAULT_MINUTES)+':00';status.classList.remove('urgent');return;}
+    const remaining=task.timerDeadline-Date.now();
+    if(remaining<=0){clock.textContent='0:00';status.classList.add('urgent');showTermsTimerExpired(task);return;}
+    label.textContent=task.timerPhase==='extension'?'Extension left':'Time left';clock.textContent=formatTermsClock(remaining);status.classList.toggle('urgent',remaining<=60000);
+  };
+  renderClock();
+  if(task.timerDeadline)termsMotionTimer=setInterval(renderClock,1000);
 }
 
 function stopTermsMotionClock(){
   clearInterval(termsMotionTimer);termsMotionTimer=null;
+}
+
+function termsAlarmTone(){
+  try{
+    const ctx=termsAudioCtx;if(!ctx)return;
+    [880,660,880].forEach((frequency,index)=>{
+      const oscillator=ctx.createOscillator();const gain=ctx.createGain();const start=ctx.currentTime+index*0.2;
+      oscillator.type='square';oscillator.frequency.value=frequency;oscillator.connect(gain);gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.0001,start);gain.gain.exponentialRampToValueAtTime(0.18,start+0.02);gain.gain.exponentialRampToValueAtTime(0.0001,start+0.16);
+      oscillator.start(start);oscillator.stop(start+0.18);
+    });
+    if(navigator.vibrate)navigator.vibrate([420,140,420,140,650]);
+  }catch(e){}
+}
+
+function startTermsAlarmSound(task){
+  stopTermsAlarmSound();
+  termsAlarmTaskId=task.id;termsAlarmStopped=false;
+  unlockTermsAudio();termsAlarmTone();
+  termsAlarmSoundTimer=setInterval(termsAlarmTone,1800);
+}
+
+function stopTermsAlarmSound(){
+  clearInterval(termsAlarmSoundTimer);termsAlarmSoundTimer=null;
+  if(navigator.vibrate)navigator.vibrate(0);
+}
+
+function showTermsTimerExpired(task){
+  if(!task||task.done||!task.timerDeadline)return;
+  const existingExpired=document.getElementById('termsExpiredView');
+  if(existingExpired.classList.contains('show')&&termsAlarmTaskId===task.id&&termsAlarmStopped)return;
+  stopTermsMotionClock();clearInterval(termsCountdownTimer);termsCountdownTimer=null;
+  pendingTermsTaskId=task.id;pendingTermsAction=task.text;
+  const overlay=document.getElementById('termsOverlay');
+  document.getElementById('termsCountdownView').style.display='none';
+  document.getElementById('termsCelebration').classList.remove('show');
+  document.getElementById('termsResetView').classList.remove('show');
+  const expired=document.getElementById('termsExpiredView');expired.classList.add('show');expired.classList.remove('stopped');
+  document.getElementById('termsExpiredLabel').textContent=task.timerPhase==='extension'?'Extension complete':'Timebox complete';
+  document.getElementById('termsExpiredTitle').textContent='Time is up.';
+  document.getElementById('termsExpiredTask').textContent=task.text;
+  document.getElementById('termsExpiredCopy').textContent='Stop the alarm, then make the honest call immediately.';
+  const stopButton=document.getElementById('termsStopAlarmButton');stopButton.style.display='';
+  document.getElementById('termsExpiredDecisions').classList.remove('show');
+  document.getElementById('termsExtensionButton').style.display=task.extensionUsed?'none':'';
+  const hasNext=S.terms.tasks.some(item=>item.id!==task.id&&!item.done);
+  document.getElementById('termsMoveNextButton').style.display=hasNext?'':'none';
+  overlay.classList.add('open');document.body.style.overflow='hidden';updateTermsSticky();
+  if(termsAlarmTaskId!==task.id||termsAlarmStopped)startTermsAlarmSound(task);
+  stopButton.focus();
+}
+
+function stopTermsAlarmAndDecide(){
+  const task=S.terms.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);if(!task)return;
+  stopTermsAlarmSound();termsAlarmStopped=true;cancelTermsTaskNotification(task);
+  const expired=document.getElementById('termsExpiredView');expired.classList.add('stopped');
+  document.getElementById('termsStopAlarmButton').style.display='none';
+  document.getElementById('termsExpiredCopy').textContent=task.extensionUsed?'The extension is used. Finish this task or move immediately to the next one.':'Choose now: finish it, use your one extension, or move immediately to the next task.';
+  const decisions=document.getElementById('termsExpiredDecisions');decisions.classList.add('show');
+  const done=document.getElementById('termsTimerDoneButton');if(done)done.focus();
+}
+
+function useTermsExtension(){
+  const task=S.terms.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);if(!task)return;
+  if(task.extensionUsed){toast('The one extension has already been used.');return;}
+  stopTermsAlarmSound();termsAlarmTaskId=null;termsAlarmStopped=false;
+  task.extensionUsed=true;task.timerPhase='extension';task.timerDeadline=Date.now()+TERMS_EXTENSION_MINUTES*60000;S.terms.updatedAt=Date.now();
+  scheduleTermsTaskNotification(task);save();render();
+  document.getElementById('termsExpiredView').classList.remove('show','stopped');
+  document.getElementById('termsCountdownView').style.display='block';
+  showTermsMomentumReady();toast('Extension started. Ten focused minutes — stay in motion.');
+}
+
+function completeTermsTaskFromTimer(){
+  stopTermsAlarmSound();termsAlarmTaskId=null;termsAlarmStopped=false;
+  document.getElementById('termsExpiredView').classList.remove('show','stopped');
+  completeTermsTaskFromOverlay(true);
+}
+
+function moveTermsToNextTask(){
+  ensureTermsState();
+  const current=S.terms.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);if(!current)return;
+  const currentIndex=S.terms.tasks.findIndex(item=>item.id===current.id);
+  const after=S.terms.tasks.slice(currentIndex+1).find(item=>!item.done);
+  const before=S.terms.tasks.slice(0,currentIndex).find(item=>!item.done);
+  const next=after||before;
+  if(!next){toast('There is no next task. Finish this one or end the streak.');return;}
+  stopTermsAlarmSound();termsAlarmTaskId=null;termsAlarmStopped=false;resetTermsTaskTimer(current);
+  current.movedOnCount=(current.movedOnCount||0)+1;
+  S.terms.activeTaskId=next.id;S.terms.updatedAt=Date.now();save();render();
+  pendingTermsTaskId=next.id;pendingTermsAction=next.text;
+  document.getElementById('termsExpiredView').classList.remove('show','stopped');
+  document.getElementById('termsCountdownView').style.display='block';
+  showTermsMomentumReady();
+  document.getElementById('termsOverlayTitle').textContent='No gap. Next task.';
+  toast('Streak alive. Next: '+next.text);
 }
 
 function continueTermsFromCelebration(){
@@ -1988,7 +2254,9 @@ function completeTermsTaskFromCelebration(){
   completeTermsTaskFromOverlay();
 }
 
-function completeTermsTaskFromOverlay(){
+function completeTermsTaskFromOverlay(afterTimer=false){
+  const current=S.terms.tasks.find(item=>item.id===pendingTermsTaskId&&!item.done);
+  if(!afterTimer&&current&&current.timerDeadline&&Date.now()>=current.timerDeadline){showTermsTimerExpired(current);return;}
   const completedId=pendingTermsTaskId;
   completeTermsTask(completedId);
   const next=getActiveTermsTask();
@@ -2011,7 +2279,7 @@ function renderTermsCelebrationStats(entries){
 
 function showTermsCelebration(unlocked){
   document.getElementById('termsCountdownView').style.display='none';
-  stopTermsMotionClock();
+  startTermsMotionClock();
   const t=S.terms;
   const celebration=document.getElementById('termsCelebration');
   const milestone=unlocked[unlocked.length-1];
@@ -2024,7 +2292,7 @@ function showTermsCelebration(unlocked){
   document.getElementById('termsCelebrationContinue').style.display='';
   document.getElementById('termsCelebrationComplete').style.display='';
   const celebrationBack=document.getElementById('termsCelebrationBack');
-  celebrationBack.textContent='Back to plan';celebrationBack.onclick=closeTermsOverlay;
+  celebrationBack.textContent='Back to plan · lose streak';celebrationBack.onclick=leaveTermsMotionToPlan;
   if(navigator.vibrate)navigator.vibrate([100,60,100,60,240]);
   const button=celebration.querySelector('button');if(button)button.focus();
 }
@@ -2033,6 +2301,7 @@ function showTermsPlanCelebration(){
   const overlay=document.getElementById('termsOverlay');
   document.getElementById('termsCountdownView').style.display='none';
   document.getElementById('termsResetView').classList.remove('show');
+  document.getElementById('termsExpiredView').classList.remove('show','stopped');
   stopTermsMotionClock();
   const t=S.terms;const today=localDateStr();
   const doneCount=t.tasks.filter(task=>task.done).length;
@@ -2045,7 +2314,7 @@ function showTermsPlanCelebration(){
   document.getElementById('termsCelebrationContinue').style.display='none';
   document.getElementById('termsCelebrationComplete').style.display='none';
   const celebrationBack=document.getElementById('termsCelebrationBack');
-  celebrationBack.textContent='Claim it — back to my day';celebrationBack.onclick=closeTermsOverlay;
+  celebrationBack.textContent='Claim it — back to my day';celebrationBack.onclick=finishTermsDayAndClose;
   if(navigator.vibrate)navigator.vibrate([100,60,100,60,260]);
   const button=celebration.querySelector('button');if(button)button.focus();
   updateTermsSticky();
@@ -2060,13 +2329,27 @@ function buildTermsConfetti(){
 function closeTermsOverlay(){
   clearInterval(termsCountdownTimer);termsCountdownTimer=null;
   stopTermsMotionClock();
+  stopTermsAlarmSound();termsAlarmTaskId=null;termsAlarmStopped=false;
   document.getElementById('termsOverlay').classList.remove('open');document.body.style.overflow='';
   document.getElementById('termsCelebration').classList.remove('show');
   document.getElementById('termsGoPanel').classList.remove('show');
   document.getElementById('termsResetView').classList.remove('show');
+  document.getElementById('termsExpiredView').classList.remove('show','stopped');
   pendingTermsTaskId=null;
   updateTermsSticky();
   const start=document.getElementById('termsStartButton');if(start&&start.offsetParent!==null)start.focus();
+}
+
+function leaveTermsMotionToPlan(){
+  ensureTermsState();const task=getActiveTermsTask();const t=S.terms;const ended=t.currentChain||0;
+  if(task)resetTermsTaskTimer(task);
+  t.currentChain=0;t.sessionActive=false;t.updatedAt=Date.now();
+  if(ended){S.log.push({t:nowT(),m:'left Motion Mode — streak ended at '+ended,k:'urge'});if(S.log.length>40)S.log.shift();}
+  save();render();closeTermsOverlay();toast(ended?'Back to plan. Streak ended at '+ended+'.':'Back to plan.');
+}
+
+function finishTermsDayAndClose(){
+  ensureTermsState();S.terms.currentChain=0;S.terms.sessionActive=false;S.terms.updatedAt=Date.now();save();render();closeTermsOverlay();
 }
 
 function setScore(n){S.score=n;updateScoreHistory(n);const leveledUp=calculateLevel();addLog('scored today: '+n+'/10',n>=8?'win':'urge');save();render();toast(leveledUp?'Level '+S.level+' unlocked.':n>=9?'A nine. The system is working.':n>=7?'Solid. Hold the line.':'Reset. You know the protocol.');}
@@ -2474,7 +2757,7 @@ if('serviceWorker' in navigator){
     window.location.reload();
   });
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js?v=presence-v26').then(reg=>{
+    navigator.serviceWorker.register('sw.js?v=presence-v27').then(reg=>{
       reg.update();
       if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'});}
       reg.addEventListener('updatefound',()=>{
